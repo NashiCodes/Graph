@@ -1,20 +1,17 @@
 # Especificação do trabalho prático Parte 1 da disciplina DCC059 – Teoria dos Grafos – Semestre 2023-2 Turmas A
-- - - - -
 Este documento traz a especificação do Trabalho 1, atividade avaliativa do tipo “Trabalho Prático”, e serve de base
 para todas as atividades de implementação cobradas ao longo do curso da disciplina DCC059 - Teoria dos Grafos no
 semestre letivo 2023-2.
 - - - - -
 ## Objetivo
 
-- - - - -
-desenvolver um Tipo Abstrato de Dados - TAD ou uma Classe que represente grafos simples, orientados e
+Desenvolver um Tipo Abstrato de Dados - TAD ou uma Classe que represente grafos simples, orientados e
 não orientados, ponderados e não ponderados (nos vértices e arestas) e implemente o conjunto de funcionalidades
 apresentados a seguir, detalhadas em sala de aula. O desenvolvimento dos algoritmos aqui requeridos contribui como
 base para a resolução das questões das avaliações teóricas.
 - - - - -
 ## Orientações
 
-- - - - -
 - O TAD ou Classe deve ser capaz de representar grafos utilizando lista de adjacência;
 
 - O código deve ser desenvolvido em C++ e não deve usar funções que não sejam nativas da linguagem, pois isso pode levar
@@ -80,7 +77,6 @@ g++ *.c* -o execGrupoX && ./execGrupoX <arquivo_entrada> <arquivo_saida> <Opc_Di
 - - - - -
 ## Funcionalidades:
 
-- - - - -
  * O programa deve apresentar em tela a saída para as seguintes funcionalidades definidas nas saídas conforme os 
   parâmetros:
     * a) **Parâmetro:** um Id de um vértice de um **grafo direcionado**.
