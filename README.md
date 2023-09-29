@@ -12,7 +12,7 @@ base para a resolução das questões das avaliações teóricas.
 - - - - -
 ## Orientações
 
-- O TAD ou Classe deve ser capaz de representar grafos utilizando lista de adjacência;
+- O TAD ou Classe deve conseguir representar grafos utilizando lista de adjacência;
 
 - O código deve ser desenvolvido em C++ e não deve usar funções que não sejam nativas da linguagem, pois isso pode levar
   à impossibilidade de compilar seu código no ambiente que será usado para testes;
@@ -44,7 +44,7 @@ base para a resolução das questões das avaliações teóricas.
 - o nome do arquivo a ser lido deve ser informado ao programa via teclado para a função main (utilizar int main
   (int argc, char ** argv) para passar ao programa todas as informações necessárias ao seu funcionamento;
 
-- cada grupo enviará um unico e-mail contendo APENAS os arquivos fonte (extensão c, cc, cpp e h) e os
+- cada grupo enviará um único e-mail contendo APENAS os arquivos fonte (extensão c, cc, cpp e h) e os
   arquivos de entrada utilizados (quando o professor não os tiver encaminhado antes);
 
 - o padrão para compilação a ser utilizado (ambiente Linux ou IOS) será g++ *.c* - o execGrupoX. Onde
@@ -84,10 +84,10 @@ g++ *.c* -o execGrupoX && ./execGrupoX <arquivo_entrada> <arquivo_saida> <Opc_Di
     * b) **Parâmetro:** um Id de um vértice de um **grafo não direcionado**.
       *   **Saída:** o fecho transitivo indireto deste vértice.
     * c) **Parâmetro:** dois IDs de vértices do grafo.
-      *   **Saída:** o caminho mínimo entre estes dois vértices usando algoritmo de Djkstra. 
+      *   **Saída:** o caminho mínimo entre estes dois vértices usando algoritmo de Dijkstra. 
     * d) **Parâmetro:** dois IDs de vértices do grafo.
     * e) **Parâmetro:** um subconjunto X de vértices do grafo;
-      * **Saída:** uma Árvore Geradora Mínima sobre o subgrafo vértice-induzido por X usando o algoritmo de Prim;
+      * **Saída:** uma Árvore Geradora Mínima sobre o subgrafo vértice-induzido por X usando o algoritmo de Prim.
     * f) **Parâmetro:** um subconjunto X de vértices do grafo;
       * **Saída:** uma Árvore Geradora Mínima sobre o subgrafo vértice-induzido por X usando o algoritmo de Kruskal;
     * g) **Parâmetro:** um ID de vértice;
