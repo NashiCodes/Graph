@@ -1,4 +1,4 @@
-# Especificação do trabalho prático Parte 1 da disciplina Teoria dos Grafos – Semestre 2023-2
+# Especificação do trabalho prático da disciplina Teoria dos Grafos – Semestre 2023-2
 Este documento traz a especificação do Trabalho 1, atividade avaliativa do tipo “Trabalho Prático”, e serve de base
 para todas as atividades de implementação cobradas ao longo do curso da disciplina DCC059 - Teoria dos Grafos no
 semestre letivo 2023-2.
