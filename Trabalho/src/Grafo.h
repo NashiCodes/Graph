@@ -5,9 +5,9 @@
 #include <cstdlib>
 #include <string>
 #include <unordered_map>
-#include "src/models/No.h"
-#include "src/models/Aresta.h"
-#include "src/models/AGrafo.h"
+#include "models/No.h"
+#include "models/Aresta.h"
+#include "models/AGrafo.h"
 
 using namespace std;
 

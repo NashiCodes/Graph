@@ -4,11 +4,10 @@
 #include <cmath>
 #include <fstream>
 #include <vector>
-#include "Grafo.h"
+#include "src/Grafo.h"
+#include "src/Menu.h"
 
 using namespace std;
-
-void menu(Grafo *grafo, ofstream &saida);
 
 void criaGrafoListaAdj(Grafo *grafo, ifstream &entrada);
 
@@ -16,11 +15,23 @@ void criaGrafoListaAdj(Grafo *grafo, ifstream &entrada);
 int main(int argc, const char *argv[]) {
     auto *g = new Grafo();
 
+    //urls dos arquivos de entrada e saida para teste
+    string in = "instancias_nao_ponderados/grafo_1000_1.txt";
+    string out = "saida.txt";
+
+
     // Criando arquivos de entrada e saida
     ifstream entrada;
     ofstream saida;
-    entrada.open(argv[1], ios::in);
-    saida.open(argv[2], ios::out | ios::trunc);
+    try {
+        entrada.open(in, ios::in);
+        saida.open(out, ios::out | ios::trunc);
+    } catch (exception &e) {
+        cout << e.what() << endl;
+        return 0;
+    }
+//    entrada.open(argv[1], ios::in);
+//    saida.open(argv[2], ios::out | ios::trunc);
 
     // Obtendo a informacao se o grafo eh direcionado ou nao
     bool ehDirecionado;
@@ -41,18 +52,12 @@ int main(int argc, const char *argv[]) {
 
     // Criando grafo a partir de uma lista de adjacencia
     cout << "Aguarde enquanto o grafo esta sendo criado..." << endl;
-    criaGrafoListaAdj(g, entrada);
+//    criaGrafoListaAdj(g, entrada);
 
     // Print de arestas (apenas para testes)
     // g->printArestas();
 
-    menu(g, saida);
-
+    (new Menu(g, &entrada, &saida))->menuPrincipal();
 
     return 0;
-}
-
-void menu(Grafo *grafo, ofstream &saida) {
-
-
 }
