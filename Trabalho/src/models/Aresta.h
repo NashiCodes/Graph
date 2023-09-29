@@ -6,6 +6,8 @@
 #include <string>
 #include "No.h"
 
+using namespace std;
+
 class No;
 
 class Aresta {
@@ -14,13 +16,13 @@ public:
     Aresta(No *noDestino, int peso);
     virtual ~Aresta();
 
-    int getPeso();
+    int getPeso() const;
     void setPeso(int valor);
 
     No *getNoDestino();
     void setNoDestino(No *valor);
 private:
-    int _PESO;
+    int PESO;
     No *noDestino;
 };
 

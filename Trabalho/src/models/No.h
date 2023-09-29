@@ -9,22 +9,24 @@
 
 using namespace std;
 
+class Aresta;
+
 class No {
 public:
     explicit No(int idNo);
     No(int idNo, int peso);
     virtual ~No();
 
-    int getID();
+    int getID() const;
     void setID(int valor);
 
-    int getPeso();
+    int getPeso() const;
     void setPeso(int valor);
 
-    int getGrauEntrada();
+    int getGrauEntrada() const;
     void setGrauEntrada(int valor);
 
-    int getGrauSaida();
+    int getGrauSaida() const;
     void setGrauSaida(int valor);
 
     void setAresta(int idNoDestino, Aresta *aresta);
@@ -32,8 +34,6 @@ public:
 
     unordered_map<int, Aresta *> getArestas();
 
-    void setVisitado(bool valor);
-    bool getVisitado();
 private:
     int _ID;
     int _PESO;

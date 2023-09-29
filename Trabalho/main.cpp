@@ -8,11 +8,13 @@
 
 using namespace std;
 
+void menu(Grafo *grafo, ofstream &saida);
+
+void criaGrafoListaAdj(Grafo *grafo, ifstream &entrada);
 
 
-int main(int argc, const char* argv[])
-{
-    auto* g = new Grafo();
+int main(int argc, const char *argv[]) {
+    auto *g = new Grafo();
 
     // Criando arquivos de entrada e saida
     ifstream entrada;
@@ -44,8 +46,13 @@ int main(int argc, const char* argv[])
     // Print de arestas (apenas para testes)
     // g->printArestas();
 
-    while(menu(g,saida));
+    menu(g, saida);
 
 
     return 0;
+}
+
+void menu(Grafo *grafo, ofstream &saida) {
+
+
 }

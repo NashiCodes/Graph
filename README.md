@@ -41,8 +41,7 @@ base para a resolução das questões das avaliações teóricas.
   de comando, sendo 0 (zero) quando o grafo não é ponderado nos vértices e 1 (um) para grafos com pesos nos
   vértices.
 
-- o nome do arquivo a ser lido deve ser informado ao programa via teclado para a função main (utilizar int main
-  (int argc, char ** argv) para passar ao programa todas as informações necessárias ao seu funcionamento;
+- o nome do arquivo a ser lido deve ser informado ao programa via teclado para a função main (utilizar int main (int argc, char ** argv) para passar ao programa todas as informações necessárias ao seu funcionamento;
 
 - cada grupo enviará um único e-mail contendo APENAS os arquivos fonte (extensão c, cc, cpp e h) e os
   arquivos de entrada utilizados (quando o professor não os tiver encaminhado antes);

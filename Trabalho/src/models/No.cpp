@@ -9,8 +9,7 @@
  * @postcondition: Um nó é criado com o identificador idNo
  *
  */
-No::No(int idNo)
-{
+No::No(int idNo) {
     this->_ID = idNo;
     this->_PESO = 0;
     this->_GRAU_ENTRADA = 0;
@@ -27,8 +26,7 @@ No::No(int idNo)
  * @postcondition: Um nó é criado com o identificador idNo e peso peso
  *
  */
-No::No(int idNo, int peso)
-{
+No::No(int idNo, int peso) {
     this->_ID = idNo;
     this->_PESO = peso;
     this->_GRAU_ENTRADA = 0;
@@ -43,11 +41,9 @@ No::No(int idNo, int peso)
  * @postcondition: O nó é destruído
  *
  */
-No::~No()
-{
-    for (auto it = this->ARESTAS.begin(); it != this->ARESTAS.end(); ++it)
-    {
-        delete it->second;
+No::~No() {
+    for (auto &it: this->ARESTAS) {
+        delete it.second;
     }
 }
 
@@ -56,8 +52,7 @@ No::~No()
  *
  * @return int
  */
-int No::getID()
-{
+int No::getID() const {
     return this->_ID;
 }
 
@@ -66,8 +61,7 @@ int No::getID()
  *
  * @param valor (new valor)
  */
-void No::setID(int valor)
-{
+void No::setID(int valor) {
     this->_ID = valor;
 }
 
@@ -76,8 +70,7 @@ void No::setID(int valor)
  *
  * @return int
  */
-int No::getPeso()
-{
+int No::getPeso() const {
     return this->_PESO;
 }
 
@@ -86,8 +79,7 @@ int No::getPeso()
  *
  * @param valor (new valor)
  */
-void No::setPeso(int valor)
-{
+void No::setPeso(int valor) {
     this->_PESO = valor;
 }
 
@@ -96,8 +88,7 @@ void No::setPeso(int valor)
  *
  * @return int
  */
-int No::getGrauEntrada()
-{
+int No::getGrauEntrada() const {
     return this->_GRAU_ENTRADA;
 }
 
@@ -106,8 +97,7 @@ int No::getGrauEntrada()
  *
  * @param valor (new valor)
  */
-void No::setGrauEntrada(int valor)
-{
+void No::setGrauEntrada(int valor) {
     this->_GRAU_ENTRADA = valor;
 }
 
@@ -116,8 +106,7 @@ void No::setGrauEntrada(int valor)
  *
  * @return int
  */
-int No::getGrauSaida()
-{
+int No::getGrauSaida() const {
     return this->_GRAU_SAIDA;
 }
 
@@ -126,9 +115,11 @@ int No::getGrauSaida()
  *
  * @param valor (new valor)
  */
-void No::setGrauSaida(int valor)
-{
-    this->_GRAU_SAIDA = valor;
+void No::setGrauSaida(int valor) {
+    if (valor < 0 || valor > this->ARESTAS.size())
+        throw invalid_argument("Grau de saída não pode ser negativo");
+    else
+        this->_GRAU_SAIDA = valor;
 }
 
 /**
@@ -139,9 +130,15 @@ void No::setGrauSaida(int valor)
  *
  * @return void
  */
-void No::setAresta(int idNoDestino, Aresta *aresta)
-{
-    this->ARESTAS[idNoDestino] = aresta;
+void No::setAresta(int idNoDestino, Aresta *aresta) {
+    if (idNoDestino < 0)
+        throw invalid_argument("ID do nó destino não pode ser negativo");
+    else if (aresta == nullptr)
+        throw invalid_argument("Aresta não pode ser nula");
+    else if (this->ARESTAS.find(idNoDestino) != this->ARESTAS.end())
+        throw invalid_argument("Aresta já existe");
+    else
+        this->ARESTAS[idNoDestino] = aresta;
 }
 
 /**
@@ -149,8 +146,7 @@ void No::setAresta(int idNoDestino, Aresta *aresta)
  *
  * @return No
  */
-Aresta *No::getAresta(int idNoDestino)
-{
+Aresta *No::getAresta(int idNoDestino) {
     return this->ARESTAS.at(idNoDestino);
 }
 
@@ -159,7 +155,6 @@ Aresta *No::getAresta(int idNoDestino)
  *
  * @return unordered_map<int, Aresta *>
  */
-unordered_map<int, Aresta *> No::getArestas()
-{
+unordered_map<int, Aresta *> No::getArestas() {
     return this->ARESTAS;
 }

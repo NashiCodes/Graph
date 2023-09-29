@@ -2,24 +2,24 @@
 
 Aresta::Aresta(No *noDestino) {
     this->noDestino = noDestino;
-    this->_PESO = 0;
+    this->PESO = 0;
 }
 
 Aresta::Aresta(No *noDestino, int peso) {
     this->noDestino = noDestino;
-    this->_PESO = peso;
+    this->PESO = peso;
 }
 
 Aresta::~Aresta() {
     delete this;
 }
 
-int Aresta::getPeso() {
-    return this->_PESO;
+int Aresta::getPeso() const {
+    return this->PESO;
 }
 
 void Aresta::setPeso(int valor) {
-    this->_PESO = valor;
+    this->PESO = valor;
 }
 
 No *Aresta::getNoDestino() {
