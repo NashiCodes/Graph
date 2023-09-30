@@ -3,35 +3,20 @@
 #include <sstream>
 #include <cmath>
 #include <fstream>
+#include <filesystem>
 #include <vector>
 #include "src/Grafo.h"
 #include "src/Menu.h"
 
 using namespace std;
+namespace fs = std::filesystem;
 
 void criaGrafoListaAdj(Grafo *grafo, ifstream &entrada);
+void AbreArquivo(ifstream &entrada, string diretorio, string nomeArquivo);
+bool ehCmakeDir(fs::path path);
 
 
 int main(int argc, const char *argv[]) {
-    auto *g = new Grafo();
-
-    //urls dos arquivos de entrada e saida para teste
-    string in = "instancias_nao_ponderados/grafo_1000_1.txt";
-    string out = "saida.txt";
-
-
-    // Criando arquivos de entrada e saida
-    ifstream entrada;
-    ofstream saida;
-    try {
-        entrada.open(in, ios::in);
-        saida.open(out, ios::out | ios::trunc);
-    } catch (exception &e) {
-        cout << e.what() << endl;
-        return 0;
-    }
-//    entrada.open(argv[1], ios::in);
-//    saida.open(argv[2], ios::out | ios::trunc);
 
     // Obtendo a informacao se o grafo eh direcionado ou nao
     bool ehDirecionado;
@@ -39,7 +24,6 @@ int main(int argc, const char *argv[]) {
     cin >> ehDirecionado;
     cout << "Eh direcionado: " << ehDirecionado;
     cout << '\n' << endl;
-    g->setDirecionado(ehDirecionado);
 
     // Obtendo a informacao se o grafo eh ponderado ou nao
     bool ehPonderado;
@@ -47,6 +31,35 @@ int main(int argc, const char *argv[]) {
     cin >> ehPonderado;
     cout << "Eh ponderado: " << ehPonderado;
     cout << '\n' << endl;
+
+    //urls dos arquivos de entrada e saida para teste
+    string diretorio = "instancias_nao_ponderadas";
+    string nomeArquivo = "grafo_1000_1.txt";
+    string out = "saida.txt";
+
+    if (ehPonderado) {
+        diretorio = "instancias_ponderadas";
+        nomeArquivo = "grafo_125.txt";
+        out = "saida_ponderada.txt";
+    }
+//    string test = argv[1];
+
+    // Criando arquivos de entrada e saida
+    ifstream entrada;
+    ofstream saida;
+
+    AbreArquivo(entrada, diretorio, nomeArquivo);
+    saida.open(out, ios::out | ios::trunc);
+
+    if (!entrada.is_open()) {
+        cout << "Erro ao abrir os arquivos!" << endl;
+        return 0;
+    }
+//    entrada.open(argv[1], ios::in);
+//    saida.open(argv[2], ios::out | ios::trunc);
+
+    auto *g = new Grafo();
+    g->setDirecionado(ehDirecionado);
     g->setPonderado(ehPonderado);
 
 
@@ -60,4 +73,20 @@ int main(int argc, const char *argv[]) {
     (new Menu(g, &entrada, &saida))->menuPrincipal();
 
     return 0;
+}
+
+void AbreArquivo( ifstream &entrada, string diretorio, string nomeArquivo) {
+    auto path = fs::current_path();
+
+    if (ehCmakeDir(path)) {
+        path /= "../";
+    }
+
+    path /= diretorio;
+    path /= nomeArquivo;
+    entrada.open(path, ios::in);
+}
+
+bool ehCmakeDir(fs::path path) {
+    return path.filename() == "cmake-build-debug" || path.filename() == "cmake-build-release";
 }

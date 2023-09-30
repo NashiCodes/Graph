@@ -123,6 +123,24 @@ void No::setGrauSaida(int valor) {
 }
 
 /**
+ * Retorna se o nó foi visitado.
+ *
+ * @return bool
+ */
+bool No::isVisitado() const {
+    return this->visitado;
+}
+
+/**
+ * Define se o nó foi visitado.
+ *
+ * @param valor (new valor)
+ */
+void No::setVisitado(bool valor) {
+    this->visitado = valor;
+}
+
+/**
  * Insere uma aresta no nó.
  *
  * @param idNoDestino (new valor)
@@ -138,7 +156,7 @@ void No::setAresta(int idNoDestino, Aresta *aresta) {
     else if (this->ARESTAS.find(idNoDestino) != this->ARESTAS.end())
         throw invalid_argument("Aresta já existe");
     else
-        this->ARESTAS[idNoDestino] = aresta;
+        this->ARESTAS.at(idNoDestino) = aresta;
 }
 
 /**
@@ -147,14 +165,19 @@ void No::setAresta(int idNoDestino, Aresta *aresta) {
  * @return No
  */
 Aresta *No::getAresta(int idNoDestino) {
-    return this->ARESTAS.at(idNoDestino);
+    if (idNoDestino < 0)
+        throw invalid_argument("ID do nó destino não pode ser negativo");
+    else if (this->ARESTAS.find(idNoDestino) == this->ARESTAS.end())
+        throw invalid_argument("Aresta não existe");
+    else
+        return this->ARESTAS.at(idNoDestino);
 }
 
 /**
  * Retorna todas as arestas do nó.
  *
- * @return unordered_map<int, Aresta *>
+ * @return map<int, Aresta *>
  */
-unordered_map<int, Aresta *> No::getArestas() {
+map<int, Aresta *> No::getArestas() {
     return this->ARESTAS;
 }
