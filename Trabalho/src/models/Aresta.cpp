@@ -1,12 +1,16 @@
 #include "Aresta.h"
 
-Aresta::Aresta(No *noDestino) {
+Aresta::Aresta(No *noOrigem, No *noDestino, int id) {
+    this->noOrigem = noOrigem;
     this->noDestino = noDestino;
-    this->PESO = 0;
+    this->ID = id;
+    this->PESO = 1;
 }
 
-Aresta::Aresta(No *noDestino, int peso) {
+Aresta::Aresta(No *noOrigem, No *noDestino, int id, int peso) {
+    this->noOrigem = noOrigem;
     this->noDestino = noDestino;
+    this->ID = id;
     this->PESO = peso;
 }
 
@@ -28,4 +32,16 @@ No *Aresta::getNoDestino() {
 
 void Aresta::setNoDestino(No *valor) {
     this->noDestino = valor;
+}
+
+int Aresta::getID() const {
+    return this->ID;
+}
+
+void Aresta::setID(int valor) {
+    this->ID = valor;
+}
+
+No *Aresta::getNoOrigem() {
+    return nullptr;
 }

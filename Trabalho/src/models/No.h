@@ -15,14 +15,10 @@ class Aresta;
 class No {
 public:
     explicit No(int idNo);
-    No(int idNo, int peso);
     virtual ~No();
 
     int getID() const;
     void setID(int valor);
-
-    int getPeso() const;
-    void setPeso(int valor);
 
     int getGrauEntrada() const;
     void setGrauEntrada(int valor);
@@ -41,7 +37,6 @@ public:
 
 private:
     int _ID;
-    int _PESO;
     int _GRAU_ENTRADA;
     int _GRAU_SAIDA;
     bool visitado;

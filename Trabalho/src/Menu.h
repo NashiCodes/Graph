@@ -17,13 +17,11 @@ class Grafo;
 
 class Menu {
 private:
-    Grafo *grafo{};
-    ifstream *entrada{};
-    ofstream *arquivoSaida{};
+    Grafo *grafo;
+    ifstream *entrada;
+    ofstream *arquivoSaida;
     string linha;
 public:
-    Menu() = default;
-
     Menu(Grafo *grafo, ifstream *entrada, ofstream *arquivoSaida) {
         this->grafo = grafo;
         this->entrada = entrada;
@@ -65,8 +63,8 @@ public:
                 linha.erase(0, linha.find(' ') + 1);
                 auto idDestino = linha.substr(0, linha.find(' '));
                 try {
-                    grafo->criaNo(stoi(id));
-                    grafo->criaNo(stoi(idDestino));
+                    grafo->CriaNo(stoi(id));
+                    grafo->CriaNo(stoi(idDestino));
                 } catch (exception &e) {
                     cout << "Erro ao inserir nó!" << endl;
                     cout << e.what() << endl;
@@ -74,10 +72,9 @@ public:
 
                 if (grafo->isPonderado()) {
                     linha.erase(0, linha.find(' ') + 1);
-                    auto peso = linha.substr(0, linha.find(' '));
-                    grafo->criarAresta(stoi(id), stoi(idDestino), stoi(peso));
+                    grafo->CriarAresta(stoi(id), stoi(idDestino), stoi(linha));
                 } else {
-                    grafo->criarAresta(stoi(id), stoi(idDestino));
+                    grafo->CriarAresta(stoi(id), stoi(idDestino));
                 }
                 i++;
             }
@@ -88,7 +85,7 @@ public:
     }
 
     void printarGrafo() {
-        grafo->printListaAdjacencia();
+        grafo->PrintListaAdjacencia();
     }
 
     void inserirNo() {
@@ -96,7 +93,7 @@ public:
         int idNo;
         cin >> idNo;
         try {
-            grafo->inserirNo(idNo);
+            grafo->InserirNo(idNo);
         } catch (exception &e) {
             cout << "Erro ao inserir nó!" << endl;
             cout << e.what() << endl;
@@ -111,7 +108,7 @@ public:
         int idNoDestino;
         cin >> idNoDestino;
         try {
-            grafo->criarAresta(idNoOrigem, idNoDestino);
+            grafo->CriarAresta(idNoOrigem, idNoDestino);
         } catch (exception &e) {
             cout << "Erro ao criar aresta!" << endl;
             cout << e.what() << endl;

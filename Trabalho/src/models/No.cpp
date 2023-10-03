@@ -11,26 +11,9 @@
  */
 No::No(int idNo) {
     this->_ID = idNo;
-    this->_PESO = 0;
     this->_GRAU_ENTRADA = 0;
     this->_GRAU_SAIDA = 0;
-}
-
-/**
- * Construtor da classe No.
- *
- * @param idNo: Identificador do nó
- * @param peso: Peso do nó
- * @return void
- * @precondition: idNo deve ser um inteiro positivo
- * @postcondition: Um nó é criado com o identificador idNo e peso peso
- *
- */
-No::No(int idNo, int peso) {
-    this->_ID = idNo;
-    this->_PESO = peso;
-    this->_GRAU_ENTRADA = 0;
-    this->_GRAU_SAIDA = 0;
+    this->visitado = false;
 }
 
 /**
@@ -65,29 +48,6 @@ void No::setID(int valor) {
     this->_ID = valor;
 }
 
-/**
- * Retorna o peso do nó.
- *
- * @return int
- */
-int No::getPeso() const {
-    return this->_PESO;
-}
-
-/**
- * Define o peso do nó.
- *
- * @param valor (new valor)
- */
-void No::setPeso(int valor) {
-    this->_PESO = valor;
-}
-
-/**
- * Retorna o grau de entrada do nó.
- *
- * @return int
- */
 int No::getGrauEntrada() const {
     return this->_GRAU_ENTRADA;
 }
@@ -186,7 +146,6 @@ void No::printarNo(bool ponderado, bool direcionado) {
     cout << "Nó: " << this->getID() << endl;
     cout << "Grau de entrada: " << this->getGrauEntrada() << endl;
     cout << "Grau de saída: " << this->getGrauSaida() << endl;
-    cout << "Peso: " << this->getPeso() << endl;
     cout << "Arestas: " << endl;
     for (auto &aresta: this->getArestas()) {
         if (direcionado)

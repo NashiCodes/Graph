@@ -18,6 +18,7 @@ protected:
     bool EhPonderado;
     bool EhDirecionado;
     map<int, No *> NOS;
+    map<int, Aresta *> ARESTAS;
     AGrafo() : Ordem(0), NumArestas(0), EhPonderado(false), EhDirecionado(false) {};
 
     explicit AGrafo(int ordem) : Ordem(ordem), NumArestas(0), EhPonderado(false), EhDirecionado(false) {};
