@@ -1,5 +1,9 @@
 #include "Grafo.h"
-
+/**
+ * @brief Insere um nó no grafo
+ * @param idNo: Identificador do nó
+ * @return void
+*/
 void Grafo::InserirNo(int idNo) {
     if (this->NOS.find(idNo) != this->NOS.end()) {
         cout << "Não foi possível criar o nó, pois ele já existe!" << endl;
@@ -15,6 +19,11 @@ void Grafo::InserirNo(int idNo) {
     }
 }
 
+/**
+ * @brief Cria um nó no grafo
+ * @param idNo: Identificador do nó
+ * @return void
+*/
 void Grafo::CriaNo(int idNo) {
     if (this->NOS.find(idNo) != this->NOS.end()) return;
     try {
@@ -26,6 +35,12 @@ void Grafo::CriaNo(int idNo) {
     }
 }
 
+/**
+ * @brief Cria uma aresta no grafo
+ * @param idNoOrigem: Identificador do nó de origem
+ * @param idNoDestino: Identificador do nó de destino
+ * @return void
+*/
 void Grafo::CriarAresta(int idNoOrigem, int idNoDestino) {
     if (this->NOS.find(idNoOrigem) == this->NOS.end() || this->NOS.find(idNoDestino) == this->NOS.end()) {
         throw invalid_argument("No nao existe!");
@@ -52,6 +67,13 @@ void Grafo::CriarAresta(int idNoOrigem, int idNoDestino) {
     }
 }
 
+/**
+ * @brief Cria uma aresta no grafo
+ * @param idNoOrigem: Identificador do nó de origem
+ * @param idNoDestino: Identificador do nó de destino
+ * @param peso: Peso da aresta
+ * @return void
+*/
 void Grafo::CriarAresta(int idNoOrigem, int idNoDestino, int peso) {
     if (this->NOS.find(idNoOrigem) == this->NOS.end() || this->NOS.find(idNoDestino) == this->NOS.end()) {
         throw invalid_argument("No nao existe!");
@@ -77,7 +99,10 @@ void Grafo::CriarAresta(int idNoOrigem, int idNoDestino, int peso) {
     }
 }
 
-
+/**
+ * @brief Imprime a lista de adjacência do grafo
+ * @return void
+*/
 void Grafo::PrintListaAdjacencia() {
     cout << "Lista de Adjacência: " << endl;
     for (auto &no: this->NOS) {
@@ -94,6 +119,11 @@ void Grafo::PrintListaAdjacencia() {
     }
 }
 
+/**
+ * @brief Imprime o fecho transitivo direto do grafo
+ * @param idNo: Identificador do nó
+ * @return void
+*/
 void Grafo::fechoTransitivoDireto(int idNo) {
     if (!this->isDirecionado()) {
         cout << "Grafo não direcionado!" << endl;
@@ -111,6 +141,13 @@ void Grafo::fechoTransitivoDireto(int idNo) {
 
 }
 
+/**
+ * @brief Função auxiliar para o fecho transitivo direto
+ * @param no: Nó
+ * @param level: Nível
+ * @param nosVisitados: Nós visitados
+ * @return void
+*/
 void Grafo::auxFTD(No *no, int level, set<No *> *nosVisitados) {
     if (no == nullptr) return;
     if (nosVisitados->find(no) != nosVisitados->end()) return;
@@ -128,6 +165,11 @@ void Grafo::auxFTD(No *no, int level, set<No *> *nosVisitados) {
     }
 }
 
+/**
+ * @brief Imprime o fecho transitivo indireto do grafo
+ * @param idNo: Identificador do nó
+ * @return void
+*/
 void Grafo::fechoTransitivoIndireto(int idNo) {
     if (!this->isDirecionado()) {
         cout << "Grafo não direcionado!" << endl;
@@ -146,6 +188,14 @@ void Grafo::fechoTransitivoIndireto(int idNo) {
 
 }
 
+/**
+ * @brief Função auxiliar para o fecho transitivo indireto
+ * @param no: Nó
+ * @param level: Nível
+ * @param nosVisitados: Nós visitados
+ * @param nosIncidentes: Nós incidentes
+ * @return void
+*/
 void Grafo::auxFTI(No *no, int level, set<No *> *nosVisitados, set<No *> *nosIncidentes) {
     if (no == nullptr) return;
     if (nosVisitados->find(no) != nosVisitados->end()) return;
@@ -162,6 +212,11 @@ void Grafo::auxFTI(No *no, int level, set<No *> *nosVisitados, set<No *> *nosInc
     }
 }
 
+/**
+ * @brief Retorna os nós que incidem em um nó
+ * @param no: Nó
+ * @return set<No *>
+*/
 set<No *> *Grafo::incidentes(No *no) {
     auto *nosIncidentes = new set<No *>();
     for(auto &arestas : this->ARESTAS){
