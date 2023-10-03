@@ -156,7 +156,7 @@ void No::setAresta(int idNoDestino, Aresta *aresta) {
     else if (this->ARESTAS.find(idNoDestino) != this->ARESTAS.end())
         throw invalid_argument("Aresta já existe");
     else
-        this->ARESTAS.at(idNoDestino) = aresta;
+        this->ARESTAS.insert(pair<int, Aresta *>(idNoDestino, aresta));
 }
 
 /**
@@ -180,4 +180,26 @@ Aresta *No::getAresta(int idNoDestino) {
  */
 map<int, Aresta *> No::getArestas() {
     return this->ARESTAS;
+}
+
+void No::printarNo(bool ponderado, bool direcionado) {
+    cout << "Nó: " << this->getID() << endl;
+    cout << "Grau de entrada: " << this->getGrauEntrada() << endl;
+    cout << "Grau de saída: " << this->getGrauSaida() << endl;
+    cout << "Peso: " << this->getPeso() << endl;
+    cout << "Arestas: " << endl;
+    for (auto &aresta: this->getArestas()) {
+        if (direcionado)
+            if (ponderado)
+                cout << "|" << this->getID() << "| -> |" << aresta.first << "| (" << aresta.second->getPeso() << ")";
+            else
+                cout << "|" << this->getID() << "| -> |" << aresta.first << "|";
+        else if (ponderado)
+            cout << "|" << this->getID() << "| <-> |" << aresta.first << "| (" << aresta.second->getPeso() << ")";
+        else
+            cout << "|" << this->getID() << "| <-> |" << aresta.first << "|";
+
+        cout << endl;
+    }
+    cout << endl;
 }

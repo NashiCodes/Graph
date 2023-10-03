@@ -27,8 +27,8 @@ protected:
             NumArestas(0),
             EhPonderado(ehPonderado), EhDirecionado(ehDirecionado) {};
 
-    ~AGrafo() {
-        for (auto &no : NOS) {
+    virtual ~AGrafo() {
+        for (auto &no: NOS) {
             delete no.second;
         }
     }

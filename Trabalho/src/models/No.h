@@ -33,6 +33,8 @@ public:
     bool isVisitado() const;
     void setVisitado(bool valor);
 
+    void printarNo(bool ponderado, bool direcionado);
+
     void setAresta(int idNoDestino, Aresta *aresta);
     Aresta *getAresta(int idNoDestino);
     map<int, Aresta*> getArestas();

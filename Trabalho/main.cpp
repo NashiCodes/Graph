@@ -1,18 +1,18 @@
 #include <iostream>
-#include <string>
-#include <sstream>
-#include <cmath>
 #include <fstream>
 #include <filesystem>
 #include <vector>
 #include "src/Grafo.h"
 #include "src/Menu.h"
+#include "src/models/No.h"
+#include "src/models/Aresta.h"
 
 using namespace std;
 namespace fs = std::filesystem;
 
-void criaGrafoListaAdj(Grafo *grafo, ifstream &entrada);
+
 void AbreArquivo(ifstream &entrada, string diretorio, string nomeArquivo);
+
 bool ehCmakeDir(fs::path path);
 
 
@@ -75,7 +75,7 @@ int main(int argc, const char *argv[]) {
     return 0;
 }
 
-void AbreArquivo( ifstream &entrada, string diretorio, string nomeArquivo) {
+void AbreArquivo(ifstream &entrada, string diretorio, string nomeArquivo) {
     auto path = fs::current_path();
 
     if (ehCmakeDir(path)) {
