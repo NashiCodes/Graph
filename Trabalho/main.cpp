@@ -2,18 +2,19 @@
 #include <fstream>
 #include <filesystem>
 #include <vector>
-#include "src/Grafo.h"
+#include <string>
+#include "src/models/Grafo.h"
 #include "src/Menu.h"
-#include "src/models/No.h"
-#include "src/models/Aresta.h"
 
 using namespace std;
 namespace fs = std::filesystem;
 
 
-void AbreArquivo(ifstream &entrada, string diretorio, string nomeArquivo);
+void AbreInput(ifstream &entrada, const string &diretorio, const string &nomeArquivo);
 
-bool ehCmakeDir(fs::path path);
+void AbreOutput(ofstream &saida, const string &nomeArquivo);
+
+bool ehCmakeDir(const fs::path &path);
 
 
 int main(int argc, const char *argv[]) {
@@ -48,8 +49,8 @@ int main(int argc, const char *argv[]) {
     ifstream entrada;
     ofstream saida;
 
-    AbreArquivo(entrada, diretorio, nomeArquivo);
-    saida.open(out, ios::out | ios::trunc);
+    AbreInput(entrada, diretorio, nomeArquivo);
+    AbreOutput(saida, out);
 
     if (!entrada.is_open()) {
         cout << "Erro ao abrir os arquivos!" << endl;
@@ -58,9 +59,7 @@ int main(int argc, const char *argv[]) {
 //    entrada.open(argv[1], ios::in);
 //    saida.open(argv[2], ios::out | ios::trunc);
 
-    auto *g = new Grafo();
-    g->setDirecionado(ehDirecionado);
-    g->setPonderado(ehPonderado);
+    auto *g = new Grafo(ehPonderado, ehDirecionado, &entrada, &saida);
 
 
     // Criando grafo a partir de uma lista de adjacencia
@@ -70,12 +69,12 @@ int main(int argc, const char *argv[]) {
     // Print de arestas (apenas para testes)
     // g->printArestas();
 
-    (new Menu(g, &entrada, &saida))->menuPrincipal();
+    (new Menu(g))->menuPrincipal();
 
     return 0;
 }
 
-void AbreArquivo(ifstream &entrada, string diretorio, string nomeArquivo) {
+void AbreInput(ifstream &entrada, const string &diretorio, const string &nomeArquivo) {
     auto path = fs::current_path();
 
     if (ehCmakeDir(path)) {
@@ -87,6 +86,17 @@ void AbreArquivo(ifstream &entrada, string diretorio, string nomeArquivo) {
     entrada.open(path, ios::in);
 }
 
-bool ehCmakeDir(fs::path path) {
+void AbreOutput(ofstream &saida, const string &nomeArquivo) {
+    auto path = fs::current_path();
+
+    if (ehCmakeDir(path)) {
+        path /= "../";
+    }
+
+    path /= nomeArquivo;
+    saida.open(path, ios::out | ios::trunc);
+}
+
+bool ehCmakeDir(const fs::path &path) {
     return path.filename() == "cmake-build-debug" || path.filename() == "cmake-build-release";
 }

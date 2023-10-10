@@ -1,80 +1,87 @@
-#ifndef GRAFOS_AGRAFOS_H
-#define GRAFOS_AGRAFOS_H
+#ifndef AGRAFOS_H
+#define AGRAFOS_H
 
+#include "No.cpp"
+#include "Aresta.cpp"
 #include <iostream>
 #include <cstdlib>
+#include <fstream>
 #include <string>
 #include <map>
-#include "No.h"
-#include "Aresta.h"
+#include <set>
 
-using namespace std;
 
 class AGrafo {
-
 protected:
     int Ordem;
     int NumArestas;
-    bool EhPonderado;
-    bool EhDirecionado;
-    map<int, No *> NOS;
-    map<int, Aresta *> ARESTAS;
-    AGrafo() : Ordem(0), NumArestas(0), EhPonderado(false), EhDirecionado(false) {};
+    bool EhPonderado{};
+    bool EhDirecionado{};
+    ifstream *Input{};
+    ofstream *Output{};
+    map<int, No *> *NOS;
+    map<int, Aresta *> *ARESTAS;
 
-    explicit AGrafo(int ordem) : Ordem(ordem), NumArestas(0), EhPonderado(false), EhDirecionado(false) {};
+    AGrafo() {
+        this->EhPonderado = false;
+        this->EhDirecionado = false;
+        this->Input = nullptr;
+        this->Output = nullptr;
+        this->NOS = new map<int, No *>();
+        this->ARESTAS = new map<int, Aresta *>();
+        this->NumArestas = 0;
+        this->Ordem = 0;
+    };
 
-    AGrafo(int ordem, bool ehPonderado, bool ehDirecionado) :
-            Ordem(ordem),
-            NumArestas(0),
-            EhPonderado(ehPonderado), EhDirecionado(ehDirecionado) {};
-
-    virtual ~AGrafo() {
-        for (auto &no: NOS) {
-            delete no.second;
-        }
-    }
+    ~AGrafo() {
+        delete NOS;
+        delete ARESTAS;
+    };
 
 public:
-    [[nodiscard]] int getOrdem() const {
-        return Ordem;
-    }
 
-    void setOrdem(int ordem) {
-        if (ordem < 0 || (this->Ordem != 0 && ordem != this->NOS.size())) {
-            throw invalid_argument("Nova ordem inválida!");
-        } else {
-            Ordem = ordem;
-        }
-    }
+    void montaGrafo();
 
-    [[nodiscard]] int getNumArestas() const {
-        return NumArestas;
-    }
+    ifstream *getInput() const;
 
-    void setNumArestas(int numArestas) {
-        if (numArestas < 0) {
-            throw invalid_argument("Número de arestas inválido!");
-        } else {
-            NumArestas = numArestas;
-        }
-    }
+    bool existeNo(int idNo);
 
-    [[nodiscard]] bool isPonderado() const {
-        return EhPonderado;
-    }
+    [[nodiscard]] int getOrdem() const;
 
-    void setPonderado(bool ehPonderado) {
-        EhPonderado = ehPonderado;
-    }
+    void setOrdem(int ordem);
 
-    [[nodiscard]] bool isDirecionado() const {
-        return EhDirecionado;
-    }
+    [[nodiscard]] int getNumArestas() const;
 
-    void setDirecionado(bool ehDirecionado) {
-        EhDirecionado = ehDirecionado;
-    }
+    void setNumArestas(int numArestas);
+
+    [[nodiscard]] bool isPonderado() const;
+
+    void setPonderado(bool ehPonderado);
+
+    [[nodiscard]] bool isDirecionado() const;
+
+    void setDirecionado(bool ehDirecionado);
+
+    [[nodiscard]] ofstream *getOutput() const;
+
+    void setOutput(ofstream *output);
+
+    [[nodiscard]] const map<int, No *> *getNos() const;
+
+    [[nodiscard]] const map<int, Aresta *> *getArestas() const;
+
+    void CriaNo(int idNo);
+
+    void InserirNo(int idNo);
+
+    void CriarAresta(int idNoOrigem, int idNoDestino, int pesoAresta);
+
+    void CriarAresta(int idNoOrigem, int idNoDestino);
+
+    void imprimeGraus(int idNo);
+
+
 };
 
 
-#endif //GRAFOS_AGRAFOS_H
+#endif //AGRAFOS_H

@@ -17,30 +17,28 @@ public:
     explicit No(int idNo);
     virtual ~No();
 
-    int getID() const;
-    void setID(int valor);
+    [[nodiscard]] int getID() const;
 
-    int getGrauEntrada() const;
+    [[nodiscard]] int getGrauEntrada() const;
     void setGrauEntrada(int valor);
 
-    int getGrauSaida() const;
+    [[nodiscard]] int getGrauSaida() const;
     void setGrauSaida(int valor);
-
-    bool isVisitado() const;
-    void setVisitado(bool valor);
 
     void printarNo(bool ponderado, bool direcionado);
 
     void setAresta(int idNoDestino, Aresta *aresta);
-    Aresta *getAresta(int idNoDestino);
+
+    [[maybe_unused]] Aresta *getAresta(int idNoDestino);
+
     map<int, Aresta*> getArestas();
 
 private:
-    int _ID;
-    int _GRAU_ENTRADA;
-    int _GRAU_SAIDA;
-    bool visitado;
+    int ID;
+    int GRAU_ENTRADA;
+    int GRAU_SAIDA;
     map<int, Aresta*> ARESTAS;
+
 };
 
 #endif //NO_H

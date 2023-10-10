@@ -78,7 +78,7 @@ g++ *.c* -o execGrupoX && ./execGrupoX <arquivo_entrada> <arquivo_saida> <Opc_Di
 
  * O programa deve apresentar em tela a saída para as seguintes funcionalidades definidas nas saídas conforme os 
   parâmetros:
-    * a) **Parâmetro:** um Id de um vértice de um **grafo direcionado**.
+    * [x] **Parâmetro:** um Id de um vértice de um **grafo direcionado**.
       *   **Saída:** o grau de entrada e o grau de saída do vértice
     * b) **Parâmetro:** um Id de um vértice de um **grafo não direcionado**.
       *   **Saída:** o fecho transitivo indireto deste vértice.

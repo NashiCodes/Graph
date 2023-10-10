@@ -1,4 +1,7 @@
 #include "No.h"
+#include "Aresta.h"
+
+using namespace std;
 
 /**
  * Construtor da classe No.
@@ -10,10 +13,9 @@
  *
  */
 No::No(int idNo) {
-    this->_ID = idNo;
-    this->_GRAU_ENTRADA = 0;
-    this->_GRAU_SAIDA = 0;
-    this->visitado = false;
+    this->ID = idNo;
+    this->GRAU_ENTRADA = 0;
+    this->GRAU_SAIDA = 0;
 }
 
 /**
@@ -36,20 +38,11 @@ No::~No() {
  * @return int
  */
 int No::getID() const {
-    return this->_ID;
-}
-
-/**
- * Define o identificador do nó.
- *
- * @param valor (new valor)
- */
-void No::setID(int valor) {
-    this->_ID = valor;
+    return this->ID;
 }
 
 int No::getGrauEntrada() const {
-    return this->_GRAU_ENTRADA;
+    return this->GRAU_ENTRADA;
 }
 
 /**
@@ -58,7 +51,7 @@ int No::getGrauEntrada() const {
  * @param valor (new valor)
  */
 void No::setGrauEntrada(int valor) {
-    this->_GRAU_ENTRADA = valor;
+    this->GRAU_ENTRADA = valor;
 }
 
 /**
@@ -67,7 +60,7 @@ void No::setGrauEntrada(int valor) {
  * @return int
  */
 int No::getGrauSaida() const {
-    return this->_GRAU_SAIDA;
+    return this->GRAU_SAIDA;
 }
 
 /**
@@ -79,25 +72,7 @@ void No::setGrauSaida(int valor) {
     if (valor < 0 || valor > this->ARESTAS.size())
         throw invalid_argument("Grau de saída não pode ser negativo");
     else
-        this->_GRAU_SAIDA = valor;
-}
-
-/**
- * Retorna se o nó foi visitado.
- *
- * @return bool
- */
-bool No::isVisitado() const {
-    return this->visitado;
-}
-
-/**
- * Define se o nó foi visitado.
- *
- * @param valor (new valor)
- */
-void No::setVisitado(bool valor) {
-    this->visitado = valor;
+        this->GRAU_SAIDA = valor;
 }
 
 /**
@@ -124,7 +99,7 @@ void No::setAresta(int idNoDestino, Aresta *aresta) {
  *
  * @return No
  */
-Aresta *No::getAresta(int idNoDestino) {
+[[maybe_unused]] Aresta *No::getAresta(int idNoDestino) {
     if (idNoDestino < 0)
         throw invalid_argument("ID do nó destino não pode ser negativo");
     else if (this->ARESTAS.find(idNoDestino) == this->ARESTAS.end())

@@ -18,21 +18,21 @@ public:
 
     virtual ~Aresta();
 
-    int getPeso() const;
+    [[nodiscard]] int getPeso() const;
 
-    void setPeso(int valor);
+    [[maybe_unused]] void setPeso(int valor);
 
-    int getID() const;
+    [[nodiscard]] int getID() const;
 
-    void setID(int valor);
+    [[maybe_unused]] void setID(int valor);
 
     No *getNoOrigem();
 
-    void setNoOrigem(No *valor);
+    [[maybe_unused]] void setNoOrigem(No *valor);
 
     No *getNoDestino();
 
-    void setNoDestino(No *valor);
+    [[maybe_unused]] void setNoDestino(No *valor);
 
 private:
     int PESO;
