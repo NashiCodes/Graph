@@ -1,24 +1,24 @@
 #include <iostream>
 #include <fstream>
-#include <filesystem>
+#include <unistd.h>
+#include <climits>
 #include <vector>
 #include <string>
 #include "src/models/Grafo.h"
 #include "src/Menu.h"
 
 using namespace std;
-namespace fs = std::filesystem;
 
+string *get_current_dir_name();
 
 void AbreInput(ifstream &entrada, const string &diretorio, const string &nomeArquivo);
 
 void AbreOutput(ofstream &saida, const string &nomeArquivo);
 
-bool ehCmakeDir(const fs::path &path);
+bool ehCmakeDir(const string *path);
 
 
 int main(int argc, const char *argv[]) {
-
     // Obtendo a informacao se o grafo eh direcionado ou nao
     bool ehDirecionado;
     cout << "Seu grafo eh direcionado? (1) Direcionado ou (0) Nao Direcionado: ";
@@ -52,14 +52,16 @@ int main(int argc, const char *argv[]) {
     AbreInput(entrada, diretorio, nomeArquivo);
     AbreOutput(saida, out);
 
-    if (!entrada.is_open()) {
+    if (!entrada.is_open() || !saida.is_open()) {
         cout << "Erro ao abrir os arquivos!" << endl;
         return 0;
     }
+
+    cout << "arquivos aberto" << endl;
 //    entrada.open(argv[1], ios::in);
 //    saida.open(argv[2], ios::out | ios::trunc);
 
-    auto *g = new Grafo(ehPonderado, ehDirecionado, &entrada, &saida);
+    auto *g = new Grafo(ehPonderado,false, ehDirecionado, &entrada, &saida);
 
 
     // Criando grafo a partir de uma lista de adjacencia
@@ -74,29 +76,35 @@ int main(int argc, const char *argv[]) {
     return 0;
 }
 
+string *get_current_dir_name() {
+    char buffer[PATH_MAX];
+    getcwd(buffer, PATH_MAX);
+    return new string(buffer);
+}
+
 void AbreInput(ifstream &entrada, const string &diretorio, const string &nomeArquivo) {
-    auto path = fs::current_path();
+    auto path = get_current_dir_name();
 
     if (ehCmakeDir(path)) {
-        path /= "../";
+        path->erase(path->find("cmake-build-debug"), path->length());
     }
 
-    path /= diretorio;
-    path /= nomeArquivo;
-    entrada.open(path, ios::in);
+    path->append("/").append(diretorio).append("/").append(nomeArquivo);
+    entrada.open(*path, ios::in);
 }
 
 void AbreOutput(ofstream &saida, const string &nomeArquivo) {
-    auto path = fs::current_path();
+    auto path = get_current_dir_name();
 
     if (ehCmakeDir(path)) {
-        path /= "../";
+        path->erase(path->find("cmake-build-debug"), path->length());
     }
 
-    path /= nomeArquivo;
-    saida.open(path, ios::out | ios::trunc);
+    path->append("/").append(nomeArquivo);
+    saida.open(*path, ios::out | ios::trunc);
 }
 
-bool ehCmakeDir(const fs::path &path) {
-    return path.filename() == "cmake-build-debug" || path.filename() == "cmake-build-release";
+bool ehCmakeDir(const string *path) {
+    return path->find("cmake-build-debug") != string::npos ||
+           path->find("cmake-build-release") != string::npos;
 }

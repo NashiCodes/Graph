@@ -12,8 +12,9 @@ using namespace std;
  * @postcondition: Um nó é criado com o identificador idNo
  *
  */
-No::No(int idNo) {
+No::No(int idNo, int peso) {
     this->ID = idNo;
+    this->PESO = peso;
     this->GRAU_ENTRADA = 0;
     this->GRAU_SAIDA = 0;
 }
@@ -99,7 +100,7 @@ void No::setAresta(int idNoDestino, Aresta *aresta) {
  *
  * @return No
  */
-[[maybe_unused]] Aresta *No::getAresta(int idNoDestino) {
+Aresta *No::getAresta(int idNoDestino) {
     if (idNoDestino < 0)
         throw invalid_argument("ID do nó destino não pode ser negativo");
     else if (this->ARESTAS.find(idNoDestino) == this->ARESTAS.end())
@@ -136,4 +137,12 @@ void No::printarNo(bool ponderado, bool direcionado) {
         cout << endl;
     }
     cout << endl;
+}
+
+int No::getPeso() const {
+    return this->PESO;
+}
+
+void No::setPeso(int valor) {
+    this->PESO = valor;
 }

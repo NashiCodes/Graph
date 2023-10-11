@@ -23,7 +23,7 @@ int Aresta::getPeso() const {
     return this->PESO;
 }
 
-[[maybe_unused]] void Aresta::setPeso(int valor) {
+ void Aresta::setPeso(int valor) {
     this->PESO = valor;
 }
 
@@ -31,7 +31,7 @@ No *Aresta::getNoDestino() {
     return this->noDestino;
 }
 
-[[maybe_unused]] void Aresta::setNoDestino(No *valor) {
+ void Aresta::setNoDestino(No *valor) {
     this->noDestino = valor;
 }
 
@@ -39,7 +39,7 @@ int Aresta::getID() const {
     return this->ID;
 }
 
-[[maybe_unused]] void Aresta::setID(int valor) {
+ void Aresta::setID(int valor) {
     this->ID = valor;
 }
 
@@ -47,6 +47,6 @@ No *Aresta::getNoOrigem() {
     return this->noOrigem;
 }
 
-[[maybe_unused]] void Aresta::setNoOrigem(No *valor) {
+ void Aresta::setNoOrigem(No *valor) {
     this->noOrigem = valor;
 }

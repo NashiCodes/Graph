@@ -14,27 +14,31 @@ class Aresta;
 
 class No {
 public:
-    explicit No(int idNo);
+    No(int idNo, int peso);
     virtual ~No();
 
-    [[nodiscard]] int getID() const;
+    int getID() const;
 
-    [[nodiscard]] int getGrauEntrada() const;
+    int getPeso() const;
+    void setPeso(int valor);
+
+    int getGrauEntrada() const;
     void setGrauEntrada(int valor);
 
-    [[nodiscard]] int getGrauSaida() const;
+    int getGrauSaida() const;
     void setGrauSaida(int valor);
 
     void printarNo(bool ponderado, bool direcionado);
 
     void setAresta(int idNoDestino, Aresta *aresta);
 
-    [[maybe_unused]] Aresta *getAresta(int idNoDestino);
+    Aresta *getAresta(int idNoDestino);
 
     map<int, Aresta*> getArestas();
 
 private:
     int ID;
+    int PESO;
     int GRAU_ENTRADA;
     int GRAU_SAIDA;
     map<int, Aresta*> ARESTAS;

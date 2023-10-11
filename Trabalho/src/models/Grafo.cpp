@@ -27,13 +27,19 @@ void Grafo::PrintListaAdjacencia() {
  * @param idNo: Identificador do nó
  * @return void
 */
-[[maybe_unused]] void Grafo::fechoTransitivoDireto(int idNo) {
+void Grafo::fechoTransitivoDireto(int idNo) {
     if (!this->isDirecionado() || !this->existeNo(idNo)) return;
 
     auto *no = this->NOS->at(idNo);
     cout << "Fecho Transitivo Direto: " << endl;
+    cout << "Nó: " << no->getID() << endl << "[ ";
     auto *nosVisitados = new set<No *>();
-    auxFTD(no, 0, nosVisitados);
+    auxFTD(no, nosVisitados);
+
+    for (auto &noVisitado: *nosVisitados) {
+        cout << noVisitado->getID() << ", ";
+    }
+    cout << "]" << endl;
 }
 
 /**
@@ -43,21 +49,16 @@ void Grafo::PrintListaAdjacencia() {
  * @param nosVisitados: Nós visitados
  * @return void
 */
-void Grafo::auxFTD(No *no, int level, set<No *> *nosVisitados) {
+void Grafo::auxFTD(No *no, set<No *> *nosVisitados) {
     if (no == nullptr) return;
-    if (nosVisitados->find(no) != nosVisitados->end())
-        return;
+    if (nosVisitados->find(no) != nosVisitados->end())return;
 
     nosVisitados->insert(no);
-    for (int i = 0; i < level; i++) {
-        cout << " --- " << i;
-    }
-    cout << " -> " << no->getID() << endl;
 
     for (auto &aresta: no->getArestas()) {
         auto arestaDestino = aresta.second;
         auto noDestino = arestaDestino->getNoDestino();
-        auxFTD(noDestino, level + 1, nosVisitados);
+        auxFTD(noDestino, nosVisitados);
     }
 }
 
@@ -66,15 +67,20 @@ void Grafo::auxFTD(No *no, int level, set<No *> *nosVisitados) {
  * @param idNo: Identificador do nó
  * @return void
 */
-[[maybe_unused]] void Grafo::fechoTransitivoIndireto(int idNo) {
+void Grafo::fechoTransitivoIndireto(int idNo) {
     if (!this->isDirecionado() || !this->existeNo(idNo)) return;
 
     auto *no = this->NOS->at(idNo);
     cout << "Fecho Transitivo Indireto: " << endl;
-    cout << "Nó: " << no->getID() << endl;
+    cout << "Nó: " << no->getID() << endl << "[ ";
     auto *nosVisitados = new set<No *>();
     set<No *> *nosIncidentes = incidentes(no);
-    auxFTI(no, 0, nosVisitados, nosIncidentes);
+    auxFTI(no, nosVisitados, nosIncidentes);
+
+    for (auto &noVisitado: *nosVisitados) {
+        cout << noVisitado->getID() << ", ";
+    }
+    cout << "]" << endl;
 }
 
 /**
@@ -85,20 +91,17 @@ void Grafo::auxFTD(No *no, int level, set<No *> *nosVisitados) {
  * @param nosIncidentes: Nós incidentes
  * @return void
 */
-void Grafo::auxFTI(No *no, int level, set<No *> *nosVisitados, set<No *> *nosIncidentes) {
+void Grafo::auxFTI(No *no, set<No *> *nosVisitados, set<No *> *nosIncidentes) {
     if (no == nullptr) return;
     if (nosVisitados->find(no) != nosVisitados->end()) return;
 
     nosVisitados->insert(no);
 
     for (auto &noIncidente: *nosIncidentes) {
-        for (int i = 0; i < level; i++) {
-            cout << "---";
-        }
-        cout << ">" << noIncidente->getID() << endl;
+
         nosVisitados->insert(noIncidente);
         set<No *> *auxNosIncidentes = incidentes(noIncidente);
-        auxFTI(noIncidente, level + 1, nosVisitados, auxNosIncidentes);
+        auxFTI(noIncidente, nosVisitados, auxNosIncidentes);
     }
 }
 
@@ -117,13 +120,28 @@ set<No *> *Grafo::incidentes(No *no) {
     return nosIncidentes;
 }
 
-[[maybe_unused]] set<int> *Grafo::getFTD(int idNo) {
-    if (!this->isDirecionado() || !this->existeNo(idNo)) return nullptr;
+long Grafo::localClusteringCoefficient(int idNo) {
+    if (!this->existeNo(idNo)) return -1;
 
     auto *no = this->NOS->at(idNo);
-    auto *nosVisitados = new set<No *>();
-    auxFTD(no, 0, nosVisitados);
-    return nullptr;
+    auto *nosVizinhos = new set<No *>();
+    for (auto &aresta: no->getArestas()) {
+        nosVizinhos->insert(aresta.second->getNoDestino());
+    }
+
+    int numArestas = 0;
+    for (auto &noVizinho: *nosVizinhos) {
+        for (auto &aresta: noVizinho->getArestas()) {
+            if (nosVizinhos->find(aresta.second->getNoDestino()) != nosVizinhos->end()) {
+                numArestas++;
+            }
+        }
+    }
+
+    long numVizinhos = nosVizinhos->size();
+    if (numVizinhos <= 1) return 0;
+
+    return numArestas / (numVizinhos * (numVizinhos - 1));
 }
 
 

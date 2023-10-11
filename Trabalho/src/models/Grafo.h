@@ -16,30 +16,22 @@ class Grafo : public AGrafo {
 public:
 
 
-    Grafo(bool ehPonderado, bool ehDirecionado, ifstream *entrada, ofstream *Saida) : AGrafo() {
-        setPonderado(ehPonderado);
+    Grafo(bool APonderada, bool VPonderado ,bool ehDirecionado, ifstream *entrada, ofstream *Saida) : AGrafo() {
+        setPonderado(APonderada);
+        setVerticePonderado(VPonderado);
         setDirecionado(ehDirecionado);
         this->Input = entrada;
         this->setOutput(Saida);
-
-        string linha;
-        try {
-            getline(*entrada, linha);
-            this->setOrdem(stoi(linha));
-        } catch (exception &e) {
-            cout << "Erro ao ler a ordem do grafo!" << endl;
-            cout << e.what() << endl;
-        }
         this->montaGrafo();
     };
 
     void PrintListaAdjacencia();
 
-    [[maybe_unused]] set<int> *getFTD(int idNo);
+     set<int> *getFTD(int idNo);
 
-    [[maybe_unused]] void fechoTransitivoDireto(int idNo);
+     void fechoTransitivoDireto(int idNo);
 
-    [[maybe_unused]] void fechoTransitivoIndireto(int idNo);
+     void fechoTransitivoIndireto(int idNo);
 
 //    void Dijkstra(int idNoOrigem, int idNoDestino);
 //
@@ -57,10 +49,12 @@ public:
 //
 //    void articulacao();
 
-private:
-    void auxFTD(No *no, int level, set<No *> *visitados);
+    long localClusteringCoefficient(int idNo);
 
-    void auxFTI(No *no, int level, set<No *> *nosVisitados, set<No *> *nosIncidentes);
+private:
+    void auxFTD(No *no, set<No *> *visitados);
+
+    void auxFTI(No *no, set<No *> *nosVisitados, set<No *> *nosIncidentes);
 
     set<No *> *incidentes(No *no);
 

@@ -15,15 +15,17 @@ class AGrafo {
 protected:
     int Ordem;
     int NumArestas;
-    bool EhPonderado{};
-    bool EhDirecionado{};
+    bool ArestaPonderada;
+    bool VerticePonderado{};
+    bool EhDirecionado;
     ifstream *Input{};
     ofstream *Output{};
     map<int, No *> *NOS;
     map<int, Aresta *> *ARESTAS;
 
     AGrafo() {
-        this->EhPonderado = false;
+        this->ArestaPonderada = false;
+        this->VerticePonderado = false;
         this->EhDirecionado = false;
         this->Input = nullptr;
         this->Output = nullptr;
@@ -42,44 +44,47 @@ public:
 
     void montaGrafo();
 
+    void lerInstancias(bool ponderado, bool direcionado, bool verticePonderado);
+
     ifstream *getInput() const;
 
     bool existeNo(int idNo);
 
-    [[nodiscard]] int getOrdem() const;
+    int getOrdem() const;
 
     void setOrdem(int ordem);
 
-    [[nodiscard]] int getNumArestas() const;
+    int getNumArestas() const;
 
     void setNumArestas(int numArestas);
 
-    [[nodiscard]] bool isPonderado() const;
+    bool isPonderado() const;
 
     void setPonderado(bool ehPonderado);
 
-    [[nodiscard]] bool isDirecionado() const;
+    void setVerticePonderado(bool ehPonderado);
+
+    bool isVerticePonderado() const;
+
+    bool isDirecionado() const;
 
     void setDirecionado(bool ehDirecionado);
 
-    [[nodiscard]] ofstream *getOutput() const;
+    ofstream *getOutput() const;
 
     void setOutput(ofstream *output);
 
-    [[nodiscard]] const map<int, No *> *getNos() const;
+    const map<int, No *> *getNos() const;
 
-    [[nodiscard]] const map<int, Aresta *> *getArestas() const;
+    const map<int, Aresta *> *getArestas() const;
 
-    void CriaNo(int idNo);
+    void CriaNo(int idNo, int pesoNo);
 
-    void InserirNo(int idNo);
+    void InserirNo(int idNo, int pesoNo);
 
     void CriarAresta(int idNoOrigem, int idNoDestino, int pesoAresta);
 
-    void CriarAresta(int idNoOrigem, int idNoDestino);
-
     void imprimeGraus(int idNo);
-
 
 };
 
