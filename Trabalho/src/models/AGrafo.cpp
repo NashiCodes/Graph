@@ -119,7 +119,9 @@ void AGrafo::CriarAresta(int idNoOrigem, int idNoDestino, int pesoAresta) {
 
     auto *noOrigem = this->NOS->at(idNoOrigem);
     auto *noDestino = this->NOS->at(idNoDestino);
-    auto aresta = new Aresta( noDestino, this->getNumArestas(), pesoAresta);
+    auto idAresta = this->idsLiberados->empty() ? this->getNumArestas() : *this->idsLiberados->begin();
+    this->idsLiberados->erase(idAresta);
+    auto aresta = new Aresta( noDestino, idAresta, pesoAresta);
 
     noOrigem->setAresta(idNoDestino, aresta);
     noOrigem->setGrauSaida(noOrigem->getGrauSaida() + 1);
@@ -180,3 +182,38 @@ void AGrafo::setVerticePonderado(bool ehPonderado) {
 bool AGrafo::isVerticePonderado() const {
     return VerticePonderado;
 }
+
+void AGrafo::RemoverNo(int idNo) {
+    if(!this->existeNo(idNo)) {
+        cout << "Nó não existe!" << endl;
+        return;
+    }
+
+    auto *no = this->NOS->at(idNo);
+
+    for(auto &aresta: no->getArestas()) {
+        this->NOS->at(aresta.first)->RemoveAresta(idNo, this->isDirecionado());
+    }
+    this->NOS->erase(idNo);
+    delete no;
+}
+
+void AGrafo::RemoverAresta(int idNoOrigem, int idNoDestino) {
+    if(!this->existeNo(idNoOrigem) || !this->existeNo(idNoDestino)) {
+        cout << "Nó de origem ou destino não existe!" << endl;
+        return;
+    }
+
+    auto *noOrigem = this->NOS->at(idNoOrigem);
+    auto *noDestino = this->NOS->at(idNoDestino);
+    auto *aresta = noOrigem->getAresta(idNoDestino);
+
+    noOrigem->RemoveAresta(idNoDestino, this->isDirecionado());
+    noDestino->RemoveAresta(idNoOrigem, this->isDirecionado());
+
+    this->ARESTAS->erase(aresta->getID());
+    this->idsLiberados->insert(aresta->getID());
+    delete aresta;
+}
+
+

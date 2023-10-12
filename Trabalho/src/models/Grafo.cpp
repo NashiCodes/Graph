@@ -112,7 +112,7 @@ set<No *> *Grafo::incidentes(No *no) {
     auto *nosIncidentes = new set<No *>();
     for (auto &arestas: *this->ARESTAS) {
         if (arestas.second->getNoDestino() == no) {
-            nosIncidentes->insert(arestas.second->getNoOrigem());
+//            int idno = arestas.second->getNoOrigem();
         }
     }
     return nosIncidentes;

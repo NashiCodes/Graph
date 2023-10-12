@@ -36,6 +36,8 @@ public:
 
     map<int, Aresta*> getArestas();
 
+    void RemoveAresta(int idNoDestino, bool direcionado);
+
 private:
     int ID;
     int PESO;

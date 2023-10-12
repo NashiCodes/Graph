@@ -16,12 +16,13 @@ protected:
     int Ordem;
     int NumArestas;
     bool ArestaPonderada;
-    bool VerticePonderado{};
+    bool VerticePonderado;
     bool EhDirecionado;
-    ifstream *Input{};
-    ofstream *Output{};
+    ifstream *Input;
+    ofstream *Output;
     map<int, No *> *NOS;
     map<int, Aresta *> *ARESTAS;
+    set<int> *idsLiberados;
 
     AGrafo() {
         this->ArestaPonderada = false;
@@ -31,6 +32,7 @@ protected:
         this->Output = nullptr;
         this->NOS = new map<int, No *>();
         this->ARESTAS = new map<int, Aresta *>();
+        this->idsLiberados = new set<int>();
         this->NumArestas = 0;
         this->Ordem = 0;
     };
@@ -82,7 +84,10 @@ public:
 
     void InserirNo(int idNo, int pesoNo);
 
+    void RemoverNo(int idNo);
+
     void CriarAresta(int idNoOrigem, int idNoDestino, int pesoAresta);
+    void RemoverAresta(int idNoOrigem, int idNoDestino);
 
     void imprimeGraus(int idNo);
 

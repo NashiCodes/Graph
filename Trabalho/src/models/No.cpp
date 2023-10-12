@@ -31,6 +31,7 @@ No::~No() {
     for (auto &it: this->ARESTAS) {
         delete it.second;
     }
+    delete this;
 }
 
 /**
@@ -70,7 +71,7 @@ int No::getGrauSaida() const {
  * @param valor (new valor)
  */
 void No::setGrauSaida(int valor) {
-    if (valor < 0 || valor > (int)this->ARESTAS.size())
+    if (valor < 0 || valor > (int) this->ARESTAS.size())
         throw invalid_argument("Grau de saída não pode ser negativo");
     else
         this->GRAU_SAIDA = valor;
@@ -145,4 +146,22 @@ int No::getPeso() const {
 
 void No::setPeso(int valor) {
     this->PESO = valor;
+}
+
+void No::RemoveAresta(int idNoDestino,bool direcionado) {
+    if (idNoDestino < 0) {
+        cout << "ID do nó destino não pode ser negativo" << endl;
+        return;
+    } else if (this->ARESTAS.find(idNoDestino) == this->ARESTAS.end()) {
+        cout << "Aresta não existe" << endl;
+        return;
+    }
+    this->ARESTAS.erase(idNoDestino);
+
+    if (direcionado) {
+        this->setGrauSaida(this->getGrauSaida() - 1);
+    } else {
+        this->setGrauSaida(this->getGrauSaida() - 1);
+        this->setGrauEntrada(this->getGrauEntrada() - 1);
+    }
 }

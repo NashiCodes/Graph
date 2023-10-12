@@ -34,7 +34,7 @@ public:
 private:
     int ID;
     int PESO;
-    int ID_NO_DESTINO;
+    int ID_NO_ORIGEM;
     No *noDestino;
 };
 
