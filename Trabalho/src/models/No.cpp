@@ -70,7 +70,7 @@ int No::getGrauSaida() const {
  * @param valor (new valor)
  */
 void No::setGrauSaida(int valor) {
-    if (valor < 0 || valor > this->ARESTAS.size())
+    if (valor < 0 || valor > (int)this->ARESTAS.size())
         throw invalid_argument("Grau de saída não pode ser negativo");
     else
         this->GRAU_SAIDA = valor;
