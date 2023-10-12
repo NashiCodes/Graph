@@ -98,8 +98,6 @@ void Grafo::auxFTI(No *no, set<No *> *nosVisitados, set<No *> *nosIncidentes) {
     nosVisitados->insert(no);
 
     for (auto &noIncidente: *nosIncidentes) {
-
-        nosVisitados->insert(noIncidente);
         set<No *> *auxNosIncidentes = incidentes(noIncidente);
         auxFTI(noIncidente, nosVisitados, auxNosIncidentes);
     }
@@ -129,7 +127,7 @@ long Grafo::localClusteringCoefficient(int idNo) {
         nosVizinhos->insert(aresta.second->getNoDestino());
     }
 
-    int numArestas = 0;
+    long numArestas = 0;
     for (auto &noVizinho: *nosVizinhos) {
         for (auto &aresta: noVizinho->getArestas()) {
             if (nosVizinhos->find(aresta.second->getNoDestino()) != nosVizinhos->end()) {
@@ -138,7 +136,7 @@ long Grafo::localClusteringCoefficient(int idNo) {
         }
     }
 
-    long numVizinhos = nosVizinhos->size();
+    long numVizinhos = (long) nosVizinhos->size();
     if (numVizinhos <= 1) return 0;
 
     return numArestas / (numVizinhos * (numVizinhos - 1));

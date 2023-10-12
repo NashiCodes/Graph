@@ -12,9 +12,8 @@ class No;
 
 class Aresta {
 public:
-    Aresta(No *noOrigem, No *noDestino, int id);
 
-    Aresta(No *noOrigem, No *noDestino, int id, int peso);
+    Aresta(No *noDestino, int id, int peso);
 
     virtual ~Aresta();
 
@@ -26,18 +25,16 @@ public:
 
      void setID(int valor);
 
-    No *getNoOrigem();
-
-     void setNoOrigem(No *valor);
+    int getIdNoDestino() const;
 
     No *getNoDestino();
 
      void setNoDestino(No *valor);
 
 private:
-    int PESO;
     int ID;
-    No *noOrigem;
+    int PESO;
+    int ID_NO_DESTINO;
     No *noDestino;
 };
 

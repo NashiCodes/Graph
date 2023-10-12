@@ -119,7 +119,7 @@ void AGrafo::CriarAresta(int idNoOrigem, int idNoDestino, int pesoAresta) {
 
     auto *noOrigem = this->NOS->at(idNoOrigem);
     auto *noDestino = this->NOS->at(idNoDestino);
-    auto aresta = new Aresta(noOrigem, noDestino, this->getNumArestas(), pesoAresta);
+    auto aresta = new Aresta( noDestino, this->getNumArestas(), pesoAresta);
 
     noOrigem->setAresta(idNoDestino, aresta);
     noOrigem->setGrauSaida(noOrigem->getGrauSaida() + 1);
