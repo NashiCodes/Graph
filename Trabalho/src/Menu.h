@@ -123,6 +123,7 @@ public:
                 cout << "Digite o vértice de inicio: ";
                 cin >> id;
 //                grafo->depthFirstSearch(output_file, id);
+                break;
             }
             default: {
                 cout << "Exit!!!" << endl;

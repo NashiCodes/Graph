@@ -22,7 +22,7 @@ void AGrafo::montaGrafo() {
 void AGrafo::lerInstancias(bool ponderado, bool direcionado, bool verticePonderado) {
     int idNoOrigem, idNoDestino, pesoAresta = 0, pesoNo = 0;
 
-    while (this->ARESTAS->size() < this->getOrdem()) {
+    while ((int)this->ARESTAS->size() < this->getOrdem()) {
         *this->getInput() >> idNoOrigem;
         *this->getInput() >> idNoDestino;
         if (ponderado)
@@ -49,7 +49,7 @@ int AGrafo::getOrdem() const {
 }
 
 void AGrafo::setOrdem(int ordem) {
-    if (ordem < 0 || (this->Ordem != 0 && ordem != this->NOS->size())) {
+    if (ordem < 0 || (this->Ordem != 0 && ordem != (int)this->NOS->size())) {
         cout << "Nova ordem inválida!" << endl;
         return;
     }
@@ -61,7 +61,7 @@ int AGrafo::getNumArestas() const {
 }
 
 void AGrafo::setNumArestas(int numArestas) {
-    if (numArestas < 0 || (this->NumArestas != 0 && numArestas != this->ARESTAS->size())) {
+    if (numArestas < 0 || (this->NumArestas != 0 && numArestas != (int)this->ARESTAS->size())) {
         cout << "Número de arestas inválido!" << endl;
         return;
     }
