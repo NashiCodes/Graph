@@ -33,7 +33,7 @@ public:
 
      void fechoTransitivoIndireto(int idNo);
 
-//    void Dijkstra(int idNoOrigem, int idNoDestino);
+    float dijkstra(int id1, int id2);
 //
 //    void Floyd(int idNoOrigem, int idNoDestino);
 //

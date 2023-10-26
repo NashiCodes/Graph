@@ -89,8 +89,8 @@ public:
                 cin >> id1;
                 cout << "Digite o vértcie final: ";
                 cin >> id2;
-//                float distancia = grafo->dijkstra(id1, id2);
-//                cout << "A distancia entre " << id1 << " e " << id2 << " é de: " << distancia << endl;
+                cout << "A distancia entre " << id1 << " e " << id2 << " é de: " 
+                << grafo->dijkstra(id1, id2);
                 break;
             }
 

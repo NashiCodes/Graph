@@ -36,6 +36,4 @@ int Aresta::getID() const {
     this->ID = valor;
 }
 
-int Aresta::getIdNoDestino() const {
-    return ID_NO_DESTINO;
-}
+
