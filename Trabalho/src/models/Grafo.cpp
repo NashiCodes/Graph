@@ -1,5 +1,5 @@
 #include "Grafo.h"
-
+#include "limits.h"
 using namespace std;
 
 /**
@@ -147,10 +147,15 @@ long Grafo::localClusteringCoefficient(int idNo) {
 /// @param id2 
 /// @return 
 float Grafo::dijkstra(int id1,int id2){
-    return 30;
-    //if (!this->existeNo(id1)) return -1;
-    //if (!this->existeNo(id2)) return -1;
-
+    if (!this->existeNo(id1)) return -1;
+    if (!this->existeNo(id2)) return -1;
+    float infinito = INT_MAX/2;
+    auto *no1 = this->NOS->at(id1);
+    auto *no2 = this->NOS->at(id2);
+    for(auto &aresta: no1->getArestas()) {
+       cout << aresta.second->getPeso() << endl;
+    }
+    return 1;
     
 }
 
