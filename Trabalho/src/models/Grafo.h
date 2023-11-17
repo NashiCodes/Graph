@@ -34,8 +34,8 @@ public:
      void fechoTransitivoIndireto(int idNo);
 
     float dijkstra(int id1, int id2);
-//
-//    void Floyd(int idNoOrigem, int idNoDestino);
+
+    void Floyd(int idNoOrigem, int idNoDestino, map<int, No *> *NOS;); // Mapa de nós de um grafo 
 //
 //    void AGMPrim(int idNoOrigem);
 //

@@ -1,5 +1,6 @@
 #include "Grafo.h"
 #include "limits.h"
+#define INF 1e9;
 using namespace std;
 
 /**
@@ -159,3 +160,15 @@ float Grafo::dijkstra(int id1,int id2){
     
 }
 
+void Grafo::Floyd(int idNoOrigem, int idNoDestino, map<int, No *> *NOS;){
+    int tam = NOS.size();
+    int* dist = new [tam][tam];
+
+    for(int i = 0; i < tam; i++){
+        for(int j = 0; j < tam; j++){
+            if(NOS[i]->){
+                
+            }
+        }
+    }
+}
