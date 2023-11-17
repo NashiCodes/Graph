@@ -163,13 +163,17 @@ float Grafo::dijkstra(int id1,int id2){
 void Grafo::Floyd(int idNoOrigem, int idNoDestino, map<int, No *> *NOS;){
 
     // Criando matriz adjacente
-    int tam = NOS.size(); 
+    // i / j = id de cada nó
+    // (i,j) = dist entre o nó i para o nó j
+
+    int tamGrafo = NOS.size(); 
     int* dist = new [tam][tam];
 
     for(int i = 0; i <= tam; i++){
         map<int, Aresta> arestas = NOS[i]->ARESTAS;
-        for(int j = 0; j < tam; j++){
-            if(arestas.find(j)){
+        int qtdAresta = ARESTAS.size();
+        for(int j = 0; j <= qtdAresta; j++){
+            if(arestas[j]->noDestino == i){
                 dist[i][j] = arestas[j].peso;
             }
             else{
