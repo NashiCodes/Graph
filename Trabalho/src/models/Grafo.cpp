@@ -1,5 +1,6 @@
 #include "Grafo.h"
 #include "limits.h"
+#include <algorithm>
 #define INF 1e9;
 using namespace std;
 
