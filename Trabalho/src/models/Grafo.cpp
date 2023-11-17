@@ -166,20 +166,39 @@ void Grafo::Floyd(int idNoOrigem, int idNoDestino, map<int, No *> *NOS;){
     // i / j = id de cada nó
     // (i,j) = dist entre o nó i para o nó j
 
-    int tamGrafo = NOS.size(); 
+    int qtdNos = NOS.size(); 
     int* dist = new [tam][tam];
 
     for(int i = 0; i <= tam; i++){
+
         map<int, Aresta> arestas = NOS[i]->ARESTAS;
         int qtdAresta = ARESTAS.size();
+
         for(int j = 0; j <= qtdAresta; j++){
-            if(arestas[j]->noDestino == i){
-                dist[i][j] = arestas[j].peso;
+            // Se ID no = ID noDestino, então o peso é 0 pois o peso de um nó para ele mesmo é 0
+            if(arestas[j]->noDestino->ID == i + 1){ 
+                dist[i][j] = 0;
             }
+            // Se ID no != ID noDestino, então atribuir o peso  da aresta (se ela existir)
+            elseif(arestas[j]->noDestino->ID != i + 1){
+                dist[i][j] = aresta[j]->PESO;
+            }
+            // Se a aresta não existir, ent o valor é INFINITO (INF)
             else{
                 dist[i][j] = INF;
             }
         }
     }
+
+    // Implementação do algorímo
+    for (int k = 0; k < V; k++) {
+        for (int i = 0; i < V; i++) {
+            for (int j = 0; j < V; j++) {
+                dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j]);
+            }
+        }
+    }
+
+    cout << "O peso do caminho mínimo entre " << idNoOrigem << " e " << idNoDestino << " é: " << dist[idNoOrigem][idNoDestino] << endl; 
 
 }
