@@ -89,7 +89,7 @@ public:
                 cin >> id1;
                 cout << "Digite o vértcie final: ";
                 cin >> id2;
-                cout << "A distancia entre " << id1 << " e " << id2 << " é de: " 
+                cout << "A distancia entre " << id1 << " e " << id2 << " é de: "
                 << grafo->dijkstra(id1, id2);
                 break;
             }
@@ -101,7 +101,7 @@ public:
                 cin >> id_one;
                 cout << "Digite o id do vertice de destino: ";
                 cin >> id_two;
-//                grafo->minimalPathByFloyd(id_one, id_two);
+                grafo->Floyd(id_one, id_two);
                 break;
             }
                 //Árvore Geradora Mínima - Prim;

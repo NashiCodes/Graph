@@ -8,8 +8,8 @@ void AGrafo::montaGrafo() {
             cout << "Ordem inválida!" << endl;
             return;
         }
-//        this->setOrdem(ordem);
-        this->setOrdem(50);
+        this->setOrdem(ordem);
+//        this->setOrdem(50);
 
         this->lerInstancias(this->isPonderado(), this->isDirecionado(), this->isVerticePonderado());
 
@@ -22,7 +22,7 @@ void AGrafo::montaGrafo() {
 void AGrafo::lerInstancias(bool ponderado, bool direcionado, bool verticePonderado) {
     int idNoOrigem, idNoDestino, pesoAresta = 0, pesoNo = 0;
 
-    while ((int)this->ARESTAS->size() < this->getOrdem()) {
+    while (!this->getInput()->eof()) {
         *this->getInput() >> idNoOrigem;
         *this->getInput() >> idNoDestino;
         if (ponderado)
@@ -121,7 +121,7 @@ void AGrafo::CriarAresta(int idNoOrigem, int idNoDestino, int pesoAresta) {
     auto *noDestino = this->NOS->at(idNoDestino);
     auto idAresta = this->idsLiberados->empty() ? this->getNumArestas() : *this->idsLiberados->begin();
     this->idsLiberados->erase(idAresta);
-    auto aresta = new Aresta( noDestino, idAresta, pesoAresta);
+    auto aresta = new Aresta(noOrigem, noDestino, idAresta, pesoAresta);
 
     noOrigem->setAresta(idNoDestino, aresta);
     noOrigem->setGrauSaida(noOrigem->getGrauSaida() + 1);

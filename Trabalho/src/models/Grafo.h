@@ -27,26 +27,28 @@ public:
 
     void PrintListaAdjacencia();
 
-     set<int> *getFTD(int idNo);
-
      void fechoTransitivoDireto(int idNo);
 
      void fechoTransitivoIndireto(int idNo);
 
     float dijkstra(int id1, int id2);
-//
-//    void Floyd(int idNoOrigem, int idNoDestino);
-//
+
+    void Floyd(int idNoOrigem, int idNoDestino); // Mapa de nós de um grafo
+
+    void finalizaFloyd(map<int, map<int, int>> *dist, int idOrigem, int idoDestino);
+
+    void floydA0(map<int, map<int, int>> *dist);
+
 //    void AGMPrim(int idNoOrigem);
-//
+
 //    void AGMKruskal();
-//
+
 //    void DeepSearch(int idNo);
-//
+
 //    void ordenacaoTopologica();
-//
+
 //    void parametrosGrafo();
-//
+
 //    void articulacao();
 
     long localClusteringCoefficient(int idNo);
