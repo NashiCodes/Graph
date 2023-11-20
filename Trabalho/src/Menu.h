@@ -89,12 +89,9 @@ public:
                 cin >> id1;
                 cout << "Digite o vértcie final: ";
                 cin >> id2;
-                cout << "A distancia entre " << id1 << " e " << id2 << " é de: "
-                << grafo->dijkstra(id1, id2);
+                grafo->dijkstra(id1, id2);
                 break;
             }
-
-
             case 6: {
                 int id_one, id_two;
                 cout << "Digite o id do vertice de origem: ";

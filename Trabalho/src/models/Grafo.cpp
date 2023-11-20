@@ -2,8 +2,7 @@
 #include <climits>
 #include <algorithm>
 
-#define INF 9999
-
+//#define INF 99999999
 using namespace std;
 
 /**
@@ -31,8 +30,8 @@ void Grafo::PrintListaAdjacencia() {
  * @param idNo: Identificador do nó
  * @return void
 */
-void Grafo::fechoTransitivoDireto(int idNo) {
-    if (!this->isDirecionado() || !this->existeNo(idNo)) return;
+set<No *> *Grafo::fechoTransitivoDireto(int idNo) {
+    if (!this->isDirecionado() || !this->existeNo(idNo)) return nullptr;
 
     auto *no = this->NOS->at(idNo);
     cout << "Fecho Transitivo Direto: " << endl;
@@ -44,6 +43,8 @@ void Grafo::fechoTransitivoDireto(int idNo) {
         cout << noVisitado->getID() << ", ";
     }
     cout << "]" << endl;
+
+    return nosVisitados;
 }
 
 /**
@@ -72,8 +73,8 @@ void Grafo::auxFTD(No *no, set<No *> *nosVisitados) {
  * @param idNo: Identificador do nó
  * @return void
 */
-void Grafo::fechoTransitivoIndireto(int idNo) {
-    if (!this->isDirecionado() || !this->existeNo(idNo)) return;
+set<No *> *Grafo::fechoTransitivoIndireto(int idNo) {
+    if (!this->isDirecionado() || !this->existeNo(idNo)) return nullptr;
 
     auto *no = this->NOS->at(idNo);
     cout << "Fecho Transitivo Indireto: " << endl;
@@ -86,6 +87,8 @@ void Grafo::fechoTransitivoIndireto(int idNo) {
         cout << noVisitado->getID() << ", ";
     }
     cout << "]" << endl;
+
+    return nosVisitados;
 }
 
 /**
@@ -118,7 +121,7 @@ set<No *> *Grafo::incidentes(No *no) {
     auto *nosIncidentes = new set<No *>();
     for (auto &arestas: *this->ARESTAS) {
         if (arestas.second->getDestino() == no) {
-//            int idno = arestas.second->getNoOrigem();
+            nosIncidentes->insert(arestas.second->getOrigem());
         }
     }
     return nosIncidentes;
@@ -149,20 +152,128 @@ long Grafo::localClusteringCoefficient(int idNo) {
 }
 
 /// @brief
-/// @param id1
-/// @param id2
+/// @param _Origem_
+/// @param _Destino_
 /// @return
-float Grafo::dijkstra(int id1, int id2) {
-    if (!this->existeNo(id1)) return -1;
-    if (!this->existeNo(id2)) return -1;
-    float infinito = (float) INT_MAX / 2;
-    auto *no1 = this->NOS->at(id1);
-    auto *no2 = this->NOS->at(id2);
-    for (auto &aresta: no1->getArestas()) {
-        cout << aresta.second->getPeso() << endl;
+void Grafo::dijkstra(int _Origem_, int _Destino_) {
+    try {
+        if (!this->existeNo(_Origem_)) throw invalid_argument("Nó de origem não existe");
+        if (!this->existeNo(_Destino_)) throw invalid_argument("Nó de destino não existe");
     }
-    return 1;
+    catch (invalid_argument &e) {
+        cout << e.what() << endl;
+        return;
+    }
 
+    auto *FTD = fechoTransitivoDireto(_Origem_);
+    auto *Origem = this->NOS->at(_Origem_);
+    auto *Destino = this->NOS->at(_Destino_);
+
+    try {
+        if (FTD->find(Destino) == FTD->end()) throw invalid_argument("Não existe caminho entre os nós");
+    }
+    catch (invalid_argument &e) {
+        cout << e.what() << endl;
+        return;
+    }
+
+    auto infinito = INT_MAX / 2;
+    auto *dist = new map<int, int>();
+    auto *vistos = new set<int>();
+
+    (*dist)[_Origem_] = 0;
+
+    for (auto *no: *FTD) {
+        (*dist)[no->getID()] = infinito;
+
+        if (Origem->getArestas().find(no->getID()) != Origem->getArestas().end())
+            (*dist)[no->getID()] = Origem->getAresta(no->getID())->getPeso();
+    }
+
+    this->auxDijkstra(Origem, dist, vistos, FTD);
+    this->imprimeDijkstra(dist, _Origem_, _Destino_);
+
+}
+
+void Grafo::auxDijkstra(No *no, map<int, int> *dist, set<int> *vistos, set<No *> *FTD) {
+    int minIdx = this->minDistance(dist, vistos, FTD);
+
+    vistos->insert(minIdx);
+    FTD->erase(this->NOS->at(minIdx));
+
+    for (auto &aresta: this->NOS->at(minIdx)->getArestas()) {
+        if (vistos->find(aresta.second->getDestino()->getID()) == vistos->end()) {
+            (*dist)[aresta.second->getDestino()->getID()] = min((*dist)[aresta.second->getDestino()->getID()],
+                                                                (*dist)[minIdx] + aresta.second->getPeso());
+        }
+    }
+}
+
+int Grafo::minDistance(map<int, int> *dist, set<int> *vistos, set<No *> *FTD) const {
+    int min = INT_MAX, min_index;
+
+    for (auto *no: *FTD) {
+        if (vistos->find(no->getID()) == vistos->end() && (*dist)[no->getID()] <= min) {
+            min = (*dist)[no->getID()];
+            min_index = no->getID();
+        }
+    }
+
+    return min_index;
+}
+
+void Grafo::imprimeDijkstra(map<int, int> *dist, int idOrigem, int idDestino) {
+    cout << "O caminho mínimo entre " << idOrigem << " e " << idDestino << " é: " << (*dist)[idDestino] << endl;
+
+    int opcao;
+
+    cout << "Deseja imprimir todos os caminhos minimos do nó " << idOrigem << " ?" << endl;
+    cout << "1 - Sim" << endl;
+    cout << "2 - Não" << endl;
+    cin >> opcao;
+
+    if (opcao == 1) {
+        cout << endl << "Caminhos mínimos: " << endl;
+        for (auto no: *dist) {
+            cout << "Caminho mínimo entre " << idOrigem << " e " << no.first << ": " << (*dist)[no.first] << endl;
+        }
+        cout << endl;
+    }
+
+    cout << "Deseja salvar o caminho mínimo entre " << idOrigem << " e " << idDestino << " ?" << endl;
+    cout << "1 - Sim" << endl;
+    cout << "2 - Não" << endl;
+    cin >> opcao;
+
+    if (opcao == 1) {
+        if (!this->getOutput()->is_open()) {
+            cout << "Erro ao abrir os arquivos!" << endl;
+        }
+        *this->getOutput() << "O caminho mínimo entre " << idOrigem << " e " << idDestino << " é: "
+                           << (*dist)[idDestino] << endl;
+    }
+
+    cout << "Caminho Mínimo Salvo com Sucesso!" << endl;
+    cout << endl;
+
+    cout << "Deseja salvar todos os caminhos minimos do nó " << idOrigem << " ?" << endl;
+    cout << "1 - Sim" << endl;
+    cout << "2 - Não" << endl;
+    cin >> opcao;
+
+    if (opcao == 1) {
+        if (!this->getOutput()->is_open()) {
+            cout << "Erro ao abrir os arquivos!" << endl;
+        }
+        for (auto no: *dist) {
+            if (no.first == idDestino) continue;
+            *this->getOutput() << "Caminho mínimo entre " << idOrigem << " e " << no.first << ": " << (*dist)[no.first]
+                               << endl;
+        }
+    }
+
+    cout << "Caminhos Mínimos Salvos com Sucesso!" << endl;
+    cout << endl;
 }
 
 
@@ -196,7 +307,7 @@ void Grafo::Floyd(int idNoOrigem, int idNoDestino) {
                     (*dist)[i.first][j.first] = (*dist)[i.first][k.first] + (*dist)[k.first][j.first];
 
                     // Se o grafo não for direcionado, a distância de j até i também passa a ser a distância de j até k + a distância de k até i
-                    if(!this->isDirecionado())
+                    if (!this->isDirecionado())
                         (*dist)[j.first][i.first] = (*dist)[i.first][k.first] + (*dist)[k.first][j.first];
                 }
             }
@@ -277,7 +388,7 @@ void Grafo::floydA0(map<int, map<int, int>> *dist) {
                 (*dist)[no.first][no2.first] = 0;
             else
                 // Distância de um nó para outro é infinito
-                (*dist)[no.first][no2.first] = INF;
+                (*dist)[no.first][no2.first] = INT_MAX;
         }
     }
 

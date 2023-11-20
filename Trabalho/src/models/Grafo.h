@@ -16,7 +16,7 @@ class Grafo : public AGrafo {
 public:
 
 
-    Grafo(bool APonderada, bool VPonderado ,bool ehDirecionado, ifstream *entrada, ofstream *Saida) : AGrafo() {
+    Grafo(bool APonderada, bool VPonderado, bool ehDirecionado, ifstream *entrada, ofstream *Saida) : AGrafo() {
         setPonderado(APonderada);
         setVerticePonderado(VPonderado);
         setDirecionado(ehDirecionado);
@@ -27,11 +27,17 @@ public:
 
     void PrintListaAdjacencia();
 
-     void fechoTransitivoDireto(int idNo);
+    set<No *> *fechoTransitivoDireto(int idNo);
 
-     void fechoTransitivoIndireto(int idNo);
+    set<No *> *fechoTransitivoIndireto(int idNo);
 
-    float dijkstra(int id1, int id2);
+    void dijkstra(int _Origem_, int _Destino_);
+
+    void auxDijkstra(No *no, map<int, int> *dist, set<int> *vistos, set<No *> *FTD);
+
+    int minDistance(map<int, int> *dist, set<int> *vistos, set<No *> *FTD) const;
+
+    void imprimeDijkstra(map<int, int> *dist, int idOrigem, int idDestino);
 
     void Floyd(int idNoOrigem, int idNoDestino); // Mapa de nós de um grafo
 
