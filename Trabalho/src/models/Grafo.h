@@ -7,6 +7,7 @@
 #include <unordered_map>
 #include <set>
 #include <map>
+#include <list>
 #include "AGrafo.h"
 #include "Agrafo.cpp"
 
@@ -23,7 +24,8 @@ public:
         this->Input = entrada;
         this->setOutput(Saida);
         this->montaGrafo();
-    };
+    }
+
 
     void PrintListaAdjacencia();
 
@@ -44,6 +46,10 @@ public:
     void finalizaFloyd(map<int, map<int, int>> *dist, int idOrigem, int idoDestino);
 
     void floydA0(map<int, map<int, int>> *dist);
+
+    void Prim(int idNoOrigem);
+
+    vector<pair<int, Aresta *>> organizaArestaPeso(No &nosVisitados);
 
 //    void AGMPrim(int idNoOrigem);
 

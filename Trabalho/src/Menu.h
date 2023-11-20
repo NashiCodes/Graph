@@ -103,8 +103,11 @@ public:
             }
                 //Árvore Geradora Mínima - Prim;
             case 7: {
+                int id;
                 cout << "Árvore Geradora Mínima - Prim" << endl;
-//                grafo->minimalSpanningTreeByPrimAlgorithm(grafo->getVerticeInduzido());
+                cout << "Digite o id do vertice de origem: ";
+                cin >> id;
+                grafo->Prim(id);
                 break;
             }
                 //Árvore Geradora Mínima - Kruskal;

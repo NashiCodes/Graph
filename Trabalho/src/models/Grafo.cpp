@@ -1,6 +1,7 @@
 #include "Grafo.h"
 #include <climits>
 #include <algorithm>
+#include <list>
 
 //#define INF 99999999
 using namespace std;
@@ -401,3 +402,35 @@ void Grafo::floydA0(map<int, map<int, int>> *dist) {
             (*dist)[aresta.second->getIdDestino()][aresta.second->getIdOrigem()] = aresta.second->getPeso();
     }
 }
+
+
+vector<pair<int, Aresta*>> Grafo::organizaArestaPeso(No &no) {
+        auto aresta = no.getArestas();
+        std::vector<pair<int, Aresta*>> Arestas;
+        for(auto aresta: aresta){
+            Arestas.emplace_back(aresta.first, aresta.second);
+        }
+        std::sort(Arestas.begin(), Arestas.end(),
+          [](const auto& a, const auto& b) {
+              return a.second < b.second;
+          });
+
+        return Arestas;
+}
+
+void Grafo::Prim(int idNoOrigem) {
+    //if(grafo.isDirecionado()){
+      //  throw new runtime_error("Prim só funciona em grafos não direcionados!!!");
+    //}
+
+    //const Grafo *arvoreMin = new Grafo();
+    auto *No = this->NOS->at(idNoOrigem);
+    //std::list<No> filaNos;
+    std::vector<pair<int, Aresta*>>arestasOrdenadas;
+    arestasOrdenadas = organizaArestaPeso(*No);
+
+
+
+    return;
+}
+
