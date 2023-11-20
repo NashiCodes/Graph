@@ -38,17 +38,17 @@ public:
     void finalizaFloyd(map<int, map<int, int>> *dist, int idOrigem, int idoDestino);
 
     void floydA0(map<int, map<int, int>> *dist);
-//
+
 //    void AGMPrim(int idNoOrigem);
-//
+
 //    void AGMKruskal();
-//
+
 //    void DeepSearch(int idNo);
-//
+
 //    void ordenacaoTopologica();
-//
+
 //    void parametrosGrafo();
-//
+
 //    void articulacao();
 
     long localClusteringCoefficient(int idNo);

@@ -1,7 +1,6 @@
 #include "Grafo.h"
 #include <climits>
 #include <algorithm>
-#include <vector>
 
 #define INF 9999
 
@@ -56,6 +55,7 @@ void Grafo::fechoTransitivoDireto(int idNo) {
 */
 void Grafo::auxFTD(No *no, set<No *> *nosVisitados) {
     if (no == nullptr) return;
+
     if (nosVisitados->find(no) != nosVisitados->end())return;
 
     nosVisitados->insert(no);
@@ -98,6 +98,7 @@ void Grafo::fechoTransitivoIndireto(int idNo) {
 */
 void Grafo::auxFTI(No *no, set<No *> *nosVisitados, set<No *> *nosIncidentes) {
     if (no == nullptr) return;
+
     if (nosVisitados->find(no) != nosVisitados->end()) return;
 
     nosVisitados->insert(no);
@@ -164,6 +165,11 @@ float Grafo::dijkstra(int id1, int id2) {
 
 }
 
+
+/// @brief Caminho mínimo entre dois nós (Floyd)
+/// @param idNoOrigem: Identificador do nó de origem
+/// @param idNoDestino: Identificador do nó de destino
+/// @return void
 void Grafo::Floyd(int idNoOrigem, int idNoDestino) {
     if (!this->existeNo(idNoOrigem)) return;
     if (!this->existeNo(idNoDestino)) return;
@@ -175,11 +181,23 @@ void Grafo::Floyd(int idNoOrigem, int idNoDestino) {
     this->floydA0(dist);
 
     // Executa o algoritmo de Floyd
+    // Para cada nó k
+    // sendo k o nó intermediário
     for (auto &k: *this->NOS) {
+        // Para cada nó i
+        // sendo i o nó de origem
         for (auto &i: *this->NOS) {
+            // Para cada nó j
+            // sendo j o nó de destino
             for (auto &j: *this->NOS) {
+                // Se a distância de i até j for maior que a distância de i até k + a distância de k até j
                 if ((*dist)[i.first][j.first] > (*dist)[i.first][k.first] + (*dist)[k.first][j.first]) {
+                    // A distância de i até j passa a ser a distância de i até k + a distância de k até j
                     (*dist)[i.first][j.first] = (*dist)[i.first][k.first] + (*dist)[k.first][j.first];
+
+                    // Se o grafo não for direcionado, a distância de j até i também passa a ser a distância de j até k + a distância de k até i
+                    if(!this->isDirecionado())
+                        (*dist)[j.first][i.first] = (*dist)[i.first][k.first] + (*dist)[k.first][j.first];
                 }
             }
         }
@@ -192,6 +210,12 @@ void Grafo::Floyd(int idNoOrigem, int idNoDestino) {
     delete dist;
 }
 
+
+/// @brief Finaliza a execução do algoritmo de Floyd e imprime o resultado
+/// @param dist: Mapa de distâncias
+/// @param idOrigem: Identificador do nó de origem
+/// @param idoDestino: Identificador do nó de destino
+/// @return void
 void Grafo::finalizaFloyd(map<int, map<int, int>> *dist, int idOrigem, int idoDestino) {
     cout << "Caminho mínimo entre " << idOrigem << " e " << idoDestino << ": " << (*dist)[idOrigem][idoDestino]
          << endl;
@@ -237,20 +261,31 @@ void Grafo::finalizaFloyd(map<int, map<int, int>> *dist, int idOrigem, int idoDe
     cout << endl;
 }
 
+
+/// @brief Inicializa a matriz de distâncias A0
+/// @param dist: Mapa de distâncias
+/// @return void
 void Grafo::floydA0(map<int, map<int, int>> *dist) {
     auto arestas = this->ARESTAS;
+
+    // Inicializa a matriz de distâncias
     for (auto &no: *this->NOS) {
         (*dist)[no.first] = map<int, int>();
         for (auto &no2: *this->NOS) {
             if (no.first == no2.first)
+                // Distância de um nó para ele mesmo é 0
                 (*dist)[no.first][no2.first] = 0;
             else
+                // Distância de um nó para outro é infinito
                 (*dist)[no.first][no2.first] = INF;
         }
     }
 
+    // Preenche a matriz de distâncias com os valores de peso das arestas
     for (auto &aresta: *arestas) {
+        // Preenche o valor de peso da aresta no sentido correto
         (*dist)[aresta.second->getIdOrigem()][aresta.second->getIdDestino()] = aresta.second->getPeso();
+        // Se o grafo não for direcionado, preenche o valor de peso da aresta no sentido contrário
         if (!this->isDirecionado())
             (*dist)[aresta.second->getIdDestino()][aresta.second->getIdOrigem()] = aresta.second->getPeso();
     }
