@@ -1,7 +1,10 @@
 #include "Grafo.h"
-#include "limits.h"
+#include <climits>
 #include <algorithm>
-#define INF 1e9;
+#include <vector>
+
+#define INF 9999
+
 using namespace std;
 
 /**
@@ -59,7 +62,7 @@ void Grafo::auxFTD(No *no, set<No *> *nosVisitados) {
 
     for (auto &aresta: no->getArestas()) {
         auto arestaDestino = aresta.second;
-        auto noDestino = arestaDestino->getNoDestino();
+        auto noDestino = arestaDestino->getDestino();
         auxFTD(noDestino, nosVisitados);
     }
 }
@@ -113,7 +116,7 @@ void Grafo::auxFTI(No *no, set<No *> *nosVisitados, set<No *> *nosIncidentes) {
 set<No *> *Grafo::incidentes(No *no) {
     auto *nosIncidentes = new set<No *>();
     for (auto &arestas: *this->ARESTAS) {
-        if (arestas.second->getNoDestino() == no) {
+        if (arestas.second->getDestino() == no) {
 //            int idno = arestas.second->getNoOrigem();
         }
     }
@@ -126,13 +129,13 @@ long Grafo::localClusteringCoefficient(int idNo) {
     auto *no = this->NOS->at(idNo);
     auto *nosVizinhos = new set<No *>();
     for (auto &aresta: no->getArestas()) {
-        nosVizinhos->insert(aresta.second->getNoDestino());
+        nosVizinhos->insert(aresta.second->getDestino());
     }
 
     long numArestas = 0;
     for (auto &noVizinho: *nosVizinhos) {
         for (auto &aresta: noVizinho->getArestas()) {
-            if (nosVizinhos->find(aresta.second->getNoDestino()) != nosVizinhos->end()) {
+            if (nosVizinhos->find(aresta.second->getDestino()) != nosVizinhos->end()) {
                 numArestas++;
             }
         }
@@ -144,62 +147,111 @@ long Grafo::localClusteringCoefficient(int idNo) {
     return numArestas / (numVizinhos * (numVizinhos - 1));
 }
 
-/// @brief 
-/// @param id1 
-/// @param id2 
-/// @return 
-float Grafo::dijkstra(int id1,int id2){
+/// @brief
+/// @param id1
+/// @param id2
+/// @return
+float Grafo::dijkstra(int id1, int id2) {
     if (!this->existeNo(id1)) return -1;
     if (!this->existeNo(id2)) return -1;
-    float infinito = INT_MAX/2;
+    float infinito = (float) INT_MAX / 2;
     auto *no1 = this->NOS->at(id1);
     auto *no2 = this->NOS->at(id2);
-    for(auto &aresta: no1->getArestas()) {
-       cout << aresta.second->getPeso() << endl;
+    for (auto &aresta: no1->getArestas()) {
+        cout << aresta.second->getPeso() << endl;
     }
     return 1;
-    
+
 }
 
-void Grafo::Floyd(int idNoOrigem, int idNoDestino, map<int, No *> *NOS;){
+void Grafo::Floyd(int idNoOrigem, int idNoDestino) {
+    if (!this->existeNo(idNoOrigem)) return;
+    if (!this->existeNo(idNoDestino)) return;
 
-    // Criando matriz adjacente
-    // i / j = id de cada nó
-    // (i,j) = dist entre o nó i para o nó j
+    // Inicializa a matriz de distâncias
+    auto *dist = new map<int, map<int, int>>();
 
-    int qtdNos = NOS.size(); 
-    int* dist = new [tam][tam];
+    // Inicializa a matriz de distâncias A0
+    this->floydA0(dist);
 
-    for(int i = 0; i <= tam; i++){
-
-        map<int, Aresta> arestas = NOS[i]->ARESTAS;
-        int qtdAresta = ARESTAS.size();
-
-        for(int j = 0; j <= qtdAresta; j++){
-            // Se ID no = ID noDestino, então o peso é 0 pois o peso de um nó para ele mesmo é 0
-            if(arestas[j]->noDestino->ID == i + 1){ 
-                dist[i][j] = 0;
-            }
-            // Se ID no != ID noDestino, então atribuir o peso  da aresta (se ela existir)
-            elseif(arestas[j]->noDestino->ID != i + 1){
-                dist[i][j] = aresta[j]->PESO;
-            }
-            // Se a aresta não existir, ent o valor é INFINITO (INF)
-            else{
-                dist[i][j] = INF;
+    // Executa o algoritmo de Floyd
+    for (auto &k: *this->NOS) {
+        for (auto &i: *this->NOS) {
+            for (auto &j: *this->NOS) {
+                if ((*dist)[i.first][j.first] > (*dist)[i.first][k.first] + (*dist)[k.first][j.first]) {
+                    (*dist)[i.first][j.first] = (*dist)[i.first][k.first] + (*dist)[k.first][j.first];
+                }
             }
         }
     }
 
-    // Implementação do algorímo
-    for (int k = 0; k < V; k++) {
-        for (int i = 0; i < V; i++) {
-            for (int j = 0; j < V; j++) {
-                dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j]);
+    // Finaliza a execução do algoritmo de Floyd e imprime o resultado
+    this->finalizaFloyd(dist, idNoOrigem, idNoDestino);
+
+    // Libera a memória
+    delete dist;
+}
+
+void Grafo::finalizaFloyd(map<int, map<int, int>> *dist, int idOrigem, int idoDestino) {
+    cout << "Caminho mínimo entre " << idOrigem << " e " << idoDestino << ": " << (*dist)[idOrigem][idoDestino]
+         << endl;
+    int opcao;
+
+    cout << "Deseja imprimir a matriz ?" << endl;
+    cout << "1 - Sim" << endl;
+    cout << "2 - Não" << endl;
+    cin >> opcao;
+
+    if (opcao == 1) {
+        cout << endl << "Matriz de distâncias: " << endl;
+        for (auto &no: *this->NOS) {
+            for (auto &no2: *this->NOS) {
+                cout << "[ " << (*dist)[no.first][no2.first] << " ]";
             }
+            cout << endl;
+        }
+        cout << endl;
+    }
+
+
+    cout << "Deseja salvar a matriz ?" << endl;
+    cout << "1 - Sim" << endl;
+    cout << "2 - Não" << endl;
+    cin >> opcao;
+
+    if (opcao == 1) {
+
+        if (!this->getOutput()->is_open()) {
+            cout << "Erro ao abrir os arquivos!" << endl;
+            return;
+        }
+        for (auto &no: *this->NOS) {
+            for (auto &no2: *this->NOS) {
+                *this->getOutput() << "[ " << (*dist)[no.first][no2.first] << " ]";
+            }
+            *this->getOutput() << endl;
         }
     }
 
-    cout << "O peso do caminho mínimo entre " << idNoOrigem << " e " << idNoDestino << " é: " << dist[idNoOrigem][idNoDestino] << endl; 
+    cout << "Matriz Salva com Sucesso!" << endl;
+    cout << endl;
+}
 
+void Grafo::floydA0(map<int, map<int, int>> *dist) {
+    auto arestas = this->ARESTAS;
+    for (auto &no: *this->NOS) {
+        (*dist)[no.first] = map<int, int>();
+        for (auto &no2: *this->NOS) {
+            if (no.first == no2.first)
+                (*dist)[no.first][no2.first] = 0;
+            else
+                (*dist)[no.first][no2.first] = INF;
+        }
+    }
+
+    for (auto &aresta: *arestas) {
+        (*dist)[aresta.second->getIdOrigem()][aresta.second->getIdDestino()] = aresta.second->getPeso();
+        if (!this->isDirecionado())
+            (*dist)[aresta.second->getIdDestino()][aresta.second->getIdOrigem()] = aresta.second->getPeso();
+    }
 }

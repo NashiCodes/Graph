@@ -2,8 +2,9 @@
 #include "No.h"
 
 
-Aresta::Aresta( No *noDestino, int id, int peso) {
-    this->noDestino = noDestino;
+Aresta::Aresta(No *Origem, No *Destino, int id, int peso) {
+    this->Origem = Origem;
+    this->Destino = Destino;
     this->ID = id;
     this->PESO = peso;
 }
@@ -20,12 +21,28 @@ int Aresta::getPeso() const {
     this->PESO = valor;
 }
 
-No *Aresta::getNoDestino() {
-    return this->noDestino;
+No *Aresta::getOrigem() {
+    return this->Origem;
 }
 
- void Aresta::setNoDestino(No *valor) {
-    this->noDestino = valor;
+No *Aresta::getDestino() {
+    return this->Destino;
+}
+
+int Aresta::getIdOrigem() const {
+    return this->Origem->getID();
+}
+
+int Aresta::getIdDestino() const {
+    return this->Destino->getID();
+}
+
+void Aresta::setOrigem(No *valor) {
+    this->Origem = valor;
+}
+
+ void Aresta::setDestino(No *valor) {
+    this->Destino = valor;
 }
 
 int Aresta::getID() const {

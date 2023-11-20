@@ -27,15 +27,17 @@ public:
 
     void PrintListaAdjacencia();
 
-     set<int> *getFTD(int idNo);
-
      void fechoTransitivoDireto(int idNo);
 
      void fechoTransitivoIndireto(int idNo);
 
     float dijkstra(int id1, int id2);
 
-    void Floyd(int idNoOrigem, int idNoDestino, map<int, No *> *NOS;); // Mapa de nós de um grafo 
+    void Floyd(int idNoOrigem, int idNoDestino); // Mapa de nós de um grafo
+
+    void finalizaFloyd(map<int, map<int, int>> *dist, int idOrigem, int idoDestino);
+
+    void floydA0(map<int, map<int, int>> *dist);
 //
 //    void AGMPrim(int idNoOrigem);
 //
