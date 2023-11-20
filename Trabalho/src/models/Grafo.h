@@ -16,7 +16,7 @@ class Grafo : public AGrafo {
 public:
 
 
-    Grafo(bool APonderada, bool VPonderado ,bool ehDirecionado, ifstream *entrada, ofstream *Saida) : AGrafo() {
+    Grafo(bool APonderada, bool VPonderado, bool ehDirecionado, ifstream *entrada, ofstream *Saida) : AGrafo() {
         setPonderado(APonderada);
         setVerticePonderado(VPonderado);
         setDirecionado(ehDirecionado);
@@ -27,26 +27,34 @@ public:
 
     void PrintListaAdjacencia();
 
-     set<int> *getFTD(int idNo);
+    set<No *> *fechoTransitivoDireto(int idNo);
 
-     void fechoTransitivoDireto(int idNo);
+    set<No *> *fechoTransitivoIndireto(int idNo);
 
-     void fechoTransitivoIndireto(int idNo);
+    void dijkstra(int _Origem_, int _Destino_);
 
-//    void Dijkstra(int idNoOrigem, int idNoDestino);
-//
-//    void Floyd(int idNoOrigem, int idNoDestino);
-//
+    void auxDijkstra(No *no, map<int, int> *dist, set<int> *vistos, set<No *> *FTD);
+
+    int minDistance(map<int, int> *dist, set<int> *vistos, set<No *> *FTD) const;
+
+    void imprimeDijkstra(map<int, int> *dist, int idOrigem, int idDestino);
+
+    void Floyd(int idNoOrigem, int idNoDestino); // Mapa de nós de um grafo
+
+    void finalizaFloyd(map<int, map<int, int>> *dist, int idOrigem, int idoDestino);
+
+    void floydA0(map<int, map<int, int>> *dist);
+
 //    void AGMPrim(int idNoOrigem);
-//
+
 //    void AGMKruskal();
-//
+
 //    void DeepSearch(int idNo);
-//
+
 //    void ordenacaoTopologica();
-//
+
 //    void parametrosGrafo();
-//
+
 //    void articulacao();
 
     long localClusteringCoefficient(int idNo);

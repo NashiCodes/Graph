@@ -40,7 +40,7 @@ int main(int argc, const char *argv[]) {
 
     if (ehPonderado) {
         diretorio = "instancias_ponderadas";
-        nomeArquivo = "grafo_125.txt";
+        nomeArquivo = "test_1.txt";
         out = "saida_ponderada.txt";
     }
 //    string test = argv[1];
