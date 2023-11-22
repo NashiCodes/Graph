@@ -53,7 +53,7 @@ public:
 
 //    void AGMPrim(int idNoOrigem);
 
-//    void AGMKruskal();
+    void AGMKruskal();
 
 //    void DeepSearch(int idNo);
 

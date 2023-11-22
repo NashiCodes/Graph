@@ -434,3 +434,54 @@ void Grafo::Prim(int idNoOrigem) {
     return;
 }
 
+void Grafo::AGMKruskal(){
+
+    // Inicializnado vectores
+    vector<ARESTAS> *arestasInicio = new vector<ARESTAS>;
+    vector<ARESTAS> *arestasAux = new vector<ARESTAS>;
+    vector<ARESTAS> *arestasFinal = new vector<ARESTAS>;
+
+    // Preenche o vector com todas as arestas do grafo
+    for(auto& parNo: *this->NOS){
+        const NOS& no = parNo.second;
+
+        for(auto& parAresta: *this->no.ARESTAS){
+            arestasInicio->push_back(parAresta);
+        }
+    }
+
+    // Organiza as arestas em ordem crescente de peso
+    for(int i = 0; i <= arestasInicio->size(); i++){
+        if(i == 0){
+            arestasAux->push_back(arestasInicio[i]);
+        }
+        else{
+            if(arestasInicio[i]->PESO < arestasAux[i]->PESO){
+                arestasAux[i + 1] = arestasAux[i];
+                arestasAux[i] = arestasInicio[i];
+            }
+            else{
+                arestasAux->push_back(arestasInicio[i]);
+            }
+        }
+    }
+
+    // Desaloca vector que não será mais utilizado
+    delete arestasInicio;
+
+    // Implementa o algorítmo de Floyd
+    for(int i = 0; i < arestasAux->size(); i++){
+        if(i == 0){
+            arestasFinal[i] = arestasAux[i];
+        }
+        else{
+            for(int c = 0; c < arestasFinal->size(); c++){
+                if(!arestasAux[i]->Origem.ID == arestasFinal[c]->Origem.ID || arestasAux[i]->Origem.ID == arestasFinal[c]->Destino.ID){
+                    if(!arestasAux[i]->Destino.ID == arestasFinal[c]->Origem.ID || arestasAux[i]->Destino.ID == arestasFinal[c]->Destino.ID){
+                        arestasFinal[i] = arestasAux[i];
+                    }
+                }
+            }
+        }
+    }
+}
