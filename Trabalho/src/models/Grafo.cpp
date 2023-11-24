@@ -431,6 +431,7 @@ void Grafo::confere(list<pair<int, Aresta*>> &prim, list<int> &nos_visitados, li
     }
     auto arestas = no1->getArestas();
     nos.remove(no1->getID());
+    nos_visitados.push_back(no1->getID());
     for(auto a: arestas){
         prim.push_back(a);
     }
