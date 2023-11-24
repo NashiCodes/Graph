@@ -452,10 +452,10 @@ void Grafo::Prim(int idNoOrigem) {
     for(auto aresta: arestasOrdenadas){
         prim.push_back(aresta);
     }
+    nos_visitados->push_back(this->NOS->at(idNoOrigem)->getID());
+    nos->remove(this->NOS->at(idNoOrigem)->getID());
     for(auto no: *NOS){
         nos->push_back(no.first);
-        nos_visitados->push_back(this->NOS->at(idNoOrigem)->getID());
-        nos->remove(this->NOS->at(idNoOrigem)->getID());
     }
     while (!nos->empty()){
         confere(prim, *nos_visitados, *nos);
