@@ -3,8 +3,7 @@
 #include <algorithm>
 #include <list>
 #include <vector>
-#include <queue>
-
+#include <set>
 //#define INF 99999999
 using namespace std;
 
@@ -158,19 +157,19 @@ long Grafo::localClusteringCoefficient(int idNo) {
 /// @param _Origem_
 /// @param _Destino_
 /// @return
-void Grafo::dijkstra(int _Origem_, int _Destino_) {
+void Grafo::dijkstra(int Origem_, int Destino_) {
     try {
-        if (!this->existeNo(_Origem_)) throw invalid_argument("Nó de origem não existe");
-        if (!this->existeNo(_Destino_)) throw invalid_argument("Nó de destino não existe");
+        if (!this->existeNo(Origem_)) throw invalid_argument("Nó de origem não existe");
+        if (!this->existeNo(Destino_)) throw invalid_argument("Nó de destino não existe");
     }
     catch (invalid_argument &e) {
         cout << e.what() << endl;
         return;
     }
 
-    auto *FTD = fechoTransitivoDireto(_Origem_);
-    auto *Origem = this->NOS->at(_Origem_);
-    auto *Destino = this->NOS->at(_Destino_);
+    auto *FTD = fechoTransitivoDireto(Origem_);
+    auto *Origem = this->NOS->at(Origem_);
+    auto *Destino = this->NOS->at(Destino_);
 
     try {
         if (FTD->find(Destino) == FTD->end()) throw invalid_argument("Não existe caminho entre os nós");
@@ -184,7 +183,7 @@ void Grafo::dijkstra(int _Origem_, int _Destino_) {
     auto *dist = new map<int, int>();
     auto *vistos = new set<int>();
 
-    (*dist)[_Origem_] = 0;
+    (*dist)[Origem_] = 0;
 
     for (auto *no: *FTD) {
         (*dist)[no->getID()] = infinito;
@@ -193,13 +192,13 @@ void Grafo::dijkstra(int _Origem_, int _Destino_) {
             (*dist)[no->getID()] = Origem->getAresta(no->getID())->getPeso();
     }
 
-    this->auxDijkstra(Origem, dist, vistos, FTD);
-    this->imprimeDijkstra(dist, _Origem_, _Destino_);
+    this->auxDijkstra(dist, vistos, FTD);
+    this->imprimeDijkstra(dist, Origem_, Destino_);
 
 }
 
-void Grafo::auxDijkstra(No *no, map<int, int> *dist, set<int> *vistos, set<No *> *FTD) {
-    int minIdx = this->minDistance(dist, vistos, FTD);
+void Grafo::auxDijkstra(map<int, int> *dist, set<int> *vistos, set<No *> *FTD) {
+    int minIdx = Grafo::minDistance(dist, vistos, FTD);
 
     vistos->insert(minIdx);
     FTD->erase(this->NOS->at(minIdx));
@@ -212,7 +211,7 @@ void Grafo::auxDijkstra(No *no, map<int, int> *dist, set<int> *vistos, set<No *>
     }
 }
 
-int Grafo::minDistance(map<int, int> *dist, set<int> *vistos, set<No *> *FTD) const {
+int Grafo::minDistance(map<int, int> *dist, set<int> *vistos, set<No *> *FTD) {
     int min = INT_MAX, min_index;
 
     for (auto *no: *FTD) {
@@ -406,25 +405,25 @@ void Grafo::floydA0(map<int, map<int, int>> *dist) {
 }
 
 
-vector<pair<int, Aresta*>> Grafo::organizaArestaPeso(No &no) {
-        auto aresta = no.getArestas();
-        std::vector<pair<int, Aresta*>> Arestas;
-        for(auto aresta: aresta){
-            Arestas.emplace_back(aresta.first, aresta.second);
-        }
-        std::sort(Arestas.begin(), Arestas.end(),
-          [](const auto& a, const auto& b) {
-              return a.second < b.second;
-          });
+vector<pair<int, Aresta *>> Grafo::organizaArestaPeso(No *no) {
+    auto arestas = no->getArestas();
+    std::vector<pair<int, Aresta *>> Arestas;
+    for (auto aresta: arestas) {
+        Arestas.emplace_back(aresta.first, aresta.second);
+    }
+    std::sort(Arestas.begin(), Arestas.end(),
+              [](const auto &a, const auto &b) {
+                  return a.second < b.second;
+              });
 
-        return Arestas;
+    return Arestas;
 }
 
-void Grafo::confere(list<pair<int, Aresta*>> &prim, list<int> &nos_visitados, list<int> &nos){
-    pair<int, Aresta*> a = prim.back();
+void Grafo::confere(list<pair<int, Aresta *>> &prim, list<int> &nos_visitados, list<int> &nos) {
+    pair<int, Aresta *> a = prim.back();
     auto no1 = a.second->getDestino();
-    for(int x: nos_visitados) {
-        if(x == no1->getID()){
+    for (int x: nos_visitados) {
+        if (x == no1->getID()) {
             prim.pop_back();
             confere(prim, nos_visitados, nos);
         }
@@ -433,31 +432,31 @@ void Grafo::confere(list<pair<int, Aresta*>> &prim, list<int> &nos_visitados, li
     nos.remove(no1->getID());
     nos_visitados.push_back(no1->getID());
     prim.pop_back();
-    for(auto a: arestas){
-        prim.push_back(a);
+    for (auto aresta: arestas) {
+        prim.emplace_back(aresta);
     }
 }
 
 void Grafo::Prim(int idNoOrigem) {
     //const Grafo *arvoreMin = new Grafo();
-    auto *No = this->NOS->at(idNoOrigem);
+    auto *Origem = this->NOS->at(idNoOrigem);
     //std::list<No> filaNos;
     std::vector<pair<int, Aresta *>> arestasOrdenadas;
-    arestasOrdenadas = organizaArestaPeso(*No);
-    std::list<pair<int, Aresta*>> prim;
+    arestasOrdenadas = Grafo::organizaArestaPeso(Origem);
+    std::list<pair<int, Aresta *>> prim;
     list<int> *nos;
     list<int> *nos_visitados;
 
     vector<bool> marca(NOS->size(), false);
-    for(auto aresta: arestasOrdenadas){
+    for (auto aresta: arestasOrdenadas) {
         prim.push_back(aresta);
     }
     nos_visitados->push_back(this->NOS->at(idNoOrigem)->getID());
     nos->remove(this->NOS->at(idNoOrigem)->getID());
-    for(auto no: *NOS){
+    for (auto no: *NOS) {
         nos->push_back(no.first);
     }
-    while (!nos->empty()){
+    while (!nos->empty()) {
         confere(prim, *nos_visitados, *nos);
     }
     for (int n: *nos_visitados) {
@@ -465,3 +464,111 @@ void Grafo::Prim(int idNoOrigem) {
     }
 }
 
+set<No *> *Grafo::getVerticeInduzido() {
+    auto *verticeInduzido = new set<No *>();
+    auto *nosPossiveis = new set<int>();
+    if (inicioGVI(verticeInduzido, nosPossiveis)) {
+        cout << "Nós possíveis: " << endl;
+        for (auto &no: *nosPossiveis) {
+            cout << no << ", ";
+        }
+        cout << endl;
+
+        int opcao = menuGVI();
+        while (opcao != -1) {
+            switch (opcao) {
+                case 1:
+                    cout << "Nós possíveis: " << endl;
+                    for (auto &no: *nosPossiveis) {
+                        cout << no << ", ";
+                    }
+                    cout << endl;
+
+                    int idNo;
+                    cout << "Digite o ID do nó que deseja inserir: ";
+                    cin >> idNo;
+                    if (this->existeNo(idNo) && nosPossiveis->find(idNo) != nosPossiveis->end()) {
+                        verticeInduzido->insert(this->NOS->at(idNo));
+                        for (auto &aresta: this->NOS->at(idNo)->getArestas()) {
+                            nosPossiveis->insert(aresta.second->getDestino()->getID());
+                        }
+                    } else {
+                        cout << "Nao eh possivel adicionar o nó" << endl;
+                    }
+                    break;
+                case 2:
+                    cout << "Nós inseridos: " << endl;
+                    for (auto &no: *verticeInduzido) {
+                        cout << no->getID() << ", ";
+                    }
+                    cout << endl;
+
+                    int idNoRemover;
+                    cout << "Digite o ID do nó que deseja remover: ";
+                    cin >> idNoRemover;
+                    if (this->existeNo(idNoRemover) && verticeInduzido->find(this->NOS->at(idNoRemover)) !=
+                                                       verticeInduzido->end()) {
+                        verticeInduzido->erase(this->NOS->at(idNoRemover));
+                    } else {
+                        cout << "Nao eh possivel remover o nó" << endl;
+                    }
+                    break;
+                case 3:
+                    cout << "Nós inseridos: " << endl;
+                    for (auto &no: *verticeInduzido) {
+                        cout << no->getID() << ", ";
+                    }
+                    cout << endl;
+                    break;
+                default:
+                    cout << "Opção inválida" << endl;
+                    break;
+            }
+            opcao = menuGVI();
+        }
+    }
+    return verticeInduzido;
+}
+
+bool Grafo::inicioGVI(set<No *> *verticeInduzido, set<int> *nosPossiveis) {
+    cout << "[1] - Inserir nó" << endl;
+    cout << "[-1] - Sair" << endl;
+    int opcao;
+    cin >> opcao;
+
+    switch (opcao) {
+        case 1: {
+            int idNo;
+            cout << "Digite o ID do nó que deseja inserir: ";
+            cin >> idNo;
+            if (!this->existeNo(idNo)) {
+                cout << "Nó não existe" << endl;
+                return inicioGVI(verticeInduzido, nosPossiveis);
+            }
+            verticeInduzido->insert(this->NOS->at(idNo));
+            for (auto &aresta: this->NOS->at(idNo)->getArestas()) {
+                nosPossiveis->insert(aresta.second->getDestino()->getID());
+            }
+            return true;
+        }
+        case -1: {
+            return false;
+        }
+        default: {
+            cout << "Opção inválida" << endl;
+            return inicioGVI(verticeInduzido, nosPossiveis);
+        }
+    }
+
+}
+
+int Grafo::menuGVI() {
+    cout << "Selecione uma opção: " << endl;
+    cout << "[1] - Inserir nó" << endl;
+    cout << "[2] - Remover nó" << endl;
+    cout << "[3] - Imprimir nós já inseridos" << endl;
+    cout << "[-1] - Sair" << endl;
+    int opcao;
+    cin >> opcao;
+    return opcao;
+}
