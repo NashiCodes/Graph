@@ -104,10 +104,14 @@ public:
                 //Árvore Geradora Mínima - Prim;
             case 7: {
                 int id;
-                cout << "Árvore Geradora Mínima - Prim" << endl;
+                cout << "Arvore Geradora Minima - Prim" << endl;
                 cout << "Digite o id do vertice de origem: ";
                 cin >> id;
-                grafo->Prim(id);
+                try {
+                    grafo->Prim(id);
+                }catch(...){
+                    cout << "ERROR!!!";
+                }
                 break;
             }
                 //Árvore Geradora Mínima - Kruskal;

@@ -72,6 +72,8 @@ private:
 
     set<No *> *incidentes(No *no);
 
+    void confere(list<pair<int, Aresta*>> &prim, list<int> &nos_visitados, list<int> &nos);
+
 };
 
 

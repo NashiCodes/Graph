@@ -2,6 +2,8 @@
 #include <climits>
 #include <algorithm>
 #include <list>
+#include <vector>
+#include <queue>
 
 //#define INF 99999999
 using namespace std;
@@ -418,19 +420,46 @@ vector<pair<int, Aresta*>> Grafo::organizaArestaPeso(No &no) {
         return Arestas;
 }
 
-void Grafo::Prim(int idNoOrigem) {
-    //if(grafo.isDirecionado()){
-      //  throw new runtime_error("Prim só funciona em grafos não direcionados!!!");
-    //}
+void Grafo::confere(list<pair<int, Aresta*>> &prim, list<int> &nos_visitados, list<int> &nos){
+    pair<int, Aresta*> a = prim.back();
+    auto no1 = a.second->getDestino();
+    for(int x: nos_visitados) {
+        if(x == no1->getID()){
+            prim.pop_back();
+            confere(prim, nos_visitados, nos);
+        }
+    }
+    auto arestas = no1->getArestas();
+    nos.remove(no1->getID());
+    for(auto a: arestas){
+        prim.push_back(a);
+    }
+}
 
+void Grafo::Prim(int idNoOrigem) {
     //const Grafo *arvoreMin = new Grafo();
     auto *No = this->NOS->at(idNoOrigem);
     //std::list<No> filaNos;
-    std::vector<pair<int, Aresta*>>arestasOrdenadas;
+    std::vector<pair<int, Aresta *>> arestasOrdenadas;
     arestasOrdenadas = organizaArestaPeso(*No);
+    std::list<pair<int, Aresta*>> prim;
+    list<int> *nos;
+    list<int> *nos_visitados;
 
-
-
-    return;
+    vector<bool> marca(NOS->size(), false);
+    for(auto aresta: arestasOrdenadas){
+        prim.push_back(aresta);
+    }
+    for(auto no: *NOS){
+        nos->push_back(no.first);
+        nos_visitados->push_back(this->NOS->at(idNoOrigem)->getID());
+        nos->remove(this->NOS->at(idNoOrigem)->getID());
+    }
+    while (!nos->empty()){
+        confere(prim, *nos_visitados, *nos);
+    }
+    for (int n: *nos_visitados) {
+        cout << NOS->at(n) << "---";
+    }
 }
 
