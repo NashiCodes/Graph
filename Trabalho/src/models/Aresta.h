@@ -15,15 +15,19 @@ public:
 
     Aresta(No *Origem, No *Destino, int id, int peso);
 
+    static bool comparaAresta(Aresta *a, Aresta *b) {
+        return a->getPeso() < b->getPeso();
+    }
+
     virtual ~Aresta();
 
-     int getPeso() const;
+    int getPeso() const;
 
-     void setPeso(int valor);
+    void setPeso(int valor);
 
-     int getID() const;
+    int getID() const;
 
-     void setID(int valor);
+    void setID(int valor);
 
     int getIdDestino() const;
 

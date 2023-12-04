@@ -1,0 +1,15 @@
+Arvore Geradora Minima - Prim
+Raiz: 1
+1 -> 6Peso: 1
+6 -> 5Peso: 7
+5 -> 3Peso: 1
+3 -> 7Peso: 2
+7 -> 4Peso: 2
+4 -> 2Peso: 1
+
+
+
+
+
+
+

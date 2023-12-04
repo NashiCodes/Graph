@@ -29,7 +29,7 @@ public:
 
     void menuPrincipal() {
         int opcao;
-        do{
+        do {
             cout << endl;
             cout << "   ------  MENU ------" << endl;
             cout << "[1] Fecho transitivo direto de um vertice" << endl;
@@ -46,10 +46,10 @@ public:
             cin >> opcao;
             selecao(opcao);
 
-        }while(opcao != 0);
+        } while (opcao != 0);
     }
 
-    void selecao(int opcao){
+    void selecao(int opcao) {
         switch (opcao) {
             //Fecho transitivo direto de um vértice ;
             case 1: {
@@ -103,8 +103,11 @@ public:
             }
                 //Árvore Geradora Mínima - Prim;
             case 7: {
-                cout << "Árvore Geradora Mínima - Prim" << endl;
-//                grafo->minimalSpanningTreeByPrimAlgorithm(grafo->getVerticeInduzido());
+                if (grafo->isPonderado() && !grafo->isDirecionado()) {
+                    cout << "Arvore Geradora Minima - Prim" << endl;
+                    grafo->Prim(grafo->getVerticeInduzido());
+                } else
+                    cout << "Grafo não é ponderado ou é direcionado" << endl;
                 break;
             }
                 //Árvore Geradora Mínima - Kruskal;
@@ -138,7 +141,7 @@ public:
         cout << "Digite o ID do nó: ";
         cin >> idNo;
 
-        if(grafo->isVerticePonderado()) {
+        if (grafo->isVerticePonderado()) {
             cout << "Digite o peso do nó: ";
             cin >> peso;
         }
@@ -158,7 +161,7 @@ public:
         cout << "Digite o ID do nó de destino: ";
         cin >> idNoDestino;
 
-        if(grafo->isPonderado()) {
+        if (grafo->isPonderado()) {
             cout << "Digite o peso da aresta: ";
             cin >> peso;
         }
