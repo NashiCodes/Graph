@@ -623,33 +623,32 @@ void Grafo::auxSalvaAGM(Grafo *AGMPrim, No *pNo, set<No *> *pSet) {
 
 }
 
-void Grafo::AGMKruskal(){
+// TODO: REFAZER / REFATORAR
+void Grafo::AGMKruskal() {
 
     // Inicializnado vectores
-    vector<Aresta*>* vetorArestasInicio = new vector<Aresta*>;
-    vector<Aresta*>* vetorArestasAux = new vector<Aresta*>;
-    vector<Aresta*>* vetorArestasFinal = new vector<Aresta*>;
+    auto *vetorArestasInicio = new vector<Aresta *>;
+    auto *vetorArestasAux = new vector<Aresta *>;
+    auto *vetorArestasFinal = new vector<Aresta *>;
 
     // Preenche o vector com todas as arestas do grafo
-    for(auto& parNo: *this->NOS){
+    for (auto &parNo: *this->NOS) {
         auto arestaTotais = parNo.second->getArestas();
-        for(auto& parAresta: arestaTotais){
+        for (auto &parAresta: arestaTotais) {
             vetorArestasInicio->push_back(parAresta.second);
         }
     }
 
     // Organiza as arestas em ordem crescente de peso
-    for(int i = 0; i <= vetorArestasInicio->size(); i++){
-        if(i == 0){
-            vetorArestasAux->push_back(vetorArestasInicio + i);
-        }
-        else{
-            if(vetorArestasInicio[i]->PESO < vetorArestasAux[i]->PESO){
+    for (int i = 0; i <= vetorArestasInicio->size(); i++) {
+        if (i == 0) {
+            vetorArestasAux[i] = vetorArestasInicio[i];
+        } else {
+            if (vetorArestasInicio->at(i)->getPeso() < vetorArestasAux->at(i - 1)->getPeso()) {
                 vetorArestasAux[i + 1] = vetorArestasAux[i];
                 vetorArestasAux[i] = vetorArestasInicio[i];
-            }
-            else{
-                vetorArestasAux->push_back(vetorArestasInicio[i]);
+            } else {
+                vetorArestasAux->push_back(vetorArestasInicio->at(i));
             }
         }
     }
@@ -658,16 +657,16 @@ void Grafo::AGMKruskal(){
     delete vetorArestasInicio;
 
     // Implementa o algorítmo de Floyd
-    for(int i = 0; i < vetorArestasAux->size(); i++){
-        if(i == 0){
+    for (int i = 0; i < vetorArestasAux->size(); i++) {
+        if (i == 0) {
             vetorArestasFinal[i] = vetorArestasAux[i];
-        }
-        else{
-            for(int c = 0; c < vetorArestasFinal->size(); c++){
-                if(!(vetorArestasAux[i].Origem.ID == vetorArestasFinal[c]->Origem.ID || vetorArestasAux[i]->Origem.ID == vetorArestasFinal[c]->Destino.ID)){
-                    if(!(vetorArestasAux[i]->Destino.ID == vetorArestasFinal[c]->Origem.ID ||
-                    vetorArestasAux[i]->Destino.ID == vetorArestasFinal[c]->Destino.ID)){
-                        vetorArestasFinal[i] = vetorArestasAux[i];
+        } else {
+            for (int c = 0; c < vetorArestasFinal->size(); c++) {
+                if (!(vetorArestasAux->at(i)->getIdOrigem() == vetorArestasFinal[c]->Origem.ID ||
+                      vetorArestasAux->at(i)->getIdOrigem() == vetorArestasFinal[c]->Destino.ID)) {
+                    if (!(vetorArestasAux->at(i)->Destino.ID == vetorArestasFinal[c]->Origem.ID ||
+                          vetorArestasAux->at(i)->Destino.ID == vetorArestasFinal[c]->Destino.ID)) {
+                        vetorArestasFinal->at(i) = vetorArestasAux[i];
                     }
                 }
             }
