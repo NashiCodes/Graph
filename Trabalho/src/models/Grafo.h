@@ -8,6 +8,7 @@
 #include <set>
 #include <map>
 #include <list>
+#include <vector>
 #include "AGrafo.h"
 #include "Agrafo.cpp"
 
@@ -26,6 +27,14 @@ public:
         this->montaGrafo();
     }
 
+    Grafo(bool APonderada, bool VPonderado, bool ehDirecionado) : AGrafo() {
+        this->Input = nullptr;
+        this->setOutput(nullptr);
+        setPonderado(APonderada);
+        setVerticePonderado(VPonderado);
+        setDirecionado(ehDirecionado);
+    }
+
 
     void PrintListaAdjacencia();
 
@@ -39,7 +48,7 @@ public:
 
     set<No *> *getVerticeInduzido();
 
-    void Prim(int idNoOrigem);
+    void Prim(set<No *> *verticeInduzido);
 
 //    void AGMPrim(int idNoOrigem);
 
@@ -56,30 +65,50 @@ public:
     long localClusteringCoefficient(int idNo);
 
 private:
-    void auxDijkstra(map<int, int> *dist, set<int> *vistos, set<No *> *FTD);
-
-    static int minDistance(map<int, int> *dist, set<int> *vistos, set<No *> *FTD);
-
-    void imprimeDijkstra(map<int, int> *dist, int idOrigem, int idDestino);
-
-    void finalizaFloyd(map<int, map<int, int>> *dist, int idOrigem, int idoDestino);
-
-    void floydA0(map<int, map<int, int>> *dist);
-
-    bool inicioGVI(set<No *> *verticeInduzido, set<int> *nosPossiveis);
-
-    static int menuGVI();
-
-    static vector<pair<int, Aresta *>>organizaArestaPeso(No *no);
-
     void auxFTD(No *no, set<No *> *visitados);
 
     void auxFTI(No *no, set<No *> *nosVisitados, set<No *> *nosIncidentes);
 
     set<No *> *incidentes(No *no);
 
-    void confere(list <pair<int, Aresta *>> &prim, list<int> &nos_visitados, list<int> &nos);
+    void auxDijkstra(map<int, int> *dist, set<int> *vistos, set<No *> *FTD);
 
+    static int minDistance(map<int, int> *dist, set<int> *vistos, set<No *> *FTD);
+
+    void imprimeDijkstra(map<int, int> *dist, int idOrigem, int idDestino);
+
+    void floydA0(map<int, map<int, int>> *dist);
+
+    void finalizaFloyd(map<int, map<int, int>> *dist, int idOrigem, int idoDestino);
+
+    void menuGvi(set<No *> *verticeInduzido, set<int> *nosPossiveis);
+
+    void insereGvi(set<No *> *verticeInduzido, set<int> *nosPossiveis);
+
+    void removeGvi(set<No *> *verticeInduzido, set<int> *nosPossiveis);
+
+    static void imprimeNosPossiveis(set<int> *nosPossiveis) {
+        cout << "Nos possiveis: ";
+        for (auto &it: *nosPossiveis) {
+            cout << it << " ";
+        }
+        cout << endl;
+
+    }
+
+    static void imprimeVerticeInduzido(set<No *> *verticeInduzido) {
+        cout << "Vertice induzido: ";
+        for (auto &it: *verticeInduzido) {
+            cout << it->getID() << " ";
+        }
+        cout << endl;
+    }
+
+    vector<Aresta *> *OrdenaArestas(set<No *> *verticeInduzido);
+
+    void salvaAGM(Grafo *AGMPrim, int noRaiz);
+
+    void auxSalvaAGM(Grafo *AGMPrim, No *pNo, set<No *> *pSet);
 };
 
 
