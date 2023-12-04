@@ -40,7 +40,7 @@ int main(int argc, const char *argv[]) {
 
     if (ehPonderado) {
         diretorio = "instancias_ponderadas";
-        nomeArquivo = "test_1.txt";
+        nomeArquivo = "test.txt";
         out = "saida_ponderada.txt";
     }
 //    string test = argv[1];
@@ -61,7 +61,7 @@ int main(int argc, const char *argv[]) {
 //    entrada.open(argv[1], ios::in);
 //    saida.open(argv[2], ios::out | ios::trunc);
 
-    auto *g = new Grafo(ehPonderado,false, ehDirecionado, &entrada, &saida);
+    auto *g = new Grafo(ehPonderado, false, ehDirecionado, &entrada, &saida);
 
 
     // Criando grafo a partir de uma lista de adjacencia
