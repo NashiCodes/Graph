@@ -577,7 +577,7 @@ void Grafo::Prim(set<No *> *verticeInduzido) {
         nosVisitados->insert(noMin);
     }
 
-    salvaAGM(agm, Raiz->getID());
+    salvaAGM(agm, Raiz->getID(), "Prim");
 
     // Libera a memória
     delete fila;
@@ -585,20 +585,20 @@ void Grafo::Prim(set<No *> *verticeInduzido) {
     delete nosVisitados;
 }
 
-void Grafo::salvaAGM(Grafo *AGMPrim, int noRaiz) {
-    auto Raiz = AGMPrim->getNos()->at(noRaiz);
+void Grafo::salvaAGM(Grafo *AGM, int noRaiz, string algoritmo) {
+    auto Raiz = AGM->getNos()->at(noRaiz);
 
     if (!this->getOutput()->is_open()) {
         cout << "Erro ao abrir os arquivos!" << endl;
         return;
     }
 
-    *this->getOutput() << "Arvore Geradora Minima - Prim" << endl;
+    *this->getOutput() << "Arvore Geradora Minima - " << algoritmo << endl;
     *this->getOutput() << "Raiz: " << Raiz->getID() << endl;
     auto *nosVisitados = new set<No *>();
 
     // Salva a AGM no arquivo de saída fazendo um caminhamento em profundidade
-    this->auxSalvaAGM(AGMPrim, Raiz, nosVisitados);
+    this->auxSalvaAGM(AGM, Raiz, nosVisitados);
 }
 
 void Grafo::auxSalvaAGM(Grafo *AGMPrim, No *pNo, set<No *> *pSet) {
@@ -624,52 +624,79 @@ void Grafo::auxSalvaAGM(Grafo *AGMPrim, No *pNo, set<No *> *pSet) {
 }
 
 // TODO: REFAZER / REFATORAR
-void Grafo::AGMKruskal() {
+void Grafo::Kruskal(set<No *> *verticeInduzido) {
 
-    // Inicializnado vectores
-    auto *vetorArestasInicio = new vector<Aresta *>;
-    auto *vetorArestasAux = new vector<Aresta *>;
-    auto *vetorArestasFinal = new vector<Aresta *>;
+    // Inicializando Areastas ordenadas
+    auto *arestasOrdenadas = this->OrdenaArestas(verticeInduzido);
 
-    // Preenche o vector com todas as arestas do grafo
-    for (auto &parNo: *this->NOS) {
-        auto arestaTotais = parNo.second->getArestas();
-        for (auto &parAresta: arestaTotais) {
-            vetorArestasInicio->push_back(parAresta.second);
-        }
+    auto *AGMKruskal = new Grafo(this->isPonderado(), this->isVerticePonderado(), this->isDirecionado());
+
+    //Declarando map de conjuntos disjuntos
+    auto *conjuntosDisjuntos = new map<int, set<No *> *>();
+
+    //Inicializando conjuntos disjuntos
+    for (auto &no: *verticeInduzido) {
+        auto *conjunto = new set<No *>();
+        conjunto->insert(no);
+        conjuntosDisjuntos->insert(pair<int, set<No *> *>(no->getID(), conjunto));
     }
 
-    // Organiza as arestas em ordem crescente de peso
-    for (int i = 0; i <= vetorArestasInicio->size(); i++) {
-        if (i == 0) {
-            vetorArestasAux[i] = vetorArestasInicio[i];
-        } else {
-            if (vetorArestasInicio->at(i)->getPeso() < vetorArestasAux->at(i - 1)->getPeso()) {
-                vetorArestasAux[i + 1] = vetorArestasAux[i];
-                vetorArestasAux[i] = vetorArestasInicio[i];
-            } else {
-                vetorArestasAux->push_back(vetorArestasInicio->at(i));
+    while (AGMKruskal->ARESTAS->size() < verticeInduzido->size() - 1) {
+        Aresta *aresta = nullptr;
+        int min = INT_MAX / 2;
+        No *Origem = nullptr;
+        No *Destino = nullptr;
+        for (auto &arestaOrdenada: *arestasOrdenadas) {
+            auto auxOrigem = arestaOrdenada->getOrigem();
+            auto auxDestino = arestaOrdenada->getDestino();
+            int peso = arestaOrdenada->getPeso();
+            if (conjuntosDisjuntos->at(auxOrigem->getID()) == conjuntosDisjuntos->at(auxDestino->getID())) continue;
+            if (peso >= min) continue;
+
+            Origem = auxOrigem;
+            Destino = auxDestino;
+            aresta = arestaOrdenada;
+            min = peso;
+        }
+
+        if (aresta == nullptr || Origem == nullptr || Destino == nullptr) break;
+
+        auto conjOrigem = conjuntosDisjuntos->find(Origem->getID());
+        auto conjDestino = conjuntosDisjuntos->find(Destino->getID());
+
+        if (conjOrigem->first < conjDestino->first) {
+            auto aux = conjDestino->second;
+
+            for (auto &no: *conjDestino->second) {
+                conjuntosDisjuntos->at(no->getID()) = conjOrigem->second;
             }
-        }
-    }
 
-    // Desaloca vector que não será mais utilizado
-    delete vetorArestasInicio;
-
-    // Implementa o algorítmo de Floyd
-    for (int i = 0; i < vetorArestasAux->size(); i++) {
-        if (i == 0) {
-            vetorArestasFinal[i] = vetorArestasAux[i];
+            conjOrigem->second->merge(*aux);
+            conjDestino->second = conjOrigem->second;
+            delete aux;
         } else {
-            for (int c = 0; c < vetorArestasFinal->size(); c++) {
-                if (!(vetorArestasAux->at(i)->getIdOrigem() == vetorArestasFinal[c]->Origem.ID ||
-                      vetorArestasAux->at(i)->getIdOrigem() == vetorArestasFinal[c]->Destino.ID)) {
-                    if (!(vetorArestasAux->at(i)->Destino.ID == vetorArestasFinal[c]->Origem.ID ||
-                          vetorArestasAux->at(i)->Destino.ID == vetorArestasFinal[c]->Destino.ID)) {
-                        vetorArestasFinal->at(i) = vetorArestasAux[i];
-                    }
-                }
+            auto aux = conjOrigem->second;
+
+            for (auto &no: *conjOrigem->second) {
+                conjuntosDisjuntos->at(no->getID()) = conjDestino->second;
             }
+            conjDestino->second->merge(*aux);
+
+            conjOrigem->second = conjDestino->second;
+            delete aux;
         }
+
+        auto *origemAGM = new No(Origem->getID(), Origem->getPeso());
+        auto *destinoAGM = new No(Destino->getID(), Destino->getPeso());
+        AGMKruskal->InserirNo(origemAGM->getID(), origemAGM->getPeso());
+        AGMKruskal->InserirNo(destinoAGM->getID(), destinoAGM->getPeso());
+        AGMKruskal->CriarAresta(origemAGM->getID(), destinoAGM->getID(), aresta->getPeso());
+
+        //Remove aresta do vetor de arestas ordenadas
+        auto position = find(arestasOrdenadas->begin(), arestasOrdenadas->end(), aresta) - arestasOrdenadas->begin();
+        arestasOrdenadas->erase(arestasOrdenadas->begin() + position);
     }
+    auto Raiz = conjuntosDisjuntos->begin().operator*().second->begin().operator*();
+
+    salvaAGM(AGMKruskal, Raiz->getID(), "Kruskal");
 }

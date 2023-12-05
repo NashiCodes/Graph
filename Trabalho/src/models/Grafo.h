@@ -52,7 +52,7 @@ public:
 
 //    void AGMPrim(int idNoOrigem);
 
-    void AGMKruskal();
+    void Kruskal(set<No *> *verticeInduzido);
 
 //    void DeepSearch(int idNo);
 
@@ -106,9 +106,10 @@ private:
 
     vector<Aresta *> *OrdenaArestas(set<No *> *verticeInduzido);
 
-    void salvaAGM(Grafo *AGMPrim, int noRaiz);
+    void salvaAGM(Grafo *AGM, int noRaiz, string algoritmo);
 
     void auxSalvaAGM(Grafo *AGMPrim, No *pNo, set<No *> *pSet);
+
 };
 
 

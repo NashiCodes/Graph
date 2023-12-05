@@ -19,7 +19,7 @@ public:
         return a->getPeso() < b->getPeso();
     }
 
-    virtual ~Aresta();
+    virtual ~Aresta() = default;
 
     int getPeso() const;
 

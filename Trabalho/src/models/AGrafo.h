@@ -38,8 +38,15 @@ protected:
     };
 
     ~AGrafo() {
+        for (auto &no: *NOS) {
+            delete no.second;
+        }
+        for (auto &aresta: *ARESTAS) {
+            delete aresta.second;
+        }
         delete NOS;
         delete ARESTAS;
+        delete idsLiberados;
     };
 
 public:
@@ -87,6 +94,7 @@ public:
     void RemoverNo(int idNo);
 
     void CriarAresta(int idNoOrigem, int idNoDestino, int pesoAresta);
+
     void RemoverAresta(int idNoOrigem, int idNoDestino);
 
     void imprimeGraus(int idNo);

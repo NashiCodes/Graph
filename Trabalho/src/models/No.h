@@ -15,17 +15,21 @@ class Aresta;
 class No {
 public:
     No(int idNo, int peso);
-    virtual ~No();
+
+    virtual ~No() = default;
 
     int getID() const;
 
     int getPeso() const;
+
     void setPeso(int valor);
 
     int getGrauEntrada() const;
+
     void setGrauEntrada(int valor);
 
     int getGrauSaida() const;
+
     void setGrauSaida(int valor);
 
     void printarNo(bool ponderado, bool direcionado);
@@ -34,7 +38,7 @@ public:
 
     Aresta *getAresta(int idNoDestino);
 
-    map<int, Aresta*> getArestas();
+    map<int, Aresta *> getArestas();
 
     void RemoveAresta(int idNoDestino, bool direcionado);
 
@@ -43,8 +47,7 @@ private:
     int PESO;
     int GRAU_ENTRADA;
     int GRAU_SAIDA;
-    map<int, Aresta*> ARESTAS;
-
+    map<int, Aresta *> ARESTAS;
 };
 
 #endif //NO_H

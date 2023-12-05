@@ -112,11 +112,15 @@ public:
             }
                 //Árvore Geradora Mínima - Kruskal;
             case 8: {
-                cout << "Árvore Geradora Mínima - Kruskal" << endl;
-//                grafo->agmByKruskal(output_file, grafo->getVerticeInduzido());
+                if (!grafo->isPonderado() && grafo->isDirecionado())
+                    cout << "Grafo não é ponderado ou é direcionado" << endl;
+                else {
+                    cout << "Arvore Geradora Minima - Kruskal" << endl;
+                    grafo->Kruskal(grafo->getVerticeInduzido());
+                }
                 break;
             }
-                //Caminhamento em profundidade
+                //Caminhamento em profundidade;
             case 9: {
                 // output_file.close();
                 int id;

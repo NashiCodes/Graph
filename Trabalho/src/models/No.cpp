@@ -20,21 +20,6 @@ No::No(int idNo, int peso) {
 }
 
 /**
- * Destrutor da classe No.
- *
- * @return void
- * @precondition: Nenhuma
- * @postcondition: O nó é destruído
- *
- */
-No::~No() {
-    for (auto &it: this->ARESTAS) {
-        delete it.second;
-    }
-    delete this;
-}
-
-/**
  * Retorna o identificador do nó.
  *
  * @return int
@@ -148,7 +133,7 @@ void No::setPeso(int valor) {
     this->PESO = valor;
 }
 
-void No::RemoveAresta(int idNoDestino,bool direcionado) {
+void No::RemoveAresta(int idNoDestino, bool direcionado) {
     if (idNoDestino < 0) {
         cout << "ID do nó destino não pode ser negativo" << endl;
         return;

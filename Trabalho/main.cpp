@@ -20,16 +20,16 @@ bool ehCmakeDir(const string *path);
 
 int main(int argc, const char *argv[]) {
     // Obtendo a informacao se o grafo eh direcionado ou nao
-    bool ehDirecionado;
+    bool ehDirecionado = false;
     cout << "Seu grafo eh direcionado? (1) Direcionado ou (0) Nao Direcionado: ";
-    cin >> ehDirecionado;
+//    cin >> ehDirecionado;
     cout << "Eh direcionado: " << ehDirecionado;
     cout << '\n' << endl;
 
     // Obtendo a informacao se o grafo eh ponderado ou nao
-    bool ehPonderado;
+    bool ehPonderado = true;
     cout << "Seu grafo eh Ponderado? (1) Ponderado ou (0) Nao Ponderado: ";
-    cin >> ehPonderado;
+//    cin >> ehPonderado;
     cout << "Eh ponderado: " << ehPonderado;
     cout << '\n' << endl;
 
@@ -37,12 +37,12 @@ int main(int argc, const char *argv[]) {
     string diretorio = "instancias_nao_ponderadas";
     string nomeArquivo = "grafo_1000_1.txt";
     string out = "saida.txt";
-
-    if (ehPonderado) {
-        diretorio = "instancias_ponderadas";
-        nomeArquivo = "test.txt";
-        out = "saida_ponderada.txt";
-    }
+//
+//    if (ehPonderado) {
+    diretorio = "instancias_ponderadas";
+    nomeArquivo = "test.txt";
+    out = "saida_ponderada.txt";
+//    }
 //    string test = argv[1];
 
     // Criando arquivos de entrada e saida
