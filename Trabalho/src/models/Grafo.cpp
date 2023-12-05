@@ -623,7 +623,6 @@ void Grafo::auxSalvaAGM(Grafo *AGMPrim, No *pNo, set<No *> *pSet) {
 
 }
 
-// TODO: REFAZER / REFATORAR
 void Grafo::Kruskal(set<No *> *verticeInduzido) {
 
     // Inicializando Areastas ordenadas
