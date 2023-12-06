@@ -56,7 +56,9 @@ public:
                 int id;
                 cout << "Digite o ID do vertice para seu fecho transitivo direto: ";
                 cin >> id;
-                grafo->fechoTransitivoDireto(id);
+                auto temp = grafo->fechoTransitivoDireto(id);
+                grafo->salvaFecho(temp, "Direto");
+                delete temp;
                 break;
             }
                 //Fecho transitivo indireto de um vértice;
@@ -142,7 +144,7 @@ public:
     }
 
     void printarGrafo() {
-        grafo->PrintListaAdjacencia();
+        grafo->printListaAdjacencia();
     }
 
     void inserirNo() {

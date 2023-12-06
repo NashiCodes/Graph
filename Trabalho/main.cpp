@@ -71,7 +71,14 @@ int main(int argc, const char *argv[]) {
     // Print de arestas (apenas para testes)
     // g->printArestas();
 
-    (new Menu(g))->menuPrincipal();
+    auto menu = new Menu(g);
+    menu->menuPrincipal();
+
+    entrada.close();
+    saida.close();
+
+    delete menu;
+    delete g;
 
     return 0;
 }

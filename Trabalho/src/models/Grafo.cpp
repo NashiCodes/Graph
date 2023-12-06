@@ -10,7 +10,7 @@ using namespace std;
  * @brief Imprime a lista de adjacência do grafo
  * @return void
 */
-void Grafo::PrintListaAdjacencia() {
+void Grafo::printListaAdjacencia() {
     cout << "Lista de Adjacência: " << endl;
     for (auto &no: *this->NOS) {
         cout << "| " << no.first << " | : ";
@@ -38,12 +38,7 @@ set<No *> *Grafo::fechoTransitivoDireto(int idNo) {
     cout << "Fecho Transitivo Direto: " << endl;
     cout << "Nó: " << no->getID() << endl << "[ ";
     auto *nosVisitados = new set<No *>();
-    auxFTD(no, nosVisitados);
-
-    for (auto &noVisitado: *nosVisitados) {
-        cout << noVisitado->getID() << ", ";
-    }
-    cout << "]" << endl;
+    auxFtd(no, nosVisitados);
 
     return nosVisitados;
 }
@@ -55,7 +50,7 @@ set<No *> *Grafo::fechoTransitivoDireto(int idNo) {
  * @param nosVisitados: Nós visitados
  * @return void
 */
-void Grafo::auxFTD(No *no, set<No *> *nosVisitados) {
+void Grafo::auxFtd(No *no, set<No *> *nosVisitados) {
     if (no == nullptr) return;
 
     if (nosVisitados->find(no) != nosVisitados->end())return;
@@ -65,7 +60,7 @@ void Grafo::auxFTD(No *no, set<No *> *nosVisitados) {
     for (auto &aresta: no->getArestas()) {
         auto arestaDestino = aresta.second;
         auto noDestino = arestaDestino->getDestino();
-        auxFTD(noDestino, nosVisitados);
+        auxFtd(noDestino, nosVisitados);
     }
 }
 
@@ -74,22 +69,20 @@ void Grafo::auxFTD(No *no, set<No *> *nosVisitados) {
  * @param idNo: Identificador do nó
  * @return void
 */
-set<No *> *Grafo::fechoTransitivoIndireto(int idNo) {
-    if (!this->isDirecionado() || !this->existeNo(idNo)) return nullptr;
+void Grafo::fechoTransitivoIndireto(int idNo) {
+    if (!this->isDirecionado() || !this->existeNo(idNo)) return;
 
     auto *no = this->NOS->at(idNo);
     cout << "Fecho Transitivo Indireto: " << endl;
     cout << "Nó: " << no->getID() << endl << "[ ";
     auto *nosVisitados = new set<No *>();
     set<No *> *nosIncidentes = incidentes(no);
-    auxFTI(no, nosVisitados, nosIncidentes);
+    auxFti(no, nosVisitados, nosIncidentes);
 
-    for (auto &noVisitado: *nosVisitados) {
-        cout << noVisitado->getID() << ", ";
-    }
-    cout << "]" << endl;
+    this->salvaFecho(nosVisitados, "Indireto");
 
-    return nosVisitados;
+    delete nosIncidentes;
+    delete nosVisitados;
 }
 
 /**
@@ -100,7 +93,7 @@ set<No *> *Grafo::fechoTransitivoIndireto(int idNo) {
  * @param nosIncidentes: Nós incidentes
  * @return void
 */
-void Grafo::auxFTI(No *no, set<No *> *nosVisitados, set<No *> *nosIncidentes) {
+void Grafo::auxFti(No *no, set<No *> *nosVisitados, set<No *> *nosIncidentes) {
     if (no == nullptr) return;
 
     if (nosVisitados->find(no) != nosVisitados->end()) return;
@@ -109,7 +102,7 @@ void Grafo::auxFTI(No *no, set<No *> *nosVisitados, set<No *> *nosIncidentes) {
 
     for (auto &noIncidente: *nosIncidentes) {
         set<No *> *auxNosIncidentes = incidentes(noIncidente);
-        auxFTI(noIncidente, nosVisitados, auxNosIncidentes);
+        auxFti(noIncidente, nosVisitados, auxNosIncidentes);
     }
 }
 
@@ -126,6 +119,19 @@ set<No *> *Grafo::incidentes(No *no) {
         }
     }
     return nosIncidentes;
+}
+
+void Grafo::salvaFecho(set<No *> *fecho, const string &tipo) {
+    if (!this->getOutput()->is_open()) {
+        cout << "Erro ao abrir os arquivos!" << endl;
+        return;
+    }
+
+    *this->getOutput() << "Fecho Transitivo " << tipo << endl;
+    for (auto &no: *fecho) {
+        *this->getOutput() << no->getID() << ", ";
+    }
+    *this->getOutput() << endl;
 }
 
 long Grafo::localClusteringCoefficient(int idNo) {
@@ -156,19 +162,19 @@ long Grafo::localClusteringCoefficient(int idNo) {
 /// @param _Origem_
 /// @param _Destino_
 /// @return
-void Grafo::dijkstra(int Origem_, int Destino_) {
+void Grafo::dijkstra(int origem, int destino) {
     try {
-        if (!this->existeNo(Origem_)) throw invalid_argument("Nó de origem não existe");
-        if (!this->existeNo(Destino_)) throw invalid_argument("Nó de destino não existe");
+        if (!this->existeNo(origem)) throw invalid_argument("Nó de origem não existe");
+        if (!this->existeNo(destino)) throw invalid_argument("Nó de destino não existe");
     }
     catch (invalid_argument &e) {
         cout << e.what() << endl;
         return;
     }
 
-    auto *FTD = fechoTransitivoDireto(Origem_);
-    auto *Origem = this->NOS->at(Origem_);
-    auto *Destino = this->NOS->at(Destino_);
+    auto *FTD = fechoTransitivoDireto(origem);
+    auto *Origem = this->NOS->at(origem);
+    auto *Destino = this->NOS->at(destino);
 
     try {
         if (FTD->find(Destino) == FTD->end()) throw invalid_argument("Não existe caminho entre os nós");
@@ -182,7 +188,7 @@ void Grafo::dijkstra(int Origem_, int Destino_) {
     auto *dist = new map<int, int>();
     auto *vistos = new set<int>();
 
-    (*dist)[Origem_] = 0;
+    (*dist)[origem] = 0;
 
     for (auto *no: *FTD) {
         (*dist)[no->getID()] = infinito;
@@ -192,8 +198,11 @@ void Grafo::dijkstra(int Origem_, int Destino_) {
     }
 
     this->auxDijkstra(dist, vistos, FTD);
-    this->imprimeDijkstra(dist, Origem_, Destino_);
+    this->imprimeDijkstra(dist, origem, destino);
 
+    delete FTD;
+    delete dist;
+    delete vistos;
 }
 
 void Grafo::auxDijkstra(map<int, int> *dist, set<int> *vistos, set<No *> *FTD) {
@@ -307,7 +316,8 @@ void Grafo::Floyd(int idNoOrigem, int idNoDestino) {
                     // A distância de i até j passa a ser a distância de i até k + a distância de k até j
                     (*dist)[i.first][j.first] = (*dist)[i.first][k.first] + (*dist)[k.first][j.first];
 
-                    // Se o grafo não for direcionado, a distância de j até i também passa a ser a distância de j até k + a distância de k até i
+                    // Se o grafo não for direcionado, a distância de j até i também passa a ser
+                    // a distância de j até k + a distância de k até i
                     if (!this->isDirecionado())
                         (*dist)[j.first][i.first] = (*dist)[i.first][k.first] + (*dist)[k.first][j.first];
                 }
@@ -585,7 +595,7 @@ void Grafo::Prim(set<No *> *verticeInduzido) {
     delete nosVisitados;
 }
 
-void Grafo::salvaAGM(Grafo *AGM, int noRaiz, string algoritmo) {
+void Grafo::salvaAGM(Grafo *AGM, int noRaiz, const string &algoritmo) {
     auto Raiz = AGM->getNos()->at(noRaiz);
 
     if (!this->getOutput()->is_open()) {
@@ -625,12 +635,52 @@ void Grafo::auxSalvaAGM(Grafo *AGMPrim, No *pNo, set<No *> *pSet) {
 
 void Grafo::Kruskal(set<No *> *verticeInduzido) {
 
-    // Inicializando Areastas ordenadas
+    // Inicializando Arestas ordenadas
     auto *arestasOrdenadas = this->OrdenaArestas(verticeInduzido);
+    //Declarando map de conjuntos disjuntos
+    auto *conjuntosDisjuntos = Grafo::inicializaConjuntos(verticeInduzido);
+
+    auto AGMKruskal = auxKruskal(verticeInduzido, arestasOrdenadas, conjuntosDisjuntos);
+
+    auto Raiz = conjuntosDisjuntos->begin().operator*().second->begin().operator*();
+
+    salvaAGM(AGMKruskal, Raiz->getID(), "Kruskal");
+
+    delete arestasOrdenadas;
+    delete conjuntosDisjuntos;
+    delete verticeInduzido;
+    delete AGMKruskal;
+}
+
+Grafo *Grafo::auxKruskal(set<No *> *verticeInduzido, vector<Aresta *> *arestasOrdenadas,
+                         map<int, set<No *> *> *conjuntosDisjuntos) {
 
     auto *AGMKruskal = new Grafo(this->isPonderado(), this->isVerticePonderado(), this->isDirecionado());
 
-    //Declarando map de conjuntos disjuntos
+    while (AGMKruskal->ARESTAS->size() < verticeInduzido->size() - 1) {
+        Aresta *aresta = nullptr;
+        No *Origem = nullptr;
+        No *Destino = nullptr;
+
+        Grafo::buscaArestaKruskal(arestasOrdenadas, conjuntosDisjuntos, Origem, Destino, aresta);
+
+        if (aresta == nullptr || Origem == nullptr || Destino == nullptr) break;
+
+        Grafo::atualizaConjuntos(conjuntosDisjuntos, Origem, Destino);
+
+        AGMKruskal->InserirNo(Origem->getID(), Origem->getPeso());
+        AGMKruskal->InserirNo(Destino->getID(), Destino->getPeso());
+        AGMKruskal->CriarAresta(Origem->getID(), Destino->getID(), aresta->getPeso());
+
+        //Remove aresta do vetor de arestas ordenadas
+        auto position = find(arestasOrdenadas->begin(), arestasOrdenadas->end(), aresta) - arestasOrdenadas->begin();
+        arestasOrdenadas->erase(arestasOrdenadas->begin() + position);
+    }
+
+    return AGMKruskal;
+}
+
+map<int, set<No *> *> *Grafo::inicializaConjuntos(set<No *> *verticeInduzido) {
     auto *conjuntosDisjuntos = new map<int, set<No *> *>();
 
     //Inicializando conjuntos disjuntos
@@ -640,64 +690,55 @@ void Grafo::Kruskal(set<No *> *verticeInduzido) {
         conjuntosDisjuntos->insert(pair<int, set<No *> *>(no->getID(), conjunto));
     }
 
-    while (AGMKruskal->ARESTAS->size() < verticeInduzido->size() - 1) {
-        Aresta *aresta = nullptr;
-        int min = INT_MAX / 2;
-        No *Origem = nullptr;
-        No *Destino = nullptr;
-        for (auto &arestaOrdenada: *arestasOrdenadas) {
-            auto auxOrigem = arestaOrdenada->getOrigem();
-            auto auxDestino = arestaOrdenada->getDestino();
-            int peso = arestaOrdenada->getPeso();
-            if (conjuntosDisjuntos->at(auxOrigem->getID()) == conjuntosDisjuntos->at(auxDestino->getID())) continue;
-            if (peso >= min) continue;
+    return conjuntosDisjuntos;
+}
 
-            Origem = auxOrigem;
-            Destino = auxDestino;
-            aresta = arestaOrdenada;
-            min = peso;
-        }
+void Grafo::buscaArestaKruskal(vector<Aresta *> *arestasOrdenadas, map<int, set<No *> *> *conjuntosDisjuntos,
+                               No *&Origem, No *&Destino, Aresta *&aresta) {
 
-        if (aresta == nullptr || Origem == nullptr || Destino == nullptr) break;
+    int min = INT_MAX / 2;
 
-        auto conjOrigem = conjuntosDisjuntos->find(Origem->getID());
-        auto conjDestino = conjuntosDisjuntos->find(Destino->getID());
+    for (auto &arestaOrdenada: *arestasOrdenadas) {
+        auto auxOrigem = arestaOrdenada->getOrigem();
+        auto auxDestino = arestaOrdenada->getDestino();
+        int peso = arestaOrdenada->getPeso();
+        if (conjuntosDisjuntos->at(auxOrigem->getID()) == conjuntosDisjuntos->at(auxDestino->getID())) continue;
+        if (peso >= min) continue;
 
-        if (conjOrigem->first < conjDestino->first) {
-            auto aux = conjDestino->second;
-
-            for (auto &no: *conjDestino->second) {
-                conjuntosDisjuntos->at(no->getID()) = conjOrigem->second;
-            }
-
-            conjOrigem->second->merge(*aux);
-            conjDestino->second = conjOrigem->second;
-            delete aux;
-        } else {
-            auto aux = conjOrigem->second;
-
-            for (auto &no: *conjOrigem->second) {
-                conjuntosDisjuntos->at(no->getID()) = conjDestino->second;
-            }
-            conjDestino->second->merge(*aux);
-
-            conjOrigem->second = conjDestino->second;
-            delete aux;
-        }
-
-        auto *origemAGM = new No(Origem->getID(), Origem->getPeso());
-        auto *destinoAGM = new No(Destino->getID(), Destino->getPeso());
-        AGMKruskal->InserirNo(origemAGM->getID(), origemAGM->getPeso());
-        AGMKruskal->InserirNo(destinoAGM->getID(), destinoAGM->getPeso());
-        AGMKruskal->CriarAresta(origemAGM->getID(), destinoAGM->getID(), aresta->getPeso());
-
-        //Remove aresta do vetor de arestas ordenadas
-        auto position = find(arestasOrdenadas->begin(), arestasOrdenadas->end(), aresta) - arestasOrdenadas->begin();
-        arestasOrdenadas->erase(arestasOrdenadas->begin() + position);
+        Origem = auxOrigem;
+        Destino = auxDestino;
+        aresta = arestaOrdenada;
+        min = peso;
     }
-    auto Raiz = conjuntosDisjuntos->begin().operator*().second->begin().operator*();
+}
 
-    salvaAGM(AGMKruskal, Raiz->getID(), "Kruskal");
+void Grafo::atualizaConjuntos(map<int, set<No *> *> *conjuntosDisjuntos, No *Origem, No *Destino) {
+
+    auto conjOrigem = conjuntosDisjuntos->find(Origem->getID());
+    auto conjDestino = conjuntosDisjuntos->find(Destino->getID());
+
+    if (conjOrigem->first < conjDestino->first) {
+        auto aux = conjDestino->second;
+
+        for (auto &no: *conjDestino->second) {
+            conjuntosDisjuntos->at(no->getID()) = conjOrigem->second;
+        }
+
+        conjOrigem->second->merge(*aux);
+        conjDestino->second = conjOrigem->second;
+        delete aux;
+    } else {
+        auto aux = conjOrigem->second;
+
+        for (auto &no: *conjOrigem->second) {
+            conjuntosDisjuntos->at(no->getID()) = conjDestino->second;
+        }
+        conjDestino->second->merge(*aux);
+
+        conjOrigem->second = conjDestino->second;
+        delete aux;
+    }
+
 }
 
 list<No *> Grafo::ordenaLista(Grafo &grafo){

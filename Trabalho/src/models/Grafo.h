@@ -36,13 +36,15 @@ public:
     }
 
 
-    void PrintListaAdjacencia();
+    void printListaAdjacencia();
 
     set<No *> *fechoTransitivoDireto(int idNo);
 
-    set<No *> *fechoTransitivoIndireto(int idNo);
+    void fechoTransitivoIndireto(int idNo);
 
-    void dijkstra(int Origem_, int Destino_);
+    void salvaFecho(set<No *> *fecho, const string &tipo);
+
+    void dijkstra(int origem, int destino);
 
     void Floyd(int idNoOrigem, int idNoDestino); // Mapa de nós de um grafo
 
@@ -67,9 +69,9 @@ public:
     list<No *> algoritimoGuloso(const Grafo &grafo);
 
 private:
-    void auxFTD(No *no, set<No *> *visitados);
+    void auxFtd(No *no, set<No *> *nosVisitados);
 
-    void auxFTI(No *no, set<No *> *nosVisitados, set<No *> *nosIncidentes);
+    void auxFti(No *no, set<No *> *nosVisitados, set<No *> *nosIncidentes);
 
     set<No *> *incidentes(No *no);
 
@@ -108,9 +110,19 @@ private:
 
     vector<Aresta *> *OrdenaArestas(set<No *> *verticeInduzido);
 
-    void salvaAGM(Grafo *AGM, int noRaiz, string algoritmo);
+    void salvaAGM(Grafo *AGM, int noRaiz, const string &algoritmo);
 
     void auxSalvaAGM(Grafo *AGMPrim, No *pNo, set<No *> *pSet);
+
+    Grafo *auxKruskal(set<No *> *verticeInduzido, vector<Aresta *> *arestasOrdenadas,
+                      map<int, set<No *> *> *conjuntosDisjuntos);
+
+    static void buscaArestaKruskal(vector<Aresta *> *arestasOrdenadas, map<int, set<No *> *> *conjuntosDisjuntos,
+                                   No *&Origem, No *&Destino, Aresta *&aresta);
+
+    static map<int, set<No *> *> *inicializaConjuntos(set<No *> *verticeInduzido);
+
+    static void atualizaConjuntos(map<int, set<No *> *> *conjuntosDisjuntos, No *Origem, No *Destino);
 
     list<No *> ordenaLista(Grafo &grafo);
 };
