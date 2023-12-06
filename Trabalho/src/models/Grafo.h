@@ -64,6 +64,8 @@ public:
 
     long localClusteringCoefficient(int idNo);
 
+    list<No *> algoritimoGuloso(const Grafo &grafo);
+
 private:
     void auxFTD(No *no, set<No *> *visitados);
 
@@ -110,6 +112,7 @@ private:
 
     void auxSalvaAGM(Grafo *AGMPrim, No *pNo, set<No *> *pSet);
 
+    list<No *> ordenaLista(Grafo &grafo);
 };
 
 

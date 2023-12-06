@@ -699,3 +699,35 @@ void Grafo::Kruskal(set<No *> *verticeInduzido) {
 
     salvaAGM(AGMKruskal, Raiz->getID(), "Kruskal");
 }
+
+list<No *> Grafo::ordenaLista(Grafo &grafo){
+    list<No*> lista;
+    bool inserted;
+
+    for (auto& n : *grafo.NOS) {
+
+        for (auto it = lista.begin(); it != lista.end(); ++it) {
+            bool inserted = false;
+            if ((*it)->getPeso() > n.second->getPeso()) {
+                lista.insert(it,  n.second);
+                inserted = true;
+                break;
+            }
+        }
+
+        if (!inserted) {
+            lista.push_back(n.second);
+        }
+    }
+
+    return lista;
+}
+
+list<No*> Grafo:: algoritimoGuloso( const Grafo &grafo){
+    list<No*> Solucao = ordenaLista(const_cast<Grafo &>(grafo));
+    for(auto n: Solucao){
+        cout << n->getPeso() << " ";
+    }
+    return Solucao;
+}
+
