@@ -723,11 +723,17 @@ list<No *> Grafo::ordenaLista(Grafo &grafo){
     return lista;
 }
 
+
 list<No*> Grafo:: algoritimoGuloso( const Grafo &grafo){
-    list<No*> Solucao = ordenaLista(const_cast<Grafo &>(grafo));
-    for(auto n: Solucao){
+    list<No*> solucao;
+    list<No*> listaOrdenada = ordenaLista(const_cast<Grafo &>(grafo));
+    for(auto n: listaOrdenada){
         cout << n->getPeso() << " ";
     }
-    return Solucao;
+    while(!listaOrdenada.empty()){
+        solucao.push_front(listaOrdenada.back());
+        listaOrdenada.pop_back();
+    }
+    return solucao;
 }
 
