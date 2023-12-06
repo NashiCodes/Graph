@@ -129,6 +129,11 @@ public:
 //                grafo->depthFirstSearch(output_file, id);
                 break;
             }
+            case 10:{
+                cout << "Algoritimo Guloso: ";
+                grafo->algoritimoGuloso(*this->grafo);
+                break;
+            }
             default: {
                 cout << "Exit!!!" << endl;
             }
