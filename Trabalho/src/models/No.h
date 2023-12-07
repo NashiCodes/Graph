@@ -42,6 +42,9 @@ public:
 
     void RemoveAresta(int idNoDestino, bool direcionado);
 
+    int X;
+    int Y;
+
 private:
     int ID;
     int PESO;

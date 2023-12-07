@@ -9,9 +9,25 @@
 #include <string>
 #include <map>
 #include <set>
+#include <vector>
 
+struct Caminhao {
+public:
+    int capacidade;
+
+    explicit Caminhao(int capacidade) {
+        this->capacidade = capacidade;
+    }
+
+    virtual ~Caminhao() = default;
+
+    static bool compare(const Caminhao *a, const Caminhao *b) {
+        return a->capacidade < b->capacidade;
+    }
+};
 
 class AGrafo {
+
 protected:
     int Ordem;
     int NumArestas;
@@ -35,6 +51,7 @@ protected:
         this->idsLiberados = new set<int>();
         this->NumArestas = 0;
         this->Ordem = 0;
+        this->caminhoes = vector<Caminhao *>();
     };
 
     ~AGrafo() {
@@ -50,6 +67,7 @@ protected:
     };
 
 public:
+    vector<Caminhao *> caminhoes;
 
     void montaGrafo();
 
@@ -90,6 +108,8 @@ public:
     void CriaNo(int idNo, int pesoNo);
 
     void InserirNo(int idNo, int pesoNo);
+
+    void InserirNo(No *no);
 
     void RemoverNo(int idNo);
 

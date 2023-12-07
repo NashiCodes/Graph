@@ -49,7 +49,7 @@ int AGrafo::getOrdem() const {
 }
 
 void AGrafo::setOrdem(int ordem) {
-    if (ordem < 0 || (this->Ordem != 0 && ordem != (int)this->NOS->size())) {
+    if (ordem < 0 || (this->Ordem != 0 && ordem != (int) this->NOS->size())) {
         cout << "Nova ordem inválida!" << endl;
         return;
     }
@@ -61,7 +61,7 @@ int AGrafo::getNumArestas() const {
 }
 
 void AGrafo::setNumArestas(int numArestas) {
-    if (numArestas < 0 || (this->NumArestas != 0 && numArestas != (int)this->ARESTAS->size())) {
+    if (numArestas < 0 || (this->NumArestas != 0 && numArestas != (int) this->ARESTAS->size())) {
         cout << "Número de arestas inválido!" << endl;
         return;
     }
@@ -184,14 +184,14 @@ bool AGrafo::isVerticePonderado() const {
 }
 
 void AGrafo::RemoverNo(int idNo) {
-    if(!this->existeNo(idNo)) {
+    if (!this->existeNo(idNo)) {
         cout << "Nó não existe!" << endl;
         return;
     }
 
     auto *no = this->NOS->at(idNo);
 
-    for(auto &aresta: no->getArestas()) {
+    for (auto &aresta: no->getArestas()) {
         this->NOS->at(aresta.first)->RemoveAresta(idNo, this->isDirecionado());
     }
     this->NOS->erase(idNo);
@@ -199,7 +199,7 @@ void AGrafo::RemoverNo(int idNo) {
 }
 
 void AGrafo::RemoverAresta(int idNoOrigem, int idNoDestino) {
-    if(!this->existeNo(idNoOrigem) || !this->existeNo(idNoDestino)) {
+    if (!this->existeNo(idNoOrigem) || !this->existeNo(idNoDestino)) {
         cout << "Nó de origem ou destino não existe!" << endl;
         return;
     }
@@ -216,74 +216,17 @@ void AGrafo::RemoverAresta(int idNoOrigem, int idNoDestino) {
     delete aresta;
 }
 
-void AGrafo::leituraNova(){
-    ifstream arquivo;
-    arquivo.open("A-n34-k5.txt");
-
-    if (arquivo.is_open()) {
-        Grafo grafo;
-        string linha;
-        while (getline(arquivo, linha)) {
-            if (linha.find("NAME") != string::npos) {
-                istringstream iss(linha);
-                iss.ignore(256, ':');
-                iss >> grafo.nome;
-                continue;
-            } 
-            else if (linha.find("DIMENSION") != std::string::npos) {
-                istringstream iss(linha);
-                string ordem;
-                iss.ignore(256, ':');
-                iss >> ordem;
-                grafo.ordem = stoi(ordem);
-                continue;
-            } 
-            else if (linha.find("CAPACITY") != std::string::npos) {
-                cout << "ó eu aqui" << endl;
-                istringstream iss(linha);
-                string capacidade;
-                iss.ignore(256, ':');
-                iss >> capacidade; // Neste exemplo, assumindo que todos os caminhões têm a mesma capacidade
-                grafo.caminhoes[0].capacidade = stoi(capacidade);
-                continue;
-            } 
-            else if (linha.find("NODE_COORD_SECTION") != std::string::npos) {
-                continue;
-            }
-            else if (linha.find("DEMAND_SECTION") != std::string::npos) {
-                continue;
-            }
-            else{
-                istringstream iss(linha);
-                int teste[3];
-                iss >> teste[0] >> teste[1] >> teste[2];
-                if(teste[2] != NULL){
-                    int id, posX, posY;
-                    if(id <= grafo.ordem){
-                        arquivo >> id >> posX >> posY;
-                        No no;
-                        no.posX = posX;
-                        no.posY = posY;
-                        grafo.clientes[id] = no;
-                    }
-                }
-                else{
-                    int id, demanda;
-                    arquivo >> id >> demanda;
-                    if(id <= grafo.ordem){
-                        if(demanda == 0){
-                            grafo.estoques[id] = grafo.clientes[id];
-                            grafo.clientes.erase(id);
-                        }
-                        else{
-                            grafo.clientes[id].demanda = demanda;
-                        }
-                    }
-                } 
-            }
-        }
-        arquivo.close();
+void AGrafo::InserirNo(No *no) {
+    if (no == nullptr) {
+        cout << "Nó inválido!" << endl;
+        return;
     }
+    if (this->existeNo(no->getID())) {
+        cout << "Nó já existe!" << endl;
+        return;
+    }
+    this->NOS->insert(pair<int, No *>(no->getID(), no));
+    this->setOrdem(this->getOrdem() + 1);
 }
 
 
