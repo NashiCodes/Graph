@@ -99,6 +99,8 @@ public:
 
     void imprimeGraus(int idNo);
 
+    void leituraNova();
+
 };
 
 
