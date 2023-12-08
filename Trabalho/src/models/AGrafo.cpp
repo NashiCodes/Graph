@@ -1,38 +1,49 @@
+#include <sstream>
+#include <iostream>
+#include <string>
+#include <vector>
+#include <cmath>
 #include "AGrafo.h"
 
 void AGrafo::montaGrafo() {
-    int ordem;
     try {
-        *this->getInput() >> ordem;
-        if (ordem == 0) {
-            cout << "Ordem inválida!" << endl;
+        if (this->getInput() == nullptr) {
+            cout << "Arquivo de entrada não encontrado!" << endl;
             return;
         }
-        this->setOrdem(ordem);
-//        this->setOrdem(50);
-
-        this->lerInstancias(this->isPonderado(), this->isDirecionado(), this->isVerticePonderado());
+        if (!this->getPart()) //essa nova Variavel permite saber se é a parte 1 ou 2 do trabalho, true = parte 1,
+            // false = parte 2
+            this->instanciasParte2(); //Leitura do arquivo e montagem do grafo completo
+        else
+            this->instanciasParte1();
 
     } catch (exception &e) {
         cout << "Erro ao ler o arquivo!" << endl;
         cout << e.what() << endl;
     }
+
 }
 
-void AGrafo::lerInstancias(bool ponderado, bool direcionado, bool verticePonderado) {
-    int idNoOrigem, idNoDestino, pesoAresta = 0, pesoNo = 0;
+void AGrafo::instanciasParte1() {
 
+    int idNoOrigem, idNoDestino, pesoAresta = 0, pesoNo = 0, ordem;
+    *this->getInput() >> ordem;
+    if (ordem == 0) {
+        cout << "Ordem inválida!" << endl;
+        return;
+    }
+    this->setOrdem(ordem);
     while (!this->getInput()->eof()) {
         *this->getInput() >> idNoOrigem;
         *this->getInput() >> idNoDestino;
-        if (ponderado)
+        if (this->isPonderado())
             *this->getInput() >> pesoAresta;
-        if (verticePonderado)
+        if (this->isVerticePonderado())
             *this->getInput() >> pesoNo;
 
-        this->CriaNo(idNoOrigem, pesoNo);
-        this->CriaNo(idNoDestino, pesoNo);
-        this->CriarAresta(idNoOrigem, idNoDestino, pesoAresta);
+        this->criaNo(idNoOrigem, pesoNo);
+        this->criaNo(idNoDestino, pesoNo);
+        this->criarAresta(idNoOrigem, idNoDestino, pesoAresta);
 
         if (this->getInput()->eof()) {
             break;
@@ -43,10 +54,43 @@ void AGrafo::lerInstancias(bool ponderado, bool direcionado, bool verticePondera
     cout << "Numero de arestas: " << this->ARESTAS->size() << endl;
 }
 
+void AGrafo::instanciasParte2() {
+    string linha;
+    int nmDimensao, nmCapacidade;
+    lePropriedades(nmDimensao, nmCapacidade);
 
-int AGrafo::getOrdem() const {
-    return Ordem;
+    while (getline(*this->getInput(), linha) && !this->getInput()->eof()) {
+        if (std::equal(linha.begin(), linha.end(), "NODE_COORD_SECTION ")) continue;
+        if (std::equal(linha.begin(), linha.end(), "DEMAND_SECTION ")) {
+            this->leDemandas();
+            break;
+        }
+        int x, y, id;
+        istringstream iss(linha);
+        iss >> id >> x >> y;
+        No *no = new No(id, 0);
+        no->X = x;
+        no->Y = y;
+        this->inserirNo(no);
+
+        montarArestas(no);
+    }
+    //Os couts abaixo são apenas para testes
+    //Remover depois
+
+    cout << "Ordem do Grafo: " << this->getOrdem() << endl;
+    cout << "Capacidade dos Caminhões: " << this->getCaminhoes()->at(0)->capacidade << endl;
+    cout << "Numero de arestas: " << this->getNumArestas() << endl;
+    cout << "Numero de vertices: " << this->getNos()->size() << endl << endl;
+    for (auto no: *this->getNos()) {
+        cout << endl;
+        cout << "No: " << no.second->getID() << " X: " << no.second->X << " Y: " << no.second->Y << endl;
+        cout << "Demanda: " << no.second->getPeso() << endl;
+        cout << "Grau de entrada: " << no.second->getGrauEntrada() << endl;
+        cout << "Grau de saida: " << no.second->getGrauSaida() << endl;
+    }
 }
+
 
 void AGrafo::setOrdem(int ordem) {
     if (ordem < 0 || (this->Ordem != 0 && ordem != (int) this->NOS->size())) {
@@ -56,9 +100,6 @@ void AGrafo::setOrdem(int ordem) {
     Ordem = ordem;
 }
 
-int AGrafo::getNumArestas() const {
-    return NumArestas;
-}
 
 void AGrafo::setNumArestas(int numArestas) {
     if (numArestas < 0 || (this->NumArestas != 0 && numArestas != (int) this->ARESTAS->size())) {
@@ -68,50 +109,14 @@ void AGrafo::setNumArestas(int numArestas) {
     NumArestas = numArestas;
 }
 
-bool AGrafo::isPonderado() const {
-    return ArestaPonderada;
-}
-
-void AGrafo::setPonderado(bool ehPonderado) {
-    ArestaPonderada = ehPonderado;
-}
-
-bool AGrafo::isDirecionado() const {
-    return EhDirecionado;
-}
-
-void AGrafo::setDirecionado(bool ehDirecionado) {
-    EhDirecionado = ehDirecionado;
-}
-
-ofstream *AGrafo::getOutput() const {
-    return Output;
-}
-
-void AGrafo::setOutput(ofstream *output) {
-    AGrafo::Output = output;
-}
-
-const map<int, No *> *AGrafo::getNos() const {
-    return NOS;
-}
-
-const map<int, Aresta *> *AGrafo::getArestas() const {
-    return ARESTAS;
-}
-
-bool AGrafo::existeNo(int idNo) {
-    return this->NOS->find(idNo) != this->NOS->end();
-}
-
-void AGrafo::CriaNo(int idNo, int pesoNo) {
+void AGrafo::criaNo(int idNo, int pesoNo) {
     if (this->existeNo(idNo)) return;
 
     auto *no = new No(idNo, pesoNo);
     this->NOS->insert(pair<int, No *>(idNo, no));
 }
 
-void AGrafo::CriarAresta(int idNoOrigem, int idNoDestino, int pesoAresta) {
+void AGrafo::criarAresta(int idNoOrigem, int idNoDestino, int pesoAresta) {
     if (!this->existeNo(idNoOrigem) || !this->existeNo(idNoDestino)) {
         cout << "Nó de origem ou destino não encontrado!" << endl;
         return;
@@ -137,53 +142,17 @@ void AGrafo::CriarAresta(int idNoOrigem, int idNoDestino, int pesoAresta) {
     this->setNumArestas(this->getNumArestas() + 1);
 }
 
-
-void AGrafo::imprimeGraus(int idNo) {
-    if (!this->existeNo(idNo)) {
-        cout << "Nó não encontrado!" << endl;
-        return;
-    }
-
-    auto *no = this->NOS->at(idNo);
-    if (this->isDirecionado()) {
-        cout << "Grau de entrada: " << no->getGrauEntrada() << endl;
-        cout << "Grau de saída: " << no->getGrauSaida() << endl;
-    } else {
-        cout << "Grau: " << no->getGrauSaida() << endl;
-    }
-
-    if (this->getOutput()->is_open() && this->getOutput()->good()) {
-        if (this->isDirecionado()) {
-            *this->getOutput() << "Grau de entrada: " << no->getGrauEntrada() << endl;
-            *this->getOutput() << "Grau de saída: " << no->getGrauSaida() << endl;
-        } else {
-            *this->getOutput() << "Grau: " << no->getGrauSaida() << endl;
-        }
-    }
-}
-
-void AGrafo::InserirNo(int idNo, int pesoNo) {
+void AGrafo::inserirNo(int idNo, int pesoNo) {
     if (this->existeNo(idNo)) {
-        cout << "Nó já existe!" << endl;
+        if (this->getPart())
+            cout << "Nó já existe!" << endl;
         return;
     }
-    this->CriaNo(idNo, pesoNo);
+    this->criaNo(idNo, pesoNo);
     this->setOrdem(this->getOrdem() + 1);
 }
 
-ifstream *AGrafo::getInput() const {
-    return Input;
-}
-
-void AGrafo::setVerticePonderado(bool ehPonderado) {
-    VerticePonderado = ehPonderado;
-}
-
-bool AGrafo::isVerticePonderado() const {
-    return VerticePonderado;
-}
-
-void AGrafo::RemoverNo(int idNo) {
+void AGrafo::removerNo(int idNo) {
     if (!this->existeNo(idNo)) {
         cout << "Nó não existe!" << endl;
         return;
@@ -198,7 +167,7 @@ void AGrafo::RemoverNo(int idNo) {
     delete no;
 }
 
-void AGrafo::RemoverAresta(int idNoOrigem, int idNoDestino) {
+void AGrafo::removerAresta(int idNoOrigem, int idNoDestino) {
     if (!this->existeNo(idNoOrigem) || !this->existeNo(idNoDestino)) {
         cout << "Nó de origem ou destino não existe!" << endl;
         return;
@@ -216,7 +185,7 @@ void AGrafo::RemoverAresta(int idNoOrigem, int idNoDestino) {
     delete aresta;
 }
 
-void AGrafo::InserirNo(No *no) {
+void AGrafo::inserirNo(No *no) {
     if (no == nullptr) {
         cout << "Nó inválido!" << endl;
         return;
@@ -229,4 +198,60 @@ void AGrafo::InserirNo(No *no) {
     this->setOrdem(this->getOrdem() + 1);
 }
 
+void AGrafo::lePropriedades(int &nmDimensao, int &nmCapacidade) const {
+    string linha;
+    string strtruck = "No of trucks: ";
+    string dimensao = "DIMENSION : ";
+    string capaciadede = "CAPACITY : ";
+    int nmCaminhoes = 0;
 
+    while (getline(*this->getInput(), linha) && !std::equal(linha.begin(), linha.end(), "NODE_COORD_SECTION ")) {
+        string substr;
+        if (linha.find(strtruck) != string::npos) {
+            substr = linha.substr(linha.find(strtruck) + strtruck.size());
+            substr = substr.substr(0, substr.find(','));
+            nmCaminhoes = stoi(substr);
+        }
+        if (linha.find(dimensao) != string::npos) {
+            substr = linha.substr(linha.find(dimensao) + dimensao.size());
+            nmDimensao = stoi(substr);
+        }
+        if (linha.find(capaciadede) != string::npos) {
+            substr = linha.substr(linha.find(capaciadede) + capaciadede.size());
+            nmCapacidade = stoi(substr);
+        }
+    }
+
+    while (nmCaminhoes > 0) {
+        this->getCaminhoes()->push_back(new caminhao(nmCapacidade));
+        nmCaminhoes--;
+    }
+
+}
+
+void AGrafo::leDemandas() const {
+    int id, demanda;
+    string linha;
+    while (getline(*this->getInput(), linha) && !this->getInput()->eof()) {
+        if (std::equal(linha.begin(), linha.end(), "DEMAND_SECTION ")) continue;
+        if (std::equal(linha.begin(), linha.end(), "DEPOT_SECTION ")) break;
+
+        istringstream iss(linha);
+        iss >> id >> demanda;
+        No *no = this->getNos()->at(id);
+        no->setPeso(demanda);
+    }
+}
+
+void AGrafo::montarArestas(No *no) {
+    for (const auto &par: *this->getNos()) {
+        No *noDestino = par.second;
+        if (no->getID() == noDestino->getID()) continue;
+
+        int cateto1 = no->X > noDestino->X ? no->X - noDestino->X : noDestino->X - no->X;
+        int cateto2 = no->Y > noDestino->Y ? no->Y - noDestino->Y : noDestino->Y - no->Y;
+        int peso = (int) round(sqrt(pow(cateto1, 2) + pow(cateto2, 2)));
+
+        this->criarAresta(no->getID(), noDestino->getID(), peso);
+    }
+}
