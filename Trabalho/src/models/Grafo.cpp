@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <set>
 #include <vector>
+#include <cstdlib>
+#include <ctime>
 //#define INF 99999999
 using namespace std;
 
@@ -765,15 +767,42 @@ list<No *> Grafo::ordenaLista(Grafo &grafo){
 }
 
 
-list<No*> Grafo:: algoritimoGuloso( const Grafo &grafo){
-    list<No*> solucao;
-    list<No*> listaOrdenada = ordenaLista(const_cast<Grafo &>(grafo));
-    for(auto n: listaOrdenada){
-        cout << n->getPeso() << " ";
+list<list<int>> Grafo:: algoritimoGuloso(){
+    list<No*> todosNos;
+    for (auto n: *NOS) {
+        todosNos.push_front(n.second);
     }
-    while(!listaOrdenada.empty()){
-        solucao.push_front(listaOrdenada.back());
-        listaOrdenada.pop_back();
+    list<int> rota;
+    list<list<int>> solucao;
+    int caminhao = 1;
+    No* menor = NOS->at(2);
+
+    No *analisado = NOS->at(1);
+    while (!todosNos.empty()) {
+            for(auto a: analisado->getArestas()) {
+                auto n = *a.second->getDestino();
+                    if (n.getPeso() < menor->getPeso() && !n.isPassou() && caminhoes.at(caminhao)->capacidade - n.getPeso() < 0) {
+                        menor = &n;
+                    }
+            }
+        if (menor != analisado) {
+            rota.push_front(menor->getID());
+            menor->setPassou(true);
+            todosNos.remove(menor);
+            analisado = menor;
+        }else{
+            caminhao++;
+            rota.push_front(NOS->at(1)->getID());
+            solucao.push_front(rota);
+            while (!rota.empty()) {
+                auto it = rota.begin();
+                while (it != rota.end()) {
+                    int a = *it;
+                    it = rota.erase(it);
+                }
+            }
+            analisado = NOS->at(1);
+        }
     }
     return solucao;
 }

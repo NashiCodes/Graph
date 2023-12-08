@@ -17,6 +17,7 @@ No::No(int idNo, int peso) {
     this->PESO = peso;
     this->GRAU_ENTRADA = 0;
     this->GRAU_SAIDA = 0;
+    this->PASSOU = false;
 }
 
 /**
@@ -149,4 +150,12 @@ void No::RemoveAresta(int idNoDestino, bool direcionado) {
         this->setGrauSaida(this->getGrauSaida() - 1);
         this->setGrauEntrada(this->getGrauEntrada() - 1);
     }
+}
+
+bool No::isPassou() const {
+    return PASSOU;
+}
+
+void No::setPassou(bool passou) {
+    PASSOU = passou;
 }

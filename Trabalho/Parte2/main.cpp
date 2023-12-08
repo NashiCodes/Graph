@@ -83,8 +83,6 @@ int main() {
             istringstream iss(linha);
             iss >> id >> x >> y;
             No *no = new No(id, 0);
-            no->X = x;
-            no->Y = y;
             grafo->InserirNo(no);
 
             criaArestas(no, grafo);

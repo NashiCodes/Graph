@@ -125,6 +125,18 @@ private:
     static void atualizaConjuntos(map<int, set<No *> *> *conjuntosDisjuntos, No *Origem, No *Destino);
 
     list<No *> ordenaLista(Grafo &grafo);
+
+    double calcularDistancia(const No *no1, const No *no2);
+
+    list <list<int>> algoritimoGuloso();
+
+    list<No *> proximos();
+
+    list <No> proximos(No);
+
+    list<No *> proximos(No *);
+
+    list<list<No *>> algoritimoGulosoRandomizado();
 };
 
 
