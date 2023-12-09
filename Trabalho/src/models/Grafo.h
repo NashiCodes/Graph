@@ -57,7 +57,11 @@ public:
 
     long localClusteringCoefficient(int idNo);
 
-    list<No *> algoritmoGuloso(const Grafo &grafo);
+    pair<list<list<int>>, int> algoritmoGuloso();
+
+    pair<list<list<int>>, int> algoritmoGulosoRandomizado(double alpha);
+
+    pair<list<list<int>>, int> algoritmoGulosoRandomizadoAdaptativo();
 
 private:
     void auxFtd(No *no, set<No *> *nosVisitados);
@@ -119,17 +123,11 @@ private:
 
     double calcularDistancia(const No *no1, const No *no2);
 
-    pair<list<list<int>>, int> algoritmoGuloso();
-
     list<No *> proximos();
 
     list <No> proximos(No);
 
     list<No *> proximos(No *);
-    
-    pair<list<list<int>>, int> algoritmoGulosoRandomizado(double alpha);
-
-    pair<list<list<int>>, int> algoritmoGulosoRandomizadoAdaptativo();
 };
 
 

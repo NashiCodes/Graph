@@ -133,7 +133,7 @@ public:
             }
             case 10: {
                 cout << "Algoritimo Guloso: ";
-                grafo->algoritimoGuloso(*this->grafo);
+                grafo->algoritmoGuloso(*this->grafo);
                 break;
             }
             default: {
@@ -178,7 +178,7 @@ public:
         }
 
         try {
-            grafo->InserirNo(idNo, peso);
+            grafo->inserirNo(idNo, peso);
         } catch (exception &e) {
             cout << "Erro ao inserir nó!" << endl;
             cout << e.what() << endl;
@@ -198,7 +198,7 @@ public:
         }
 
         try {
-            grafo->CriarAresta(idNoOrigem, idNoDestino, peso);
+            grafo->criarAresta(idNoOrigem, idNoDestino, peso);
         } catch (exception &e) {
             cout << "Erro ao criar aresta!" << endl;
             cout << e.what() << endl;
