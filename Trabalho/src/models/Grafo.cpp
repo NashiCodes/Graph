@@ -743,16 +743,16 @@ void Grafo::atualizaConjuntos(map<int, set<No *> *> *conjuntosDisjuntos, No *Ori
 
 }
 
-list<No *> Grafo::ordenaLista(Grafo &grafo){
-    list<No*> lista;
+list<No *> Grafo::ordenaLista(Grafo &grafo) {
+    list<No *> lista;
     bool inserted;
 
-    for (auto& n : *grafo.NOS) {
+    for (auto &n: *grafo.NOS) {
 
         for (auto it = lista.begin(); it != lista.end(); ++it) {
             bool inserted = false;
             if ((*it)->getPeso() > n.second->getPeso()) {
-                lista.insert(it,  n.second);
+                lista.insert(it, n.second);
                 inserted = true;
                 break;
             }
@@ -767,31 +767,32 @@ list<No *> Grafo::ordenaLista(Grafo &grafo){
 }
 
 
-pair<list<list<int>>, int> Grafo:: algoritimoGuloso(){
-    list<No*> todosNos;
+pair<list<list<int>>, int> Grafo::algoritimoGuloso() {
+    list<No *> todosNos;
     for (auto n: *NOS) {
         todosNos.push_front(n.second);
     }
     list<int> rota;
     list<list<int>> solucao;
     int caminhao = 1;
-    No* menor = NOS->at(2);
+    No *menor = NOS->at(2);
     int pontosSolucao = 0;
     No *analisado = NOS->at(1);
     while (!todosNos.empty()) {
-            for(auto a: analisado->getArestas()) {
-                auto n = *a.second->getDestino();
-                    if (n.getPeso() < menor->getPeso() && !n.isPassou() && caminhoes.at(caminhao)->capacidade - n.getPeso() < 0) {
-                        menor = &n;
-                        pontosSolucao += a.second->getPeso();
-                    }
+        for (auto a: analisado->getArestas()) {
+            auto n = *a.second->getDestino();
+            if (n.getPeso() < menor->getPeso() && !n.isPassou() &&
+                caminhoes.at(caminhao)->capacidade - n.getPeso() < 0) {
+                menor = &n;
+                pontosSolucao += a.second->getPeso();
             }
-        if (menor != analisado ) {
+        }
+        if (menor != analisado) {
             rota.push_front(menor->getID());
             menor->setPassou(true);
             todosNos.remove(menor);
             analisado = menor;
-        }else{
+        } else {
             caminhao++;
             rota.push_front(NOS->at(1)->getID());
             solucao.push_front(rota);
@@ -804,7 +805,7 @@ pair<list<list<int>>, int> Grafo:: algoritimoGuloso(){
             }
             analisado = NOS->at(1);
             for (auto n: *NOS) {
-                if(!n.second->isPassou()){
+                if (!n.second->isPassou()) {
                     menor = n.second;
                     break;
                 }
@@ -815,23 +816,24 @@ pair<list<list<int>>, int> Grafo:: algoritimoGuloso(){
 }
 
 
-pair<list<list<int>>, int> Grafo:: algoritimoGulosoRandomizado(double alpha){
-    list<No*> todosNos;
+pair<list<list<int>>, int> Grafo::algoritimoGulosoRandomizado(double alpha) {
+    list<No *> todosNos;
     for (auto n: *NOS) {
         todosNos.push_front(n.second);
     }
     list<int> rota;
     list<list<int>> solucao;
     int caminhao = 1;
-    No* menor = nullptr;
+    No *menor = nullptr;
     int pontosSolucao = 0;
 
     No *analisado = NOS->at(1);
     while (!todosNos.empty()) {
-        double prob = (double)rand() / RAND_MAX;  // Gera um número aleatório entre 0 e 1
-        for(auto a: analisado->getArestas()) {
+        double prob = (double) rand() / RAND_MAX;  // Gera um número aleatório entre 0 e 1
+        for (auto a: analisado->getArestas()) {
             auto n = *a.second->getDestino();
-            if (menor == nullptr && n.getPeso() < menor->getPeso() && !n.isPassou() && caminhoes.at(caminhao)->capacidade - n.getPeso() < 0 && prob <= alpha) {
+            if (menor == nullptr && n.getPeso() < menor->getPeso() && !n.isPassou() &&
+                caminhoes.at(caminhao)->capacidade - n.getPeso() < 0 && prob <= alpha) {
                 menor = &n;
                 pontosSolucao += a.second->getPeso();
             }
@@ -841,7 +843,7 @@ pair<list<list<int>>, int> Grafo:: algoritimoGulosoRandomizado(double alpha){
             menor->setPassou(true);
             todosNos.remove(menor);
             analisado = menor;
-        }else{
+        } else {
             caminhao++;
             rota.push_front(NOS->at(1)->getID());
             solucao.push_front(rota);
@@ -860,7 +862,7 @@ pair<list<list<int>>, int> Grafo:: algoritimoGulosoRandomizado(double alpha){
 }
 
 
-pair<list<list<int>>, int> Grafo:: algoritimoGulosoRandomizadoAdaptativo(){
-    
+pair<list<list<int>>, int> Grafo::algoritimoGulosoRandomizadoAdaptativo() {
+
 }
 
