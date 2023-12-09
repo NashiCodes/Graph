@@ -133,7 +133,7 @@ public:
             }
             case 10: {
                 cout << "Algoritimo Guloso: ";
-                grafo->algoritmoGuloso(*this->grafo);
+                grafo->algoritmoGuloso();
                 break;
             }
             default: {
