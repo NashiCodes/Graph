@@ -51,7 +51,7 @@ public:
 
     void selecao(int opcao) {
         switch (opcao) {
-            //Fecho transitivo direto de um vértice
+            //Fecho transitivo direto de um vértice ;
             case 1: {
                 int id;
                 cout << "Digite o ID do vertice para seu fecho transitivo direto: ";
@@ -145,9 +145,7 @@ public:
 
     void printarGrafo() {
         grafo->printListaAdjacencia();
-        salvarListaAdjacencia(grafo);
     }
-
 
     static void salvarListaAdjacencia(Grafo *grafo) {
         ofstream *arquivo = grafo->getOutput();
