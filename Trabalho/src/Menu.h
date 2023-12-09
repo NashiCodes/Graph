@@ -136,10 +136,6 @@ public:
                 grafo->algoritmoGuloso(*this->grafo);
                 break;
             }
-            case 11: {
-                printarGrafo();
-                break;
-            }
             default: {
                 cout << "Exit!!!" << endl;
             }
