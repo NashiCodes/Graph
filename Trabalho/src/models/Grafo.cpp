@@ -339,3 +339,78 @@ pair<list<list<int>>, int> Grafo::algoritmoGulosoRandomizado(double alpha) {
     }
     return make_pair(solucao, pontosSolucao);
 }
+
+pair<list < list < int>>, int> Grafo::algoritmoGulosoRandomizadoAdaptativo() {
+    list<No*> todosNos;
+    for (auto& n : *NOS) {
+        todosNos.push_front(n.second);
+    }
+
+    list<int> rota;
+    list<list<int>> solucao;
+    int caminhao = 1;
+    No* menor = NOS->at(2);
+    int pontosSolucao = 0;
+    No* analisado = NOS->at(1);
+
+    double probabilidade_base = 0.5;
+    double taxa_aprendizado = 0.1;
+
+    srand(static_cast<unsigned int>(time(nullptr)));
+
+    while (!todosNos.empty()) {
+        vector<No*> candidatos;
+        for (auto& a : analisado->getArestas()) {
+            auto* n = a.second->getDestino();
+            if (!n->isPassou() && caminhoes->at(caminhao)->capacidade - n->getPeso() >= 0) {
+                candidatos.push_back(n);
+            }
+        }
+
+        if (!candidatos.empty()) {
+            double probabilidade_aleatoria = (rand() % 100) / 100.0;
+
+            if (probabilidade_aleatoria < probabilidade_base) {
+                menor = candidatos[0];
+                for (auto* candidato : candidatos) {
+                    if (candidato->getPeso() < menor->getPeso()) {
+                        menor = candidato;
+                        // Atualize conforme necessário
+                        pontosSolucao += candidato->getPeso();
+                    }
+                }
+            } else {
+                int indiceAleatorio = rand() % candidatos.size();
+                menor = candidatos[indiceAleatorio];
+                // Atualize conforme necessário
+                pontosSolucao += menor->getPeso();
+            }
+
+            probabilidade_base += taxa_aprendizado * (1 - probabilidade_base);
+        }
+
+        if (menor != analisado) {
+            rota.push_front(menor->getID());
+            menor->setPassou(true);
+            todosNos.remove(menor);
+            analisado = menor;
+        } else {
+            caminhao++;
+            rota.push_front(NOS->at(1)->getID());
+            solucao.push_front(rota);
+
+            // Limpeza da rota
+            rota.clear();
+
+            analisado = NOS->at(1);
+            for (auto& n : *NOS) {
+                if (!n.second->isPassou()) {
+                    menor = n.second;
+                    break;
+                }
+            }
+        }
+    }
+
+    return make_pair(solucao, pontosSolucao);
+}
