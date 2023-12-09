@@ -67,7 +67,7 @@ int main(int argc, const char *argv[]) {
     cout << "Trabalho de Grafos" << endl;
     cout << "Alunos: João Victor Pereira dos Anjos" << endl;
     cout << "Marcelo Rother" << endl;
-    cout << "Igor Matos" << endl;
+    cout << "Igor Mattos" << endl;
     cout << "Alvaro Davi" << endl;
 
     cout << '\n' << endl;
