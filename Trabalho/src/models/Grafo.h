@@ -128,7 +128,7 @@ private:
 
     double calcularDistancia(const No *no1, const No *no2);
 
-    list <list<int>> algoritimoGuloso();
+    pair<list<list<int>>, int> algoritimoGuloso();
 
     list<No *> proximos();
 
@@ -136,7 +136,11 @@ private:
 
     list<No *> proximos(No *);
 
-    list<list<No *>> algoritimoGulosoRandomizado();
+    list<list<int>> algoritimoGulosoRandomizado();
+
+    pair<list<list<int>>, int> algoritimoGulosoRandomizado(double alpha);
+
+    pair<list<list<int>>, int> algoritimoGulosoRandomizadoAdaptativo();
 };
 
 
