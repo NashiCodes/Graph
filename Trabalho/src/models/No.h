@@ -32,6 +32,8 @@ public:
 
     void setGrauSaida(int valor);
 
+    void printarNo(bool ponderado, bool direcionado);
+
     void setAresta(int idNoDestino, Aresta *aresta);
 
     Aresta *getAresta(int idNoDestino);
@@ -40,8 +42,22 @@ public:
 
     void RemoveAresta(int idNoDestino, bool direcionado);
 
+    int getX() const { return X; }
+
+    int getY() const { return Y; }
+
+    void setX(int x) {}
+
+    void setY(int y) {  }
+
     int X;
     int Y;
+
+    bool passou();
+
+    bool isPassou() const;
+
+    void setPassou(bool passou);
 
 private:
     int ID;
@@ -49,6 +65,7 @@ private:
     int GRAU_ENTRADA;
     int GRAU_SAIDA;
     map<int, Aresta *> ARESTAS;
+    bool PASSOU;
 };
 
 #endif //NO_H

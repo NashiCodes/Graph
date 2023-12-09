@@ -51,7 +51,7 @@ public:
 
     void selecao(int opcao) {
         switch (opcao) {
-            //Fecho transitivo direto de um vértice
+            //Fecho transitivo direto de um vértice ;
             case 1: {
                 int id;
                 cout << "Digite o ID do vertice para seu fecho transitivo direto: ";
@@ -131,9 +131,9 @@ public:
 //                grafo->depthFirstSearch(output_file, id);
                 break;
             }
-            case 10: {
+            case 10:{
                 cout << "Algoritimo Guloso: ";
-                grafo->algoritmoGuloso(*this->grafo);
+                grafo->algoritimoGuloso(*this->grafo);
                 break;
             }
             default: {
@@ -145,28 +145,6 @@ public:
 
     void printarGrafo() {
         grafo->printListaAdjacencia();
-        salvarListaAdjacencia(grafo);
-    }
-
-
-    static void salvarListaAdjacencia(Grafo *grafo) {
-        ofstream *arquivo = grafo->getOutput();
-
-        if (arquivo->is_open()) {
-            *arquivo << "Lista de Adjacência: " << endl;
-            for (auto &no: *grafo->getNos()) {
-                *arquivo << "No | " << no.first << " | : ";
-                for (auto &aresta: no.second->getArestas()) {
-                    if (grafo->isPonderado())
-                        *arquivo << "|" << aresta.first << "|(" << aresta.second->getPeso() << "), ";
-                    else
-                        *arquivo << "|" << aresta.first << "|, ";
-                }
-                *arquivo << endl;
-            }
-        } else {
-            cout << "Não foi possível abrir o arquivo de saída!" << endl;
-        }
     }
 
     void inserirNo() {
@@ -180,7 +158,7 @@ public:
         }
 
         try {
-            grafo->inserirNo(idNo, peso);
+            grafo->InserirNo(idNo, peso);
         } catch (exception &e) {
             cout << "Erro ao inserir nó!" << endl;
             cout << e.what() << endl;
@@ -200,7 +178,7 @@ public:
         }
 
         try {
-            grafo->criarAresta(idNoOrigem, idNoDestino, peso);
+            grafo->CriarAresta(idNoOrigem, idNoDestino, peso);
         } catch (exception &e) {
             cout << "Erro ao criar aresta!" << endl;
             cout << e.what() << endl;
