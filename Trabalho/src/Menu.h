@@ -131,7 +131,7 @@ public:
 //                grafo->depthFirstSearch(output_file, id);
                 break;
             }
-            case 10:{
+            case 10: {
                 cout << "Algoritimo Guloso: ";
                 grafo->algoritimoGuloso(*this->grafo);
                 break;
@@ -145,6 +145,26 @@ public:
 
     void printarGrafo() {
         grafo->printListaAdjacencia();
+    }
+
+    static void salvarListaAdjacencia(Grafo *grafo) {
+        ofstream *arquivo = grafo->getOutput();
+
+        if (arquivo->is_open()) {
+            *arquivo << "Lista de Adjacência: " << endl;
+            for (auto &no: *grafo->getNos()) {
+                *arquivo << "No | " << no.first << " | : ";
+                for (auto &aresta: no.second->getArestas()) {
+                    if (grafo->isPonderado())
+                        *arquivo << "|" << aresta.first << "|(" << aresta.second->getPeso() << "), ";
+                    else
+                        *arquivo << "|" << aresta.first << "|, ";
+                }
+                *arquivo << endl;
+            }
+        } else {
+            cout << "Não foi possível abrir o arquivo de saída!" << endl;
+        }
     }
 
     void inserirNo() {

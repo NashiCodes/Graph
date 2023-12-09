@@ -18,12 +18,13 @@ class Grafo : public AGrafo {
 public:
 
 
-    Grafo(bool APonderada, bool VPonderado, bool ehDirecionado, ifstream *entrada, ofstream *Saida) : AGrafo() {
+    Grafo(bool APonderada, bool VPonderado, bool ehDirecionado, bool part, ifstream *entrada) : AGrafo
+                                                                                                        () {
         setPonderado(APonderada);
         setVerticePonderado(VPonderado);
         setDirecionado(ehDirecionado);
         this->Input = entrada;
-        this->setOutput(Saida);
+        this->part1 = part;
         this->montaGrafo();
     }
 
@@ -34,7 +35,6 @@ public:
         setVerticePonderado(VPonderado);
         setDirecionado(ehDirecionado);
     }
-
 
     void printListaAdjacencia();
 
@@ -52,21 +52,12 @@ public:
 
     void Prim(set<No *> *verticeInduzido);
 
-//    void AGMPrim(int idNoOrigem);
 
     void Kruskal(set<No *> *verticeInduzido);
 
-//    void DeepSearch(int idNo);
-
-//    void ordenacaoTopologica();
-
-//    void parametrosGrafo();
-
-//    void articulacao();
-
     long localClusteringCoefficient(int idNo);
 
-    list<No *> algoritimoGuloso(const Grafo &grafo);
+    list<No *> algoritmoGuloso(const Grafo &grafo);
 
 private:
     void auxFtd(No *no, set<No *> *nosVisitados);
@@ -124,23 +115,21 @@ private:
 
     static void atualizaConjuntos(map<int, set<No *> *> *conjuntosDisjuntos, No *Origem, No *Destino);
 
-    list<No *> ordenaLista(Grafo &grafo);
+    static list<No *> ordenaLista(Grafo &grafo);
 
     double calcularDistancia(const No *no1, const No *no2);
 
-    pair<list<list<int>>, int> algoritimoGuloso();
+    pair<list<list<int>>, int> algoritmoGuloso();
 
     list<No *> proximos();
 
     list <No> proximos(No);
 
     list<No *> proximos(No *);
+    
+    pair<list<list<int>>, int> algoritmoGulosoRandomizado(double alpha);
 
-    list<list<int>> algoritimoGulosoRandomizado();
-
-    pair<list<list<int>>, int> algoritimoGulosoRandomizado(double alpha);
-
-    pair<list<list<int>>, int> algoritimoGulosoRandomizadoAdaptativo();
+    pair<list<list<int>>, int> algoritmoGulosoRandomizadoAdaptativo();
 };
 
 

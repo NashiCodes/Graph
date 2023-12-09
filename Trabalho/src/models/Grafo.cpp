@@ -1,32 +1,13 @@
 #include "Grafo.h"
+#include "Basics.cpp"
+#include "Output.cpp"
+#include "AuxFuncs.cpp"
 #include <climits>
 #include <algorithm>
 #include <set>
 #include <vector>
-#include <cstdlib>
-#include <ctime>
 //#define INF 99999999
 using namespace std;
-
-/**
- * @brief Imprime a lista de adjacência do grafo
- * @return void
-*/
-void Grafo::printListaAdjacencia() {
-    cout << "Lista de Adjacência: " << endl;
-    for (auto &no: *this->NOS) {
-        cout << "| " << no.first << " | : ";
-        for (auto &aresta: no.second->getArestas()) {
-            if (this->isPonderado())
-                cout << "|" << aresta.first << "|(" << aresta.second->getPeso() << "), ";
-            else
-                cout << "|" << aresta.first << "|, ";
-
-            cout << endl;
-        }
-        cout << endl;
-    }
-}
 
 /**
  * @brief Imprime o fecho transitivo direto do grafo
@@ -43,27 +24,6 @@ set<No *> *Grafo::fechoTransitivoDireto(int idNo) {
     auxFtd(no, nosVisitados);
 
     return nosVisitados;
-}
-
-/**
- * @brief Função auxiliar para o fecho transitivo direto
- * @param no: Nó
- * @param level: Nível
- * @param nosVisitados: Nós visitados
- * @return void
-*/
-void Grafo::auxFtd(No *no, set<No *> *nosVisitados) {
-    if (no == nullptr) return;
-
-    if (nosVisitados->find(no) != nosVisitados->end())return;
-
-    nosVisitados->insert(no);
-
-    for (auto &aresta: no->getArestas()) {
-        auto arestaDestino = aresta.second;
-        auto noDestino = arestaDestino->getDestino();
-        auxFtd(noDestino, nosVisitados);
-    }
 }
 
 /**
@@ -85,55 +45,6 @@ void Grafo::fechoTransitivoIndireto(int idNo) {
 
     delete nosIncidentes;
     delete nosVisitados;
-}
-
-/**
- * @brief Função auxiliar para o fecho transitivo indireto
- * @param no: Nó
- * @param level: Nível
- * @param nosVisitados: Nós visitados
- * @param nosIncidentes: Nós incidentes
- * @return void
-*/
-void Grafo::auxFti(No *no, set<No *> *nosVisitados, set<No *> *nosIncidentes) {
-    if (no == nullptr) return;
-
-    if (nosVisitados->find(no) != nosVisitados->end()) return;
-
-    nosVisitados->insert(no);
-
-    for (auto &noIncidente: *nosIncidentes) {
-        set<No *> *auxNosIncidentes = incidentes(noIncidente);
-        auxFti(noIncidente, nosVisitados, auxNosIncidentes);
-    }
-}
-
-/**
- * @brief Retorna os nós que incidem em um nó
- * @param no: Nó
- * @return set<No *>
-*/
-set<No *> *Grafo::incidentes(No *no) {
-    auto *nosIncidentes = new set<No *>();
-    for (auto &arestas: *this->ARESTAS) {
-        if (arestas.second->getDestino() == no) {
-            nosIncidentes->insert(arestas.second->getOrigem());
-        }
-    }
-    return nosIncidentes;
-}
-
-void Grafo::salvaFecho(set<No *> *fecho, const string &tipo) {
-    if (!this->getOutput()->is_open()) {
-        cout << "Erro ao abrir os arquivos!" << endl;
-        return;
-    }
-
-    *this->getOutput() << "Fecho Transitivo " << tipo << endl;
-    for (auto &no: *fecho) {
-        *this->getOutput() << no->getID() << ", ";
-    }
-    *this->getOutput() << endl;
 }
 
 long Grafo::localClusteringCoefficient(int idNo) {
@@ -207,88 +118,6 @@ void Grafo::dijkstra(int origem, int destino) {
     delete vistos;
 }
 
-void Grafo::auxDijkstra(map<int, int> *dist, set<int> *vistos, set<No *> *FTD) {
-    int minIdx = Grafo::minDistance(dist, vistos, FTD);
-
-    vistos->insert(minIdx);
-    FTD->erase(this->NOS->at(minIdx));
-
-    for (auto &aresta: this->NOS->at(minIdx)->getArestas()) {
-        if (vistos->find(aresta.second->getDestino()->getID()) == vistos->end()) {
-            (*dist)[aresta.second->getDestino()->getID()] = min((*dist)[aresta.second->getDestino()->getID()],
-                                                                (*dist)[minIdx] + aresta.second->getPeso());
-        }
-    }
-}
-
-int Grafo::minDistance(map<int, int> *dist, set<int> *vistos, set<No *> *FTD) {
-    int min = INT_MAX, min_index;
-
-    for (auto *no: *FTD) {
-        if (vistos->find(no->getID()) == vistos->end() && (*dist)[no->getID()] <= min) {
-            min = (*dist)[no->getID()];
-            min_index = no->getID();
-        }
-    }
-
-    return min_index;
-}
-
-void Grafo::imprimeDijkstra(map<int, int> *dist, int idOrigem, int idDestino) {
-    cout << "O caminho mínimo entre " << idOrigem << " e " << idDestino << " é: " << (*dist)[idDestino] << endl;
-
-    int opcao;
-
-    cout << "Deseja imprimir todos os caminhos minimos do nó " << idOrigem << " ?" << endl;
-    cout << "1 - Sim" << endl;
-    cout << "2 - Não" << endl;
-    cin >> opcao;
-
-    if (opcao == 1) {
-        cout << endl << "Caminhos mínimos: " << endl;
-        for (auto no: *dist) {
-            cout << "Caminho mínimo entre " << idOrigem << " e " << no.first << ": " << (*dist)[no.first] << endl;
-        }
-        cout << endl;
-    }
-
-    cout << "Deseja salvar o caminho mínimo entre " << idOrigem << " e " << idDestino << " ?" << endl;
-    cout << "1 - Sim" << endl;
-    cout << "2 - Não" << endl;
-    cin >> opcao;
-
-    if (opcao == 1) {
-        if (!this->getOutput()->is_open()) {
-            cout << "Erro ao abrir os arquivos!" << endl;
-        }
-        *this->getOutput() << "O caminho mínimo entre " << idOrigem << " e " << idDestino << " é: "
-                           << (*dist)[idDestino] << endl;
-    }
-
-    cout << "Caminho Mínimo Salvo com Sucesso!" << endl;
-    cout << endl;
-
-    cout << "Deseja salvar todos os caminhos minimos do nó " << idOrigem << " ?" << endl;
-    cout << "1 - Sim" << endl;
-    cout << "2 - Não" << endl;
-    cin >> opcao;
-
-    if (opcao == 1) {
-        if (!this->getOutput()->is_open()) {
-            cout << "Erro ao abrir os arquivos!" << endl;
-        }
-        for (auto no: *dist) {
-            if (no.first == idDestino) continue;
-            *this->getOutput() << "Caminho mínimo entre " << idOrigem << " e " << no.first << ": " << (*dist)[no.first]
-                               << endl;
-        }
-    }
-
-    cout << "Caminhos Mínimos Salvos com Sucesso!" << endl;
-    cout << endl;
-}
-
-
 /// @brief Caminho mínimo entre dois nós (Floyd)
 /// @param idNoOrigem: Identificador do nó de origem
 /// @param idNoDestino: Identificador do nó de destino
@@ -334,204 +163,6 @@ void Grafo::Floyd(int idNoOrigem, int idNoDestino) {
     delete dist;
 }
 
-
-/// @brief Finaliza a execução do algoritmo de Floyd e imprime o resultado
-/// @param dist: Mapa de distâncias
-/// @param idOrigem: Identificador do nó de origem
-/// @param idoDestino: Identificador do nó de destino
-/// @return void
-void Grafo::finalizaFloyd(map<int, map<int, int>> *dist, int idOrigem, int idoDestino) {
-    cout << "Caminho mínimo entre " << idOrigem << " e " << idoDestino << ": " << (*dist)[idOrigem][idoDestino]
-         << endl;
-    int opcao;
-
-    cout << "Deseja imprimir a matriz ?" << endl;
-    cout << "1 - Sim" << endl;
-    cout << "2 - Não" << endl;
-    cin >> opcao;
-
-    if (opcao == 1) {
-        cout << endl << "Matriz de distâncias: " << endl;
-        for (auto &no: *this->NOS) {
-            for (auto &no2: *this->NOS) {
-                cout << "[ " << (*dist)[no.first][no2.first] << " ]";
-            }
-            cout << endl;
-        }
-        cout << endl;
-    }
-
-
-    cout << "Deseja salvar a matriz ?" << endl;
-    cout << "1 - Sim" << endl;
-    cout << "2 - Não" << endl;
-    cin >> opcao;
-
-    if (opcao == 1) {
-
-        if (!this->getOutput()->is_open()) {
-            cout << "Erro ao abrir os arquivos!" << endl;
-            return;
-        }
-        for (auto &no: *this->NOS) {
-            for (auto &no2: *this->NOS) {
-                *this->getOutput() << "[ " << (*dist)[no.first][no2.first] << " ]";
-            }
-            *this->getOutput() << endl;
-        }
-    }
-
-    cout << "Matriz Salva com Sucesso!" << endl;
-    cout << endl;
-}
-
-
-/// @brief Inicializa a matriz de distâncias A0
-/// @param dist: Mapa de distâncias
-/// @return void
-void Grafo::floydA0(map<int, map<int, int>> *dist) {
-    auto arestas = this->ARESTAS;
-
-    // Inicializa a matriz de distâncias
-    for (auto &no: *this->NOS) {
-        (*dist)[no.first] = map<int, int>();
-        for (auto &no2: *this->NOS) {
-            if (no.first == no2.first)
-                // Distância de um nó para ele mesmo é 0
-                (*dist)[no.first][no2.first] = 0;
-            else
-                // Distância de um nó para outro é infinito
-                (*dist)[no.first][no2.first] = INT_MAX;
-        }
-    }
-
-    // Preenche a matriz de distâncias com os valores de peso das arestas
-    for (auto &aresta: *arestas) {
-        // Preenche o valor de peso da aresta no sentido correto
-        (*dist)[aresta.second->getIdOrigem()][aresta.second->getIdDestino()] = aresta.second->getPeso();
-        // Se o grafo não for direcionado, preenche o valor de peso da aresta no sentido contrário
-        if (!this->isDirecionado())
-            (*dist)[aresta.second->getIdDestino()][aresta.second->getIdOrigem()] = aresta.second->getPeso();
-    }
-}
-
-set<No *> *Grafo::getVerticeInduzido() {
-    auto *nosPossiveis = new set<int>();
-    auto *verticeInduzido = new set<No *>();
-//    for (auto &no: *this->NOS) {
-//        nosPossiveis->insert(no.first);
-//    }
-//
-//    this->menuGvi(verticeInduzido, nosPossiveis);
-//    Grafo::imprimeVerticeInduzido(verticeInduzido);
-    for (auto &no: *this->NOS) {
-        verticeInduzido->insert(no.second);
-    }
-
-    return verticeInduzido;
-}
-
-void Grafo::menuGvi(set<No *> *verticeInduzido, set<int> *nosPossiveis) {
-    int opcao = -1;
-    while (opcao != 0 && !nosPossiveis->empty()) {
-        cout << "Escolha uma opção: " << endl;
-        cout << "1 - Inserir nó" << endl;
-        if (!verticeInduzido->empty()) {
-            cout << "2 - Remover nó" << endl;
-            cout << "3 - Imprimir Vertice Induzido" << endl;
-        }
-
-        cout << "0 - Sair" << endl;
-        cin >> opcao;
-
-        switch (opcao) {
-            case 1:
-                this->insereGvi(verticeInduzido, nosPossiveis);
-                break;
-            case 2:
-                if (!verticeInduzido->empty())
-                    this->removeGvi(verticeInduzido, nosPossiveis);
-                break;
-            case 3:
-                if (!verticeInduzido->empty())
-                    Grafo::imprimeVerticeInduzido(verticeInduzido);
-                break;
-            case 0:
-                return;
-            default:
-                cout << "Opção inválida!" << endl;
-                break;
-        }
-    }
-}
-
-void Grafo::insereGvi(set<No *> *verticeInduzido, set<int> *nosPossiveis) {
-    cout << "Digite o ID do nó que deseja inserir: " << endl;
-    Grafo::imprimeNosPossiveis(nosPossiveis);
-    int idNo;
-    cin >> idNo;
-
-    if (this->existeNo(idNo) && nosPossiveis->find(idNo) != nosPossiveis->end()) {
-        verticeInduzido->insert(this->NOS->at(idNo));
-        nosPossiveis->clear();
-
-        for (auto &no: *verticeInduzido)
-            for (auto &aresta: no->getArestas()) {
-                if (verticeInduzido->find(aresta.second->getDestino()) == verticeInduzido->end())
-                    nosPossiveis->insert(aresta.second->getIdDestino());
-                else if (verticeInduzido->find(aresta.second->getOrigem()) == verticeInduzido->end())
-                    nosPossiveis->insert(aresta.second->getIdOrigem());
-            }
-    } else
-        cout << "Nó inválido!" << endl;
-
-}
-
-void Grafo::removeGvi(set<No *> *verticeInduzido, set<int> *nosPossiveis) {
-    cout << "Digite o ID do nó que deseja remover: " << endl;
-    Grafo::imprimeVerticeInduzido(verticeInduzido);
-    int idNo;
-    cin >> idNo;
-
-    if (this->existeNo(idNo) && verticeInduzido->find(this->NOS->at(idNo)) != verticeInduzido->end()) {
-        verticeInduzido->erase(this->NOS->at(idNo));
-        nosPossiveis->clear();
-
-        if (!verticeInduzido->empty()) {
-            for (auto &no: *verticeInduzido) {
-                for (auto &aresta: no->getArestas()) {
-                    if (verticeInduzido->find(aresta.second->getDestino()) == verticeInduzido->end())
-                        nosPossiveis->insert(aresta.second->getIdDestino());
-                    else if (verticeInduzido->find(aresta.second->getOrigem()) == verticeInduzido->end())
-                        nosPossiveis->insert(aresta.second->getIdOrigem());
-                }
-            }
-        } else
-            for (auto &no: *this->NOS)
-                nosPossiveis->insert(no.first);
-
-    } else
-        cout << "Nó inválido!" << endl;
-}
-
-vector<Aresta *> *Grafo::OrdenaArestas(set<No *> *verticeInduzido) {
-    // Cria um vetor ordenado de arestas usando o comparador de arestas
-    auto *arestas = new vector<Aresta *>();
-
-    // Percorre todos os nós do vetor de vértices induzidos
-    for (auto Aresta: *this->ARESTAS) {
-        // Se os nós de origem e destino da aresta estiverem no vetor de vértices induzidos
-        if (verticeInduzido->find(Aresta.second->getOrigem()) != verticeInduzido->end() &&
-            verticeInduzido->find(Aresta.second->getDestino()) != verticeInduzido->end()) {
-            // Insere a aresta na posição correta do vetor ordenado
-            arestas->insert(upper_bound(arestas->begin(), arestas->end(), Aresta.second, Aresta::comparaAresta),
-                            Aresta.second);
-        }
-    }
-
-    return arestas;
-}
-
 void Grafo::Prim(set<No *> *verticeInduzido) {
     //Verifica se o vertice induzido é vazio
     if (verticeInduzido->empty()) {
@@ -547,7 +178,7 @@ void Grafo::Prim(set<No *> *verticeInduzido) {
 
     // Insere o primeiro nó da fila na AGM
     auto *Raiz = fila->at(0)->getOrigem();
-    agm->InserirNo(Raiz->getID(), Raiz->getPeso());
+    agm->inserirNo(Raiz->getID(), Raiz->getPeso());
 
     // Adiciona o nó atual ao vetor de nós visitados
     auto *nosVisitados = new set<No *>();
@@ -582,9 +213,9 @@ void Grafo::Prim(set<No *> *verticeInduzido) {
         // Se retornar nullptr, não existe aresta mínima
         if (noMin == nullptr) break;
         // Insere o nó mínimo na AGM
-        agm->InserirNo(noMin->getID(), noMin->getPeso());
+        agm->inserirNo(noMin->getID(), noMin->getPeso());
         // Insere a aresta mínima na AGM
-        agm->CriarAresta(noPai->getID(), noMin->getID(), arestaMin->getPeso());
+        agm->criarAresta(noPai->getID(), noMin->getID(), arestaMin->getPeso());
         // Adiciona o nó mínimo ao vetor de nós visitados
         nosVisitados->insert(noMin);
     }
@@ -595,44 +226,6 @@ void Grafo::Prim(set<No *> *verticeInduzido) {
     delete fila;
     delete agm;
     delete nosVisitados;
-}
-
-void Grafo::salvaAGM(Grafo *AGM, int noRaiz, const string &algoritmo) {
-    auto Raiz = AGM->getNos()->at(noRaiz);
-
-    if (!this->getOutput()->is_open()) {
-        cout << "Erro ao abrir os arquivos!" << endl;
-        return;
-    }
-
-    *this->getOutput() << "Arvore Geradora Minima - " << algoritmo << endl;
-    *this->getOutput() << "Raiz: " << Raiz->getID() << endl;
-    auto *nosVisitados = new set<No *>();
-
-    // Salva a AGM no arquivo de saída fazendo um caminhamento em profundidade
-    this->auxSalvaAGM(AGM, Raiz, nosVisitados);
-}
-
-void Grafo::auxSalvaAGM(Grafo *AGMPrim, No *pNo, set<No *> *pSet) {
-    if (pNo == nullptr) return;
-
-    if (pSet->find(pNo) != pSet->end()) return;
-
-    pSet->insert(pNo);
-
-    for (auto &aresta: pNo->getArestas()) {
-        auto arestaDestino = aresta.second;
-
-        auto noDestino = arestaDestino->getDestino() == pNo ? arestaDestino->getOrigem() : arestaDestino->getDestino();
-        if (pSet->find(noDestino) != pSet->end()) continue;
-
-        *this->getOutput() << pNo->getID() << " -> " << noDestino->getID() << " Peso: " << arestaDestino->getPeso()
-                           << endl;
-        auxSalvaAGM(AGMPrim, noDestino, pSet);
-    }
-
-    *this->getOutput() << endl;
-
 }
 
 void Grafo::Kruskal(set<No *> *verticeInduzido) {
@@ -654,120 +247,7 @@ void Grafo::Kruskal(set<No *> *verticeInduzido) {
     delete AGMKruskal;
 }
 
-Grafo *Grafo::auxKruskal(set<No *> *verticeInduzido, vector<Aresta *> *arestasOrdenadas,
-                         map<int, set<No *> *> *conjuntosDisjuntos) {
-
-    auto *AGMKruskal = new Grafo(this->isPonderado(), this->isVerticePonderado(), this->isDirecionado());
-
-    while (AGMKruskal->ARESTAS->size() < verticeInduzido->size() - 1) {
-        Aresta *aresta = nullptr;
-        No *Origem = nullptr;
-        No *Destino = nullptr;
-
-        Grafo::buscaArestaKruskal(arestasOrdenadas, conjuntosDisjuntos, Origem, Destino, aresta);
-
-        if (aresta == nullptr || Origem == nullptr || Destino == nullptr) break;
-
-        Grafo::atualizaConjuntos(conjuntosDisjuntos, Origem, Destino);
-
-        AGMKruskal->InserirNo(Origem->getID(), Origem->getPeso());
-        AGMKruskal->InserirNo(Destino->getID(), Destino->getPeso());
-        AGMKruskal->CriarAresta(Origem->getID(), Destino->getID(), aresta->getPeso());
-
-        //Remove aresta do vetor de arestas ordenadas
-        auto position = find(arestasOrdenadas->begin(), arestasOrdenadas->end(), aresta) - arestasOrdenadas->begin();
-        arestasOrdenadas->erase(arestasOrdenadas->begin() + position);
-    }
-
-    return AGMKruskal;
-}
-
-map<int, set<No *> *> *Grafo::inicializaConjuntos(set<No *> *verticeInduzido) {
-    auto *conjuntosDisjuntos = new map<int, set<No *> *>();
-
-    //Inicializando conjuntos disjuntos
-    for (auto &no: *verticeInduzido) {
-        auto *conjunto = new set<No *>();
-        conjunto->insert(no);
-        conjuntosDisjuntos->insert(pair<int, set<No *> *>(no->getID(), conjunto));
-    }
-
-    return conjuntosDisjuntos;
-}
-
-void Grafo::buscaArestaKruskal(vector<Aresta *> *arestasOrdenadas, map<int, set<No *> *> *conjuntosDisjuntos,
-                               No *&Origem, No *&Destino, Aresta *&aresta) {
-
-    int min = INT_MAX / 2;
-
-    for (auto &arestaOrdenada: *arestasOrdenadas) {
-        auto auxOrigem = arestaOrdenada->getOrigem();
-        auto auxDestino = arestaOrdenada->getDestino();
-        int peso = arestaOrdenada->getPeso();
-        if (conjuntosDisjuntos->at(auxOrigem->getID()) == conjuntosDisjuntos->at(auxDestino->getID())) continue;
-        if (peso >= min) continue;
-
-        Origem = auxOrigem;
-        Destino = auxDestino;
-        aresta = arestaOrdenada;
-        min = peso;
-    }
-}
-
-void Grafo::atualizaConjuntos(map<int, set<No *> *> *conjuntosDisjuntos, No *Origem, No *Destino) {
-
-    auto conjOrigem = conjuntosDisjuntos->find(Origem->getID());
-    auto conjDestino = conjuntosDisjuntos->find(Destino->getID());
-
-    if (conjOrigem->first < conjDestino->first) {
-        auto aux = conjDestino->second;
-
-        for (auto &no: *conjDestino->second) {
-            conjuntosDisjuntos->at(no->getID()) = conjOrigem->second;
-        }
-
-        conjOrigem->second->merge(*aux);
-        conjDestino->second = conjOrigem->second;
-        delete aux;
-    } else {
-        auto aux = conjOrigem->second;
-
-        for (auto &no: *conjOrigem->second) {
-            conjuntosDisjuntos->at(no->getID()) = conjDestino->second;
-        }
-        conjDestino->second->merge(*aux);
-
-        conjOrigem->second = conjDestino->second;
-        delete aux;
-    }
-
-}
-
-list<No *> Grafo::ordenaLista(Grafo &grafo) {
-    list<No *> lista;
-    bool inserted;
-
-    for (auto &n: *grafo.NOS) {
-
-        for (auto it = lista.begin(); it != lista.end(); ++it) {
-            bool inserted = false;
-            if ((*it)->getPeso() > n.second->getPeso()) {
-                lista.insert(it, n.second);
-                inserted = true;
-                break;
-            }
-        }
-
-        if (!inserted) {
-            lista.push_back(n.second);
-        }
-    }
-
-    return lista;
-}
-
-
-pair<list<list<int>>, int> Grafo::algoritimoGuloso() {
+pair<list<list<int>>, int> Grafo::algoritmoGuloso() {
     list<No *> todosNos;
     for (auto n: *NOS) {
         todosNos.push_front(n.second);
@@ -782,7 +262,7 @@ pair<list<list<int>>, int> Grafo::algoritimoGuloso() {
         for (auto a: analisado->getArestas()) {
             auto n = *a.second->getDestino();
             if (n.getPeso() < menor->getPeso() && !n.isPassou() &&
-                caminhoes.at(caminhao)->capacidade - n.getPeso() < 0) {
+                caminhoes->at(caminhao)->capacidade - n.getPeso() < 0) {
                 menor = &n;
                 pontosSolucao += a.second->getPeso();
             }
@@ -815,8 +295,7 @@ pair<list<list<int>>, int> Grafo::algoritimoGuloso() {
     return make_pair(solucao, pontosSolucao);
 }
 
-
-pair<list<list<int>>, int> Grafo::algoritimoGulosoRandomizado(double alpha) {
+pair<list<list<int>>, int> Grafo::algoritmoGulosoRandomizado(double alpha) {
     list<No *> todosNos;
     for (auto n: *NOS) {
         todosNos.push_front(n.second);
@@ -833,7 +312,7 @@ pair<list<list<int>>, int> Grafo::algoritimoGulosoRandomizado(double alpha) {
         for (auto a: analisado->getArestas()) {
             auto n = *a.second->getDestino();
             if (menor == nullptr && n.getPeso() < menor->getPeso() && !n.isPassou() &&
-                caminhoes.at(caminhao)->capacidade - n.getPeso() < 0 && prob <= alpha) {
+                caminhoes->at(caminhao)->capacidade - n.getPeso() < 0 && prob <= alpha) {
                 menor = &n;
                 pontosSolucao += a.second->getPeso();
             }
@@ -860,9 +339,3 @@ pair<list<list<int>>, int> Grafo::algoritimoGulosoRandomizado(double alpha) {
     }
     return make_pair(solucao, pontosSolucao);
 }
-
-
-pair<list<list<int>>, int> Grafo::algoritimoGulosoRandomizadoAdaptativo() {
-
-}
-

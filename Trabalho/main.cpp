@@ -9,105 +9,180 @@
 
 using namespace std;
 
-string *get_current_dir_name();
+string input;
+string out;
+bool ehDirecionado;
+bool ehPonderado;
+bool ehVerticePonderado;
+bool ehParte1;
+string diretorio;
+ifstream entrada;
+ofstream saida;
 
-void AbreInput(ifstream &entrada, const string &diretorio, const string &nomeArquivo);
+string *getCurrentDirName();
 
-void AbreOutput(ofstream &saida, const string &nomeArquivo);
+void abreInput();
+
+void abreOutput();
 
 bool ehCmakeDir(const string *path);
 
+void parte1(const char *argv[]);
+
+void parte2(const char *argv[]);
 
 int main(int argc, const char *argv[]) {
-    // Obtendo a informacao se o grafo eh direcionado ou nao
-    bool ehDirecionado = false;
-    cout << "Seu grafo eh direcionado? (1) Direcionado ou (0) Nao Direcionado: ";
-//    cin >> ehDirecionado;
-    cout << "Eh direcionado: " << ehDirecionado;
+
+    //A estrutura de Arquivos do Grafo foi alterada
+    //Agora temos 3 arquivos .cpp que conversam entre si
+
+    // Grafos.cpp que contem todos os metodos principais de chamada unitaria
+    //Como o Prim, Kruskal, Dijkstra, Floyd, etc
+
+    //AuxFuncs.cpp que contem todos os metodos auxiliares principais
+    // Como auxFTD, auxFTI, auxDijkstra, auxFloyd, etc
+
+    //Basics.cpp que contem todos os metodos auxiliares basicos
+    // Como minDistance, Incidentes, Ordena, etc
+
+    //Tambem foi criado um arquivo Output.cpp que contem todos os metodos de saida e salvamento
+    // Como printListaAdjacencia, imprimeDijkstra, imprimeFloyd, etc
+
+    //Dentro de AGrafo.h temos um struct que contem a classe Caminhao
+    //Pode ser feita a alteracao de metodos auxiliares para que o caminhao seja utilizado
+    //Porem tomar cuidado para nao poluir dms o codigo
+
+    //Metodos que nao estao sendo utilizados podem ser removidos
+
+    //TODO: Refatorar metodos para nao fazer impressao no console
+    // Se caso estiver rodando a parte 2 do trabalho, nao imprimir nada no console
+    // Apenas salvar os resultados no arquivo de saida
+
+    //TODO: Refatorar metodos desnecessarios
+
+    //TODO: Refatorar metodos para nao fazerem chamadas de metodos desnecessarios
+
+    //TODO: Implementar o algoritmo guloso e guloso randomizado para busca de rotas
+
+    cout << "Trabalho de Grafos" << endl;
+    cout << "Alunos: João Victor Pereira dos Anjos" << endl;
+    cout << "Marcelo Rother" << endl;
+    cout << "Igor Matos" << endl;
+    cout << "Alvaro Davi" << endl;
+
     cout << '\n' << endl;
 
-    // Obtendo a informacao se o grafo eh ponderado ou nao
-    bool ehPonderado = true;
-    cout << "Seu grafo eh Ponderado? (1) Ponderado ou (0) Nao Ponderado: ";
-//    cin >> ehPonderado;
-    cout << "Eh ponderado: " << ehPonderado;
+    cout << "Argumentos Necesarios: " << endl;
+    cout << "Parte 1: " << endl;
+    cout << "1 - Nome do arquivo de entrada" << endl;
+    cout << "2 - Nome do arquivo de saida" << endl;
+    cout << "3 - true ou false para  Grafo Direcionado" << endl;
+    cout << "4 - true ou false para  Grafo Ponderado nas arestas" << endl;
+    cout << "5 - true ou false para  Grafo Ponderado nos vertices" << endl;
+
+    cout << "Parte 2: " << endl;
+    cout << "1 - Nome do arquivo de saida" << endl;
+
     cout << '\n' << endl;
 
-    //urls dos arquivos de entrada e saida para teste
-    string diretorio = "instancias_nao_ponderadas";
-    string nomeArquivo = "grafo_1000_1.txt";
-    string out = "saida.txt";
-//
-//    if (ehPonderado) {
-    diretorio = "instancias_ponderadas";
-    nomeArquivo = "test.txt";
-    out = "saida_ponderada.txt";
-//    }
-//    string test = argv[1];
-
-    // Criando arquivos de entrada e saida
-    ifstream entrada;
-    ofstream saida;
-
-    AbreInput(entrada, diretorio, nomeArquivo);
-    AbreOutput(saida, out);
-
-    if (!entrada.is_open() || !saida.is_open()) {
-        cout << "Erro ao abrir os arquivos!" << endl;
+    //Tem que passar os parametros corretos
+    if (argc == 2) {
+        //Não é necessario passar o nome do arquivo de entrada, apenas o de saida
+        parte2(argv);
+        return 0;
+    } else if (argc == 6)
+        parte1(argv);
+    else {
+        cout << "Argumentos invalidos" << endl;
         return 0;
     }
 
-    cout << "arquivos aberto" << endl;
-//    entrada.open(argv[1], ios::in);
-//    saida.open(argv[2], ios::out | ios::trunc);
 
-    auto *g = new Grafo(ehPonderado, false, ehDirecionado, &entrada, &saida);
-
-
-    // Criando grafo a partir de uma lista de adjacencia
     cout << "Aguarde enquanto o grafo esta sendo criado..." << endl;
-//    criaGrafoListaAdj(g, entrada);
 
-    // Print de arestas (apenas para testes)
-    // g->printArestas();
+    auto *g = new Grafo(ehPonderado, ehVerticePonderado, ehParte1, ehDirecionado, &entrada);
+    g->setOutput(&saida);
 
-    auto menu = new Menu(g);
-    menu->menuPrincipal();
+    if (ehParte1) {
+        auto menu = new Menu(g);
+        menu->menuPrincipal();
+        delete menu;
+    }
 
     entrada.close();
     saida.close();
 
-    delete menu;
     delete g;
 
     return 0;
 }
 
-string *get_current_dir_name() {
+void abreAquivos() {
+    abreInput();
+    abreOutput();
+
+    if (!entrada.is_open() || !saida.is_open()) {
+        cout << "Erro ao abrir os arquivos!" << endl;
+        exit(1);
+    }
+    cout << "arquivos aberto" << endl;
+}
+
+void parte1(const char *argv[]) {
+    input = argv[1];
+    out = argv[2];
+    ehDirecionado = argv[3][0] == 't';
+    ehPonderado = argv[4][0] == 't';
+    ehVerticePonderado = argv[5][0] == 't';
+    diretorio = ehPonderado ? "instancias_ponderadas" : "instancias_nao_ponderadas";
+    ehParte1 = true;
+    abreAquivos();
+}
+
+void parte2(const char *argv[]) {
+    input = "A-n34-k5.txt";
+    out = argv[1];
+    ehDirecionado = false;
+    ehPonderado = true;
+    ehVerticePonderado = true;
+    diretorio = "Parte2";
+    ehParte1 = false;
+    abreAquivos();
+    auto *g = new Grafo(ehPonderado, ehVerticePonderado, ehParte1, ehDirecionado, &entrada);
+    g->setOutput(&saida);
+
+    //Fazer Aqui a chamada dos algoritmos guloso e guloso randomizado
+    //O metodo principal a ser chamado deve estar no arquivo Grafo.cpp
+    //Metodos auxiliares devem estar no arquivo AuxFuncs.cpp
+    //Metodos basicos devem estar no arquivo Basics.cpp
+    //Metodos de saida devem estar no arquivo Output.cpp
+}
+
+string *getCurrentDirName() {
     char buffer[PATH_MAX];
     getcwd(buffer, PATH_MAX);
     return new string(buffer);
 }
 
-void AbreInput(ifstream &entrada, const string &diretorio, const string &nomeArquivo) {
-    auto path = get_current_dir_name();
+void abreInput() {
+    auto path = getCurrentDirName();
 
     if (ehCmakeDir(path)) {
         path->erase(path->find("cmake-build-debug"), path->length());
     }
 
-    path->append("/").append(diretorio).append("/").append(nomeArquivo);
+    path->append("/").append(diretorio).append("/").append(input);
     entrada.open(*path, ios::in);
 }
 
-void AbreOutput(ofstream &saida, const string &nomeArquivo) {
-    auto path = get_current_dir_name();
+void abreOutput() {
+    auto path = getCurrentDirName();
 
     if (ehCmakeDir(path)) {
         path->erase(path->find("cmake-build-debug"), path->length());
     }
 
-    path->append("/").append(nomeArquivo);
+    path->append("/output").append(out);
     saida.open(*path, ios::out | ios::trunc);
 }
 
