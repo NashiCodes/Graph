@@ -32,6 +32,8 @@ public:
 
     void setGrauSaida(int valor);
 
+    void printarNo(bool ponderado, bool direcionado);
+
     void setAresta(int idNoDestino, Aresta *aresta);
 
     Aresta *getAresta(int idNoDestino);

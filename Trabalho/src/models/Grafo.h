@@ -18,13 +18,12 @@ class Grafo : public AGrafo {
 public:
 
 
-    Grafo(bool APonderada, bool VPonderado, bool ehDirecionado, bool part, ifstream *entrada) : AGrafo
-                                                                                                        () {
+    Grafo(bool APonderada, bool VPonderado, bool ehDirecionado, ifstream *entrada, ofstream *Saida) : AGrafo() {
         setPonderado(APonderada);
         setVerticePonderado(VPonderado);
         setDirecionado(ehDirecionado);
         this->Input = entrada;
-        this->part1 = part;
+        this->setOutput(Saida);
         this->montaGrafo();
     }
 
@@ -35,6 +34,7 @@ public:
         setVerticePonderado(VPonderado);
         setDirecionado(ehDirecionado);
     }
+
 
     void printListaAdjacencia();
 
@@ -52,12 +52,21 @@ public:
 
     void Prim(set<No *> *verticeInduzido);
 
+//    void AGMPrim(int idNoOrigem);
 
     void Kruskal(set<No *> *verticeInduzido);
 
+//    void DeepSearch(int idNo);
+
+//    void ordenacaoTopologica();
+
+//    void parametrosGrafo();
+
+//    void articulacao();
+
     long localClusteringCoefficient(int idNo);
 
-    static list<No *> algoritmoGuloso(const Grafo &grafo);
+    list<No *> algoritimoGuloso(const Grafo &grafo);
 
 private:
     void auxFtd(No *no, set<No *> *nosVisitados);
@@ -132,7 +141,6 @@ private:
     pair<list<list<int>>, int> algoritimoGulosoRandomizado(double alpha);
 
     pair<list<list<int>>, int> algoritimoGulosoRandomizadoAdaptativo();
-    static list<No *> ordenaLista(Grafo &grafo);
 };
 
 
