@@ -100,7 +100,7 @@ int main(int argc, const char *argv[]) {
 
     cout << "Aguarde enquanto o grafo esta sendo criado..." << endl;
 
-    auto *g = new Grafo(ehPonderado, ehVerticePonderado, ehParte1, ehDirecionado, &entrada);
+    auto *g = new Grafo(ehParte1, ehVerticePonderado, ehPonderado, ehDirecionado, &entrada);
     g->setOutput(&saida);
 
     if (ehParte1) {
@@ -148,10 +148,11 @@ void parte2(const char *argv[]) {
     diretorio = "Parte2";
     ehParte1 = false;
     abreAquivos();
-    auto *g = new Grafo(ehPonderado, ehVerticePonderado, ehParte1, ehDirecionado, &entrada);
+    auto *g = new Grafo(ehParte1, ehVerticePonderado, ehPonderado, ehDirecionado, &entrada);
     g->setOutput(&saida);
 
-    //Fazer Aqui a chamada dos algoritmos guloso e guloso randomizado
+    g->algoritmoGuloso();
+    //Fazer Aqui a chamada dos algoritmos e guloso randomizado
     //O metodo principal a ser chamado deve estar no arquivo Grafo.cpp
     //Metodos auxiliares devem estar no arquivo AuxFuncs.cpp
     //Metodos basicos devem estar no arquivo Basics.cpp
