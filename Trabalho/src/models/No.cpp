@@ -17,8 +17,7 @@ No::No(int idNo, int peso) {
     this->PESO = peso;
     this->GRAU_ENTRADA = 0;
     this->GRAU_SAIDA = 0;
-    this->X = 0;
-    this->Y = 0;
+    this->PASSOU = false;
 }
 
 /**
@@ -106,6 +105,27 @@ map<int, Aresta *> No::getArestas() {
     return this->ARESTAS;
 }
 
+void No::printarNo(bool ponderado, bool direcionado) {
+    cout << "Nó: " << this->getID() << endl;
+    cout << "Grau de entrada: " << this->getGrauEntrada() << endl;
+    cout << "Grau de saída: " << this->getGrauSaida() << endl;
+    cout << "Arestas: " << endl;
+    for (auto &aresta: this->getArestas()) {
+        if (direcionado)
+            if (ponderado)
+                cout << "|" << this->getID() << "| -> |" << aresta.first << "| (" << aresta.second->getPeso() << ")";
+            else
+                cout << "|" << this->getID() << "| -> |" << aresta.first << "|";
+        else if (ponderado)
+            cout << "|" << this->getID() << "| <-> |" << aresta.first << "| (" << aresta.second->getPeso() << ")";
+        else
+            cout << "|" << this->getID() << "| <-> |" << aresta.first << "|";
+
+        cout << endl;
+    }
+    cout << endl;
+}
+
 int No::getPeso() const {
     return this->PESO;
 }
@@ -130,4 +150,12 @@ void No::RemoveAresta(int idNoDestino, bool direcionado) {
         this->setGrauSaida(this->getGrauSaida() - 1);
         this->setGrauEntrada(this->getGrauEntrada() - 1);
     }
+}
+
+bool No::isPassou() const {
+    return PASSOU;
+}
+
+void No::setPassou(bool passou) {
+    PASSOU = passou;
 }

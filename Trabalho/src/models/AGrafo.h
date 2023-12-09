@@ -11,52 +11,22 @@
 #include <set>
 #include <vector>
 
-struct caminhao {
+struct Caminhao {
 public:
     int capacidade;
 
-    explicit caminhao(int capacidade) { this->capacidade = capacidade; }
+    explicit Caminhao(int capacidade) {
+        this->capacidade = capacidade;
+    }
 
-    virtual ~caminhao() = default;
+    virtual ~Caminhao() = default;
+
+    static bool compare(const Caminhao *a, const Caminhao *b) {
+        return a->capacidade < b->capacidade;
+    }
 };
 
 class AGrafo {
-public:
-    int getOrdem() const { return Ordem; }
-
-    bool getPart() const {
-        return
-                this->part1;
-    }
-
-    void criaNo(int idNo, int pesoNo);
-
-    bool isVerticePonderado() const { return VerticePonderado; }
-
-    void inserirNo(No *no);
-
-    void inserirNo(int idNo, int pesoNo);
-
-    ofstream *getOutput() const { return Output; }
-
-    bool isPonderado() const { return ArestaPonderada; }
-
-    bool isDirecionado() const { return EhDirecionado; }
-
-    void criarAresta(int idNoOrigem, int idNoDestino, int pesoAresta);
-
-    const map<int, No *> *getNos() const { return NOS; }
-
-    int getNumArestas() const { return NumArestas; }
-
-    ifstream *getInput() const { return Input; }
-
-    vector<caminhao *> *getCaminhoes() const { return caminhoes; }
-
-    void setOutput(ofstream *output) {
-        if (this->Output == nullptr) this->Output = output;
-        else return;
-    }
 
 protected:
     int Ordem;
@@ -64,12 +34,10 @@ protected:
     bool ArestaPonderada;
     bool VerticePonderado;
     bool EhDirecionado;
-    bool part1;
     ifstream *Input;
     ofstream *Output;
     map<int, No *> *NOS;
     map<int, Aresta *> *ARESTAS;
-    vector<caminhao *> *caminhoes;
     set<int> *idsLiberados;
 
     AGrafo() {
@@ -83,50 +51,76 @@ protected:
         this->idsLiberados = new set<int>();
         this->NumArestas = 0;
         this->Ordem = 0;
-        this->caminhoes = new vector<caminhao *>();
-        this->part1 = true;
+        this->caminhoes = vector<Caminhao *>();
     };
 
     ~AGrafo() {
-        for (auto &no: *NOS) { delete no.second; }
-        for (auto &aresta: *ARESTAS) { delete aresta.second; }
+        for (auto &no: *NOS) {
+            delete no.second;
+        }
+        for (auto &aresta: *ARESTAS) {
+            delete aresta.second;
+        }
         delete NOS;
         delete ARESTAS;
         delete idsLiberados;
     };
 
-    void setPart(bool part) { this->part1 = part; }
+public:
+    vector<Caminhao *> caminhoes;
 
     void montaGrafo();
 
-    void instanciasParte1();
+    void lerInstancias(bool ponderado, bool direcionado, bool verticePonderado);
 
-    bool existeNo(int idNo) const { return this->NOS->find(idNo) != this->NOS->end(); }
+    ifstream *getInput() const;
 
-    void setPonderado(bool ehPonderado) { ArestaPonderada = ehPonderado; }
+    bool existeNo(int idNo);
 
-    void setDirecionado(bool ehDirecionado) { EhDirecionado = ehDirecionado; }
-
+    int getOrdem() const;
 
     void setOrdem(int ordem);
 
+    int getNumArestas() const;
+
     void setNumArestas(int numArestas);
 
-    void setVerticePonderado(bool ehPonderado) { VerticePonderado = ehPonderado; }
+    bool isPonderado() const;
 
-    map<int, Aresta *> *getArestas() const { return ARESTAS; }
+    void setPonderado(bool ehPonderado);
 
-    void removerNo(int idNo);
+    void setVerticePonderado(bool ehPonderado);
 
-    void removerAresta(int idNoOrigem, int idNoDestino);
+    bool isVerticePonderado() const;
 
-    void instanciasParte2();
+    bool isDirecionado() const;
 
-    void lePropriedades(int &nmDimensao, int &nmCapacidade) const;
+    void setDirecionado(bool ehDirecionado);
 
-    void leDemandas() const;
+    ofstream *getOutput() const;
 
-    void montarArestas(No *no);
+    void setOutput(ofstream *output);
+
+    const map<int, No *> *getNos() const;
+
+    const map<int, Aresta *> *getArestas() const;
+
+    void CriaNo(int idNo, int pesoNo);
+
+    void InserirNo(int idNo, int pesoNo);
+
+    void InserirNo(No *no);
+
+    void RemoverNo(int idNo);
+
+    void CriarAresta(int idNoOrigem, int idNoDestino, int pesoAresta);
+
+    void RemoverAresta(int idNoOrigem, int idNoDestino);
+
+    void imprimeGraus(int idNo);
+
+    void leituraNova();
+
 };
 
 
