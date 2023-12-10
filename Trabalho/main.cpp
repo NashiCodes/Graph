@@ -100,7 +100,7 @@ int main(int argc, const char *argv[]) {
 
     cout << "Aguarde enquanto o grafo esta sendo criado..." << endl;
 
-    auto *g = new Grafo(ehPonderado, ehVerticePonderado, ehParte1, ehDirecionado, &entrada);
+    auto *g = new Grafo(ehPonderado, ehVerticePonderado, ehDirecionado, ehParte1, &entrada);
     g->setOutput(&saida);
 
     if (ehParte1) {
