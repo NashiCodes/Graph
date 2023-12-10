@@ -100,7 +100,7 @@ int main(int argc, const char *argv[]) {
 
     cout << "Aguarde enquanto o grafo esta sendo criado..." << endl;
 
-    auto *g = new Grafo(ehParte1, ehVerticePonderado, ehPonderado, ehDirecionado, &entrada);
+    auto *g = new Grafo(ehPonderado, ehVerticePonderado, ehDirecionado, ehParte1, &entrada);
     g->setOutput(&saida);
 
     if (ehParte1) {
@@ -148,7 +148,7 @@ void parte2(const char *argv[]) {
     diretorio = "Parte2";
     ehParte1 = false;
     abreAquivos();
-    auto *g = new Grafo(ehParte1, ehVerticePonderado, ehPonderado, ehDirecionado, &entrada);
+    auto *g = new Grafo(ehPonderado, ehVerticePonderado, ehDirecionado, ehParte1, &entrada);
     g->setOutput(&saida);
 
     g->algoritmoGuloso();
@@ -183,7 +183,7 @@ void abreOutput() {
         path->erase(path->find("cmake-build-debug"), path->length());
     }
 
-    path->append("/output").append(out);
+    path->append("/output/").append(out);
     saida.open(*path, ios::out | ios::trunc);
 }
 

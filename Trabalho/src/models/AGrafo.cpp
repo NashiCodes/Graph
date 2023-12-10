@@ -32,8 +32,7 @@ void AGrafo::instanciasParte1() {
         cout << "Ordem inválida!" << endl;
         return;
     }
-    this->setOrdem(ordem);
-    while (!this->getInput()->eof()) {
+    while (!this->getInput()->eof() && this->getOrdem() < ordem) {
         *this->getInput() >> idNoOrigem;
         *this->getInput() >> idNoDestino;
         if (this->isPonderado())

@@ -16,8 +16,8 @@ void Grafo::auxFtd(No *no, set<No *> *nosVisitados) {
     nosVisitados->insert(no);
 
     for (auto &aresta: no->getArestas()) {
-        auto arestaDestino = aresta.second;
-        auto noDestino = arestaDestino->getDestino();
+        auto noDestino = this->NOS->at(aresta.first);
+        if (nosVisitados->find(noDestino) != nosVisitados->end()) continue;
         auxFtd(noDestino, nosVisitados);
     }
 }

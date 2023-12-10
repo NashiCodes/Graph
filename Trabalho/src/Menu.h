@@ -57,8 +57,11 @@ public:
                 cout << "Digite o ID do vertice para seu fecho transitivo direto: ";
                 cin >> id;
                 auto temp = grafo->fechoTransitivoDireto(id);
-                grafo->salvaFecho(temp, "Direto");
-                delete temp;
+                if (temp != nullptr) {
+                    grafo->salvaFecho(temp, "Direto");
+                    delete temp;
+                } else
+                    cout << "Não foi possivel encontrar o fecho transitivo direto" << endl;
                 break;
             }
                 //Fecho transitivo indireto de um vértice;

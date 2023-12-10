@@ -60,7 +60,7 @@ int No::getGrauSaida() const {
  */
 void No::setGrauSaida(int valor) {
     if (valor < 0 || valor > (int) this->ARESTAS.size())
-        throw invalid_argument("Grau de saída não pode ser negativo");
+        return;
     else
         this->GRAU_SAIDA = valor;
 }
@@ -75,11 +75,11 @@ void No::setGrauSaida(int valor) {
  */
 void No::setAresta(int idNoDestino, Aresta *aresta) {
     if (idNoDestino < 0)
-        throw invalid_argument("ID do nó destino não pode ser negativo");
-    else if (aresta == nullptr)
-        throw invalid_argument("Aresta não pode ser nula");
-    else if (this->ARESTAS.find(idNoDestino) != this->ARESTAS.end())
-        throw invalid_argument("Aresta já existe");
+        return;
+    if (aresta == nullptr)
+        return;
+    if (this->ARESTAS.find(idNoDestino) != this->ARESTAS.end())
+        return;
     else
         this->ARESTAS.insert(pair<int, Aresta *>(idNoDestino, aresta));
 }
@@ -91,9 +91,9 @@ void No::setAresta(int idNoDestino, Aresta *aresta) {
  */
 Aresta *No::getAresta(int idNoDestino) {
     if (idNoDestino < 0)
-        throw invalid_argument("ID do nó destino não pode ser negativo");
-    else if (this->ARESTAS.find(idNoDestino) == this->ARESTAS.end())
-        throw invalid_argument("Aresta não existe");
+        return nullptr;
+    if (this->ARESTAS.find(idNoDestino) == this->ARESTAS.end())
+        return nullptr;
     else
         return this->ARESTAS.at(idNoDestino);
 }

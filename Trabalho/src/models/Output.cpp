@@ -131,11 +131,10 @@ void Grafo::salvaFecho(set<No *> *fecho, const string &tipo) {
         return;
     }
 
-    *this->getOutput() << "Fecho Transitivo " << tipo << endl;
     for (auto &no: *fecho) {
         *this->getOutput() << no->getID() << ", ";
     }
-    *this->getOutput() << endl;
+    *this->getOutput() << "]" << endl;
 }
 
 void Grafo::menuGvi(set<No *> *verticeInduzido, set<int> *nosPossiveis) {

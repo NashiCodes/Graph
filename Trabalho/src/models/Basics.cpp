@@ -9,8 +9,14 @@ using namespace std;
 set<No *> *Grafo::incidentes(No *no) {
     auto *nosIncidentes = new set<No *>();
     for (auto &arestas: *this->ARESTAS) {
-        if (arestas.second->getDestino() == no) {
-            nosIncidentes->insert(arestas.second->getOrigem());
+        if (this->isDirecionado())
+            if (arestas.second->getDestino() == no) {
+                nosIncidentes->insert(arestas.second->getOrigem());
+            }
+        if (!this->isDirecionado()) {
+            auto origem =
+                    arestas.second->getOrigem() == no ? arestas.second->getDestino() : arestas.second->getOrigem();
+            nosIncidentes->insert(origem);
         }
     }
     return nosIncidentes;
